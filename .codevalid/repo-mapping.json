@@ -1,22 +1,93 @@
 {
   "task_addition": {
-    "implementation": [],
-    "missing_implementations": [
-      "Task must include title, description, priority, and due date."
-    ]
+    "implementation": [
+      {
+        "id": "TaskForm_component_frontend_src_components_TaskForm_tsx",
+        "name": "TaskForm",
+        "file_path": "frontend/src/components/TaskForm.tsx",
+        "type": "component",
+        "How_is_it_connected_to_implementation": "UI component that collects user input for a new task, including title, description, priority, and due date, and triggers the onSubmit handler with this data.",
+        "pseudo_code": "Display a form with fields: title (required), description, priority (dropdown), category (dropdown), due date (date picker)\nOn form submit:\n    Prevent default form submission\n    Call onSubmit with an object containing:\n        title\n        description (if provided)\n        priority\n        category (if provided)\n        due_date (if provided)\n        completed (default false for new task)\n"
+      },
+      {
+        "id": "handleCreateTask_function_frontend_src_App_tsx",
+        "name": "handleCreateTask",
+        "file_path": "frontend/src/App.tsx",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Handles the submission of a new task from TaskForm, calls the API to create the task, reloads the task list, and closes the form.",
+        "pseudo_code": "When called with taskData:\n    Try:\n        Call api.createTask(taskData)\n        Reload tasks from backend\n        Close the TaskForm modal\n    Catch error:\n        Show alert 'Failed to create task'\n"
+      },
+      {
+        "id": "api_createTask_function_frontend_src_api_ts",
+        "name": "api.createTask",
+        "file_path": "frontend/src/api.ts",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Sends a POST request to the backend /tasks endpoint with the new task data.",
+        "pseudo_code": "Send POST request to `${API_URL}/tasks` with JSON body containing task data\nIf response is not OK:\n    Throw error\nReturn the created task from the response\n"
+      },
+      {
+        "id": "create_task_endpoint_backend_main_py",
+        "name": "create_task",
+        "file_path": "backend/main.py",
+        "type": "endpoint",
+        "How_is_it_connected_to_implementation": "API endpoint that receives the new task data, validates it, and passes it to the database layer to be saved.",
+        "pseudo_code": "On POST /tasks with TaskCreate payload:\n    Call database.add_task(task)\n    Return the created Task\n"
+      },
+      {
+        "id": "add_task_function_backend_database_py",
+        "name": "add_task",
+        "file_path": "backend/database.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Creates a new Task object with a unique ID, saves it to the persistent storage, and returns it.",
+        "pseudo_code": "Get current list of tasks\nCreate new Task with unique id and fields from TaskCreate\nAppend new Task to tasks list\nSave updated tasks list to file\nReturn new Task\n"
+      }
+    ],
+    "missing_implementations": []
   },
   "task_editing": {
-    "implementation": [],
-    "missing_implementations": [
-      "Allows the user to edit the title, description, and priority of an existing task.",
-      "Only title, description, and priority can be edited."
-    ]
-  },
-  "drag_and_drop_reordering": {
-    "implementation": [],
-    "missing_implementations": [
-      "Allows the user to reorder tasks using drag-and-drop."
-    ]
+    "implementation": [
+      {
+        "id": "TaskItem_onEdit_button",
+        "name": "onEdit (Edit button in TaskItem component)",
+        "file_path": "frontend/src/components/TaskItem.tsx",
+        "type": "component",
+        "How_is_it_connected_to_implementation": "The Edit button in the TaskItem component triggers the onEdit callback, passing the current task to the parent component. This is the user's entry point for editing an existing task.",
+        "pseudo_code": "When the Edit button is clicked:\n    Call onEdit(task) with the current task as argument"
+      },
+      {
+        "id": "App_openEdit_function",
+        "name": "openEdit",
+        "file_path": "frontend/src/App.tsx",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "The openEdit function in App receives the task from TaskItem's onEdit, sets it as the editingTask, and opens the TaskForm modal for editing.",
+        "pseudo_code": "function openEdit(task):\n    set editingTask to task\n    set isFormOpen to true"
+      },
+      {
+        "id": "App_TaskForm_component_usage",
+        "name": "TaskForm (with initialTask and onSubmit)",
+        "file_path": "frontend/src/App.tsx",
+        "type": "component",
+        "How_is_it_connected_to_implementation": "When editingTask is set, TaskForm is rendered with initialTask and onSubmit set to handleUpdateTask. This displays the form pre-filled with the task's details for editing.",
+        "pseudo_code": "If isFormOpen is true:\n    Render TaskForm with:\n        initialTask = editingTask\n        onSubmit = handleUpdateTask\n        onCancel = function to close form and clear editingTask"
+      },
+      {
+        "id": "App_handleUpdateTask_function",
+        "name": "handleUpdateTask",
+        "file_path": "frontend/src/App.tsx",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "handleUpdateTask is called when the TaskForm is submitted in edit mode. It calls the API to update the task, reloads the task list, and closes the form.",
+        "pseudo_code": "function handleUpdateTask(taskData):\n    If editingTask is null:\n        return\n    Try:\n        Call api.updateTask(editingTask.id, taskData)\n        Reload tasks\n        Clear editingTask\n        Close form\n    Catch error:\n        Show error alert"
+      },
+      {
+        "id": "api_updateTask_function",
+        "name": "api.updateTask",
+        "file_path": "frontend/src/api.ts",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "api.updateTask sends a PUT request to the backend to update the task with the given id and new data.",
+        "pseudo_code": "async function updateTask(id, task):\n    Send PUT request to /tasks/{id} with task data\n    If response is not OK:\n        Throw error\n    Return updated task from response"
+      }
+    ],
+    "missing_implementations": []
   },
   "task_deletion": {
     "implementation": [
@@ -24,41 +95,17 @@
         "id": "TaskItem_handleDelete",
         "name": "handleDelete",
         "file_path": "frontend/src/components/TaskItem.tsx",
-        "type": "component",
-        "How_is_it_connected_to_implementation": "UI button in TaskItem component triggers handleDelete, which confirms with the user and calls onDelete with the task id.",
-        "pseudo_code": "When the Delete button is clicked:\n    Show a confirmation dialog to the user\n    IF user confirms deletion:\n        Call onDelete with the task's id"
+        "type": "function",
+        "How_is_it_connected_to_implementation": "This function is triggered when the user clicks the Delete button for a task. It shows a confirmation prompt using window.confirm. If the user confirms, it calls the onDelete prop with the task id.",
+        "pseudo_code": "function handleDelete():\n    IF user confirms deletion (window.confirm)\n        THEN call onDelete(task.id)"
       },
       {
         "id": "App_handleDeleteTask",
         "name": "handleDeleteTask",
         "file_path": "frontend/src/App.tsx",
         "type": "function",
-        "How_is_it_connected_to_implementation": "Passed as onDelete prop to TaskItem. Calls api.deleteTask to request backend deletion, then updates local state.",
-        "pseudo_code": "Function handleDeleteTask(id):\n    TRY\n        Call api.deleteTask(id)\n        Remove the task with the given id from the tasks state\n    CATCH error\n        Show an alert: 'Failed to delete task'"
-      },
-      {
-        "id": "api_deleteTask",
-        "name": "deleteTask",
-        "file_path": "frontend/src/api.ts",
-        "type": "function",
-        "How_is_it_connected_to_implementation": "Makes HTTP DELETE request to backend endpoint to delete the task.",
-        "pseudo_code": "Function deleteTask(id):\n    Send HTTP DELETE request to /tasks/{id}\n    IF response is not OK:\n        Throw an error 'Failed to delete task'"
-      },
-      {
-        "id": "backend_delete_task_endpoint",
-        "name": "delete_task",
-        "file_path": "backend/main.py",
-        "type": "endpoint",
-        "How_is_it_connected_to_implementation": "FastAPI endpoint for DELETE /tasks/{task_id}. Calls database.delete_task and returns result.",
-        "pseudo_code": "Endpoint DELETE /tasks/{task_id}:\n    Call database.delete_task(task_id)\n    IF deletion unsuccessful:\n        Raise HTTP 404 'Task not found'\n    ELSE\n        Return success message"
-      },
-      {
-        "id": "database_delete_task",
-        "name": "delete_task",
-        "file_path": "backend/database.py",
-        "type": "function",
-        "How_is_it_connected_to_implementation": "Deletes the task from the persistent storage (tasks.json) if it exists.",
-        "pseudo_code": "Function delete_task(task_id):\n    Load all tasks\n    Store initial number of tasks\n    Remove the task with the given id from the list\n    IF number of tasks decreased:\n        Save updated tasks list\n        Return True\n    ELSE\n        Return False"
+        "How_is_it_connected_to_implementation": "This function is passed as the onDelete prop to TaskItem. When called, it calls the API to delete the task and updates the local state to remove the task from the list.",
+        "pseudo_code": "async function handleDeleteTask(id):\n    TRY\n        await api.deleteTask(id)\n        setTasks(tasks without the deleted task)\n    CATCH error\n        alert('Failed to delete task')"
       }
     ],
     "missing_implementations": []
@@ -70,8 +117,8 @@
         "name": "TaskItem (onToggleComplete)",
         "file_path": "frontend/src/components/TaskItem.tsx",
         "type": "component",
-        "How_is_it_connected_to_implementation": "The TaskItem component renders a button for each task that allows the user to mark it as completed or pending. When the button is clicked, it calls the onToggleComplete callback with the task as argument.",
-        "pseudo_code": "When the 'Done' or 'Undo' button is clicked:\n    Call onToggleComplete(task)\n    Button label and style depend on task.completed:\n        If completed: show 'Undo', ghost style, title 'Mark as pending'\n        If not completed: show 'Done', primary style, title 'Mark as completed'"
+        "How_is_it_connected_to_implementation": "The TaskItem component renders each task and provides a button to mark it as completed or pending. When the button is clicked, it calls the onToggleComplete callback with the task object.",
+        "pseudo_code": "When the user clicks the 'Done' or 'Undo' button:\n    Call onToggleComplete(task)\n    // The button label and tooltip change based on task.completed"
       },
       {
         "id": "App_handleToggleComplete",
@@ -79,7 +126,7 @@
         "file_path": "frontend/src/App.tsx",
         "type": "function",
         "How_is_it_connected_to_implementation": "This function is passed as the onToggleComplete prop to TaskItem. It toggles the completed status of the task by calling the API to update the task, then reloads the task list.",
-        "pseudo_code": "Function handleToggleComplete(task):\n    Try:\n        Call api.updateTask(task.id, {...task, completed: !task.completed})\n        Reload tasks from backend\n    Catch error:\n        Show alert 'Failed to update task status'"
+        "pseudo_code": "Function handleToggleComplete(task):\n    Try:\n        Call api.updateTask(task.id, {...task, completed: !task.completed})\n        Reload the task list\n    Catch error:\n        Show alert 'Failed to update task status'"
       },
       {
         "id": "api_updateTask",
@@ -87,150 +134,206 @@
         "file_path": "frontend/src/api.ts",
         "type": "function",
         "How_is_it_connected_to_implementation": "This function sends a PUT request to the backend to update the task, including its completed status.",
-        "pseudo_code": "Function updateTask(id, task):\n    Send PUT request to /tasks/{id} with updated task data (including completed field)\n    If response is not OK:\n        Throw error\n    Return updated task from response"
+        "pseudo_code": "Function updateTask(id, task):\n    Send PUT request to /tasks/{id} with updated task data\n    If response is not OK:\n        Throw error\n    Return updated task from response"
       },
       {
         "id": "backend_update_task_endpoint",
-        "name": "update_task",
+        "name": "update_task (FastAPI endpoint)",
         "file_path": "backend/main.py",
         "type": "endpoint",
-        "How_is_it_connected_to_implementation": "This FastAPI endpoint receives the PUT request to update a task, calls the database layer to update the task, and returns the updated task.",
-        "pseudo_code": "Endpoint PUT /tasks/{task_id}:\n    Call database.update_task(task_id, task)\n    If updated_task is None:\n        Raise 404 error\n    Return updated_task"
+        "How_is_it_connected_to_implementation": "This is the backend API endpoint that receives the update request. It calls the database layer to update the task and returns the updated task.",
+        "pseudo_code": "Endpoint PUT /tasks/{task_id}:\n    Call database.update_task(task_id, task)\n    If no task found:\n        Raise 404 error\n    Return updated task"
       },
       {
         "id": "database_update_task",
         "name": "update_task",
         "file_path": "backend/database.py",
         "type": "function",
-        "How_is_it_connected_to_implementation": "This function updates the task in the database (tasks.json), including the completed field, and saves the updated list.",
-        "pseudo_code": "Function update_task(task_id, task_update):\n    tasks = get_tasks()\n    For each task in tasks:\n        If task.id == task_id:\n            updated_task = Task(id=task_id, **task_update.model_dump())\n            Replace task with updated_task\n            save_tasks(tasks)\n            Return updated_task\n    Return None"
+        "How_is_it_connected_to_implementation": "This function updates the task in the persistent storage (tasks.json). It replaces the task with the new data, including the completed status.",
+        "pseudo_code": "Function update_task(task_id, task_update):\n    Load all tasks\n    For each task in tasks:\n        If task.id == task_id:\n            Replace with updated task (including completed field)\n            Save all tasks\n            Return updated task\n    If not found:\n        Return None"
       }
     ],
     "missing_implementations": []
   },
   "task_categorization": {
+    "implementation": [],
+    "missing_implementations": [
+      "Allows the user to assign categories to tasks (e.g., Work, Personal, Study)."
+    ]
+  },
+  "task_filtering": {
     "implementation": [
       {
-        "id": "backend.models.Category_enum",
-        "name": "Category (Enum)",
-        "file_path": "backend/models.py",
-        "type": "function",
-        "How_is_it_connected_to_implementation": "Defines the allowed categories ('Work', 'Personal', 'Study') for tasks, forming the basis for categorization.",
-        "pseudo_code": "Define an enumeration called Category\n  Members:\n    - work: 'Work'\n    - personal: 'Personal'\n    - study: 'Study'"
-      },
-      {
-        "id": "backend.models.TaskBase_model",
-        "name": "TaskBase (Pydantic Model)",
-        "file_path": "backend/models.py",
-        "type": "function",
-        "How_is_it_connected_to_implementation": "Includes the 'category' field in the base model for tasks, allowing tasks to be assigned a category.",
-        "pseudo_code": "Define a TaskBase model with fields:\n  - title: string\n  - description: optional string\n  - priority: Priority enum\n  - category: optional Category enum\n  - due_date: optional date\n  - completed: boolean"
-      },
-      {
-        "id": "frontend.api.Task_interface",
-        "name": "Task (TypeScript Interface)",
-        "file_path": "frontend/src/api.ts",
-        "type": "function",
-        "How_is_it_connected_to_implementation": "Defines the 'category' property for tasks in the frontend, ensuring category data is handled in the UI and API calls.",
-        "pseudo_code": "Define Task interface with fields:\n  - id: string\n  - title: string\n  - description?: string\n  - priority: 'Low' | 'Medium' | 'High'\n  - category?: 'Work' | 'Personal' | 'Study'\n  - due_date?: string\n  - completed: boolean"
-      },
-      {
-        "id": "frontend.api.TaskCreate_interface",
-        "name": "TaskCreate (TypeScript Interface)",
-        "file_path": "frontend/src/api.ts",
-        "type": "function",
-        "How_is_it_connected_to_implementation": "Defines the 'category' property for new/updated tasks sent to the backend, enabling category assignment during creation or update.",
-        "pseudo_code": "Define TaskCreate interface with fields:\n  - title: string\n  - description?: string\n  - priority: 'Low' | 'Medium' | 'High'\n  - category?: 'Work' | 'Personal' | 'Study'\n  - due_date?: string\n  - completed: boolean"
-      },
-      {
-        "id": "frontend.components.TaskForm_component",
-        "name": "TaskForm",
-        "file_path": "frontend/src/components/TaskForm.tsx",
+        "id": "App_component",
+        "name": "App",
+        "file_path": "frontend/src/App.tsx",
         "type": "component",
-        "How_is_it_connected_to_implementation": "UI form for creating/editing tasks, includes a dropdown to select a category and passes the selected category to the backend via onSubmit.",
-        "pseudo_code": "Render a form for task creation/editing\n  - Input fields for title, description, priority, category, due date\n  - Category dropdown with options: None, Work, Personal, Study\n  - On submit:\n      - Collect form values\n      - If category is empty, set as undefined\n      - Call onSubmit with task data including category"
+        "How_is_it_connected_to_implementation": "Main component that manages the state for tasks, filter status, and renders the UI for filtering tasks by status. It holds the filterStatus state, provides the dropdown for selecting status, and computes filteredTasks based on the selected status.",
+        "pseudo_code": "Initialize filterStatus state as 'all'\nWhen user selects a status from the dropdown, update filterStatus\nCompute filteredTasks:\n    For each task in tasks:\n        If filterStatus is 'completed', include only completed tasks\n        If filterStatus is 'pending', include only pending tasks\n        If filterStatus is 'all', include all tasks\nRender the filteredTasks list"
       },
       {
-        "id": "frontend.components.TaskItem_component",
+        "id": "filteredTasks_logic",
+        "name": "filteredTasks",
+        "file_path": "frontend/src/App.tsx",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Inline filtering logic in App component that applies the filterStatus to the list of tasks. This is the core logic that implements the filtering requirement.",
+        "pseudo_code": "filteredTasks = tasks.filter(task =>\n    if filterStatus == 'completed':\n        return task.completed\n    else if filterStatus == 'pending':\n        return not task.completed\n    else:\n        return true\n)"
+      },
+      {
+        "id": "filter_dropdown",
+        "name": "Status Filter Dropdown",
+        "file_path": "frontend/src/App.tsx",
+        "type": "component",
+        "How_is_it_connected_to_implementation": "The <select> dropdown in the App component UI allows the user to choose between All, Pending, or Completed. Changing this updates filterStatus, which triggers the filtering logic.",
+        "pseudo_code": "Render a <select> element with options:\n    - All Status (value='all')\n    - Pending (value='pending')\n    - Completed (value='completed')\nOn change, set filterStatus to the selected value"
+      },
+      {
+        "id": "TaskItem_component",
         "name": "TaskItem",
         "file_path": "frontend/src/components/TaskItem.tsx",
         "type": "component",
-        "How_is_it_connected_to_implementation": "Displays the category of each task as a badge in the task list UI, visually representing the assigned category.",
-        "pseudo_code": "Render a task card\n  - Show task title, priority badge\n  - If task has a category:\n      - Display category as a badge"
+        "How_is_it_connected_to_implementation": "Displays each task, including its completed status. The button allows toggling between completed and pending, which can affect the filter if the status changes.",
+        "pseudo_code": "For each task in filteredTasks:\n    Render task details\n    Show button:\n        If task.completed is true:\n            Button says 'Undo' (mark as pending)\n        Else:\n            Button says 'Done' (mark as completed)\n    On button click, call onToggleComplete"
       },
       {
-        "id": "frontend.api.createTask_endpoint",
-        "name": "api.createTask",
-        "file_path": "frontend/src/api.ts",
-        "type": "endpoint",
-        "How_is_it_connected_to_implementation": "Sends a POST request to the backend to create a new task, including the category field in the request body.",
-        "pseudo_code": "Function createTask(task: TaskCreate)\n  - Send POST request to /tasks with task data (including category)\n  - Return created task"
-      },
-      {
-        "id": "frontend.api.updateTask_endpoint",
-        "name": "api.updateTask",
-        "file_path": "frontend/src/api.ts",
-        "type": "endpoint",
-        "How_is_it_connected_to_implementation": "Sends a PUT request to update an existing task, including the category field in the request body.",
-        "pseudo_code": "Function updateTask(id: string, task: TaskCreate)\n  - Send PUT request to /tasks/{id} with task data (including category)\n  - Return updated task"
-      },
-      {
-        "id": "backend.test_api.test_api_function",
-        "name": "test_api",
-        "file_path": "backend/test_api.py",
+        "id": "handleToggleComplete_function",
+        "name": "handleToggleComplete",
+        "file_path": "frontend/src/App.tsx",
         "type": "function",
-        "How_is_it_connected_to_implementation": "Tests the API by creating a task with a category, verifying that category assignment works end-to-end.",
-        "pseudo_code": "Function test_api()\n  - Create a task with category 'Work'\n  - POST to /tasks\n  - GET /tasks to verify task exists\n  - PUT /tasks/{id} to update task\n  - DELETE /tasks/{id} to remove task"
+        "How_is_it_connected_to_implementation": "Handles toggling a task's completed status. When a task is marked as completed or pending, it updates the backend and reloads tasks, which may change the filtered list.",
+        "pseudo_code": "When called with a task:\n    Send update to backend to toggle task.completed\n    Reload tasks from backend\n    (filteredTasks will update based on new status)"
       }
     ],
     "missing_implementations": []
-  },
-  "task_filtering": {
-    "implementation": [],
-    "missing_implementations": [
-      "Allows the user to filter tasks by their status: All, Completed, or Pending."
-    ]
   },
   "task_sorting": {
     "implementation": [
       {
-        "id": "App.filteredTasks_sorting",
-        "name": "filteredTasks (sorting logic in App component)",
+        "id": "App_filteredTasks_sort",
+        "name": "filteredTasks (sort logic in App component)",
         "file_path": "frontend/src/App.tsx",
         "type": "component",
-        "How_is_it_connected_to_implementation": "This logic sorts the list of tasks by either due date or priority, based on the user's selection. It is the core implementation of the sorting requirement.",
-        "pseudo_code": "Let filteredTasks = tasks\n    Filter tasks by status (all, completed, pending)\n    Sort tasks:\n        IF sortOption is 'dueDate':\n            IF a.due_date is missing, place after b\n            IF b.due_date is missing, place before a\n            Otherwise, compare new Date(a.due_date) and new Date(b.due_date)\n        ELSE IF sortOption is 'priority':\n            Map priorities to numbers (High:0, Medium:1, Low:2)\n            Compare mapped values for a and b\n        ELSE:\n            Return 0 (no sorting)"
+        "How_is_it_connected_to_implementation": "Implements the sorting of tasks by due date or priority based on the user's selection. The sort logic is applied to the list of tasks before rendering.",
+        "pseudo_code": "For each task in tasks:\n    If filterStatus is 'completed', include only completed tasks\n    If filterStatus is 'pending', include only pending tasks\n    Otherwise, include all tasks\nSort the filtered tasks:\n    If sortOption is 'dueDate':\n        Place tasks without due_date at the end\n        Otherwise, sort by ascending due_date\n    If sortOption is 'priority':\n        Map priorities to numbers (High=0, Medium=1, Low=2)\n        Sort by ascending mapped value\nReturn the sorted and filtered list"
       },
       {
-        "id": "App.sortOption_select",
+        "id": "App_sortOption_select",
         "name": "Sort Option Select Dropdown",
         "file_path": "frontend/src/App.tsx",
         "type": "component",
-        "How_is_it_connected_to_implementation": "This select dropdown allows the user to choose the sorting method (by due date or by priority), which updates the sortOption state and triggers the sorting logic.",
-        "pseudo_code": "Render a <select> element with options:\n    - 'Sort by Due Date' (value: 'dueDate')\n    - 'Sort by Priority' (value: 'priority')\nOn change, set sortOption state to the selected value"
+        "How_is_it_connected_to_implementation": "Provides the UI for the user to select the sorting method (by due date or priority). Changing the selection updates the sortOption state, which triggers the sorting logic.",
+        "pseudo_code": "Render a select dropdown with options:\n    - 'Sort by Due Date'\n    - 'Sort by Priority'\nWhen the user selects an option:\n    Update the sortOption state\n    This causes the filteredTasks to be re-sorted accordingly"
       }
     ],
     "missing_implementations": []
   },
-  "task_search": {
+  "responsive_design": {
+    "implementation": [],
+    "missing_implementations": []
+  },
+  "completed_task_indicator": {
     "implementation": [
       {
-        "id": "App_function_frontend_src_App_tsx",
+        "id": "component_TaskItem",
+        "name": "TaskItem",
+        "file_path": "frontend/src/components/TaskItem.tsx",
+        "type": "component",
+        "How_is_it_connected_to_implementation": "This React component visually distinguishes completed tasks by applying a faded opacity to the card, a line-through style to the task title, and toggling the button label and style between 'Done' and 'Undo' based on the task's completed status.",
+        "pseudo_code": "For each task:\n    If task.completed is true:\n        - Set card opacity to 0.7\n        - Add 'opacity-50' class to card\n        - Render task title with line-through text decoration\n        - Set button label to 'Undo' and style to 'btn-ghost'\n        - Set button title to 'Mark as pending'\n    Else:\n        - Set card opacity to 1\n        - Render task title with normal text\n        - Set button label to 'Done' and style to 'btn-primary'\n        - Set button title to 'Mark as completed'\n    Render priority and category badges\n    Render description and due date if present\n    Provide buttons for toggling completion, editing, and deleting"
+      }
+    ],
+    "missing_implementations": []
+  },
+  "empty_state_message": {
+    "implementation": [],
+    "missing_implementations": []
+  },
+  "task_persistence": {
+    "implementation": [
+      {
+        "id": "App_component",
         "name": "App",
         "file_path": "frontend/src/App.tsx",
         "type": "component",
-        "How_is_it_connected_to_implementation": "This is the main React component responsible for loading, filtering (by status), sorting, and displaying tasks. It contains the logic for filtering tasks by status and sorting, but does not implement searching tasks by keyword.",
-        "pseudo_code": "On mount:\n  Call loadTasks()\n\nloadTasks():\n  Fetch all tasks from the backend\n  Set tasks state\n\nfilteredTasks = tasks\n  Filter by status (completed/pending/all)\n  Sort by due date or priority\n\nRender:\n  - Filter and sort controls\n  - List of filteredTasks\n  - Task form for create/edit\n  - Loading and empty states"
+        "How_is_it_connected_to_implementation": "Main React component that loads tasks on mount, displays them, and triggers CRUD operations. It ensures tasks are fetched from the backend (which persists them) after page refresh.",
+        "pseudo_code": "On component mount:\n  Call loadTasks()\n\nfunction loadTasks():\n  Call api.getTasks()\n  Set tasks state with fetched data\n\nfunction handleCreateTask(taskData):\n  Call api.createTask(taskData)\n  Reload tasks\n\nfunction handleUpdateTask(taskData):\n  Call api.updateTask(editingTask.id, taskData)\n  Reload tasks\n\nfunction handleDeleteTask(id):\n  Call api.deleteTask(id)\n  Remove task from state\n\nfunction handleToggleComplete(task):\n  Call api.updateTask(task.id, {...task, completed: !task.completed})\n  Reload tasks"
+      },
+      {
+        "id": "api_getTasks_function",
+        "name": "api.getTasks",
+        "file_path": "frontend/src/api.ts",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Fetches the list of tasks from the backend API, which is called on page load and after any CRUD operation to ensure the UI reflects persisted data.",
+        "pseudo_code": "function getTasks():\n  Send GET request to /tasks endpoint\n  If response is OK:\n    Return parsed JSON data (list of tasks)\n  Else:\n    Throw error"
+      },
+      {
+        "id": "api_createTask_function",
+        "name": "api.createTask",
+        "file_path": "frontend/src/api.ts",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Sends a new task to the backend API to be persisted in the database. Called when a new task is created.",
+        "pseudo_code": "function createTask(task):\n  Send POST request to /tasks with task data\n  If response is OK:\n    Return created task\n  Else:\n    Throw error"
+      },
+      {
+        "id": "api_updateTask_function",
+        "name": "api.updateTask",
+        "file_path": "frontend/src/api.ts",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Sends updated task data to the backend API to persist changes. Used for editing and toggling completion.",
+        "pseudo_code": "function updateTask(id, task):\n  Send PUT request to /tasks/{id} with updated task data\n  If response is OK:\n    Return updated task\n  Else:\n    Throw error"
+      },
+      {
+        "id": "api_deleteTask_function",
+        "name": "api.deleteTask",
+        "file_path": "frontend/src/api.ts",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Sends a DELETE request to the backend API to remove a task from persistent storage.",
+        "pseudo_code": "function deleteTask(id):\n  Send DELETE request to /tasks/{id}\n  If response is OK:\n    Return nothing\n  Else:\n    Throw error"
       }
     ],
     "missing_implementations": [
-      "There is no implementation for searching tasks by keyword. The UI and logic for filtering tasks by a keyword (e.g., in the title or description) is missing."
+      "Tasks must be stored using browser local storage"
+    ]
+  },
+  "task_search": {
+    "implementation": [],
+    "missing_implementations": [
+      "No function or endpoint currently implements searching tasks by keyword. The /tasks endpoint (read_tasks) returns all tasks without filtering by keyword. There is no logic in the backend to filter tasks by a keyword in the title, description, or any other field."
+    ]
+  },
+  "theme_toggle": {
+    "implementation": [],
+    "missing_implementations": [
+      "Allows the user to toggle between dark mode and light mode."
     ]
   },
   "task_statistics": {
-    "implementation": [],
+    "implementation": [
+      {
+        "id": "endpoint_get_tasks",
+        "name": "read_tasks",
+        "file_path": "backend/main.py",
+        "type": "endpoint",
+        "How_is_it_connected_to_implementation": "This endpoint provides the list of all tasks. The statistics (total, completed, pending) can be derived from this list by the client or another service.",
+        "pseudo_code": "Define GET /tasks endpoint\n    Call database.get_tasks()\n    Return the list of all tasks"
+      },
+      {
+        "id": "function_get_tasks",
+        "name": "get_tasks",
+        "file_path": "backend/database.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "This function loads all tasks from the persistent storage and returns them as a list. The statistics can be computed from this list.",
+        "pseudo_code": "If tasks.json does not exist:\n    Return empty list\nOpen tasks.json\nTry to load JSON data\n    For each item in data:\n        Convert to Task object\n    Return list of Task objects\nIf JSON decode error:\n    Return empty list"
+      }
+    ],
     "missing_implementations": [
       "Statistics must include total tasks, completed tasks, and pending tasks."
+    ]
+  },
+  "drag_and_drop_reordering": {
+    "implementation": [],
+    "missing_implementations": [
+      "No drag-and-drop or task reordering logic is implemented in the codebase. There are no functions, components, or endpoints that handle drag events, drop events, or reordering of tasks. The UI components (TaskForm, TaskItem) do not contain any drag-and-drop handlers or logic, nor do they use any drag-and-drop libraries such as react-beautiful-dnd or react-dnd. The requirement for drag-and-drop task reordering is not implemented."
     ]
   }
 }
