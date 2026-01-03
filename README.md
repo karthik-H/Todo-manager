@@ -3,20 +3,17 @@ Personal Todo manager
 
 ## Functional Requirements
 
-### Add new tasks with:
+### 1. Task Management
+- Add new tasks with:
   - Title
   - Description
   - Priority
   - Due date
+- Edit existing tasks
+- Delete tasks
+- Mark tasks as **Completed** or **Pending**
 
-### Edit existing tasks
-    - allow edit of title description and priority
-    - Drag-and-drop task reordering
-- 
-### Delete tasks
-- Mark tasks as **Completed** or **Pending** 
-
-### Read task
+### 2. Task Organization
 - Categorize tasks (e.g., Work, Personal, Study)
 - Filter tasks by status:
   - All
@@ -25,9 +22,23 @@ Personal Todo manager
 - Sort tasks by:
   - Due date
   - Priority
-- Search tasks by keyword
 
-## Task statistics:
+### 3. User Experience
+- Responsive design for desktop and mobile devices
+- Clear visual indicators for completed tasks
+- Confirmation prompt before deleting tasks
+- Display an empty-state message when no tasks exist
+
+### 4. Data Persistence
+- Store tasks using:
+  - Browser local storage **or**
+  - Backend database
+- Ensure tasks persist after page refresh
+
+## Additional Enhancements
+- Search tasks by keyword
+- Dark mode / Light mode toggle
+- Task statistics:
   - Total tasks
   - Completed tasks
   - Pending tasks
