@@ -1,0 +1,120 @@
+{
+  "breakdowns": [
+    {
+      "id": "task_addition",
+      "header": "Add New Task",
+      "description": "Allows the user to add a new task with a title, description, priority, and due date.",
+      "conditions": [
+        "Task must include title, description, priority, and due date."
+      ],
+      "change_status": "new"
+    },
+    {
+      "id": "task_editing",
+      "header": "Edit Existing Task",
+      "description": "Allows the user to edit the details of an existing task.",
+      "conditions": [],
+      "change_status": "new"
+    },
+    {
+      "id": "task_deletion",
+      "header": "Delete Task",
+      "description": "Allows the user to delete a task.",
+      "conditions": [
+        "Confirmation prompt must be shown before deleting a task."
+      ],
+      "change_status": "new"
+    },
+    {
+      "id": "task_status_update",
+      "header": "Mark Task as Completed or Pending",
+      "description": "Allows the user to mark a task as either completed or pending.",
+      "conditions": [],
+      "change_status": "new"
+    },
+    {
+      "id": "task_categorization",
+      "header": "Categorize Tasks",
+      "description": "Allows the user to assign categories to tasks (e.g., Work, Personal, Study).",
+      "conditions": [],
+      "change_status": "new"
+    },
+    {
+      "id": "task_filtering",
+      "header": "Filter Tasks by Status",
+      "description": "Allows the user to filter tasks by their status: All, Completed, or Pending.",
+      "conditions": [],
+      "change_status": "new"
+    },
+    {
+      "id": "task_sorting",
+      "header": "Sort Tasks",
+      "description": "Allows the user to sort tasks by due date or priority.",
+      "conditions": [],
+      "change_status": "new"
+    },
+    {
+      "id": "responsive_design",
+      "header": "Responsive Design",
+      "description": "Ensures the application is responsive and usable on both desktop and mobile devices.",
+      "conditions": [],
+      "change_status": "new"
+    },
+    {
+      "id": "completed_task_indicator",
+      "header": "Visual Indicators for Completed Tasks",
+      "description": "Displays clear visual indicators to distinguish completed tasks.",
+      "conditions": [],
+      "change_status": "new"
+    },
+    {
+      "id": "empty_state_message",
+      "header": "Display Empty-State Message",
+      "description": "Displays a message when no tasks exist.",
+      "conditions": [],
+      "change_status": "new"
+    },
+    {
+      "id": "task_persistence",
+      "header": "Persist Tasks",
+      "description": "Stores tasks using browser local storage or a backend database and ensures tasks persist after a page refresh.",
+      "conditions": [
+        "Tasks must persist after page refresh.",
+        "Tasks must be stored using browser local storage or backend database."
+      ],
+      "change_status": "new"
+    },
+    {
+      "id": "task_search",
+      "header": "Search Tasks by Keyword",
+      "description": "Allows the user to search for tasks using a keyword.",
+      "conditions": [],
+      "change_status": "new"
+    },
+    {
+      "id": "theme_toggle",
+      "header": "Dark Mode / Light Mode Toggle",
+      "description": "Allows the user to toggle between dark mode and light mode.",
+      "conditions": [],
+      "change_status": "new"
+    },
+    {
+      "id": "task_statistics",
+      "header": "Task Statistics",
+      "description": "Displays statistics for total tasks, completed tasks, and pending tasks.",
+      "conditions": [
+        "Statistics must include total tasks, completed tasks, and pending tasks."
+      ],
+      "change_status": "new"
+    },
+    {
+      "id": "drag_and_drop_reordering",
+      "header": "Drag-and-Drop Task Reordering",
+      "description": "Allows the user to reorder tasks using drag-and-drop.",
+      "conditions": [],
+      "change_status": "new"
+    }
+  ],
+  "last_updated": "2026-01-03T07:23:03.758717",
+  "version": "1.0"
+}
