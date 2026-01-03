@@ -1,0 +1,1468 @@
+{
+  "function": [
+    {
+      "implementation_id": "2",
+      "test_cases": [
+        {
+          "id": "add_task_valid_input",
+          "name": "Add Task with Valid Input",
+          "description": "Verify that a new task is added successfully when all required fields are provided with valid values.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains a valid list of tasks; input includes unique title, description, priority, and due date.",
+            "when": "add_task is called with valid parameters.",
+            "then": "A new task with a unique id is appended to tasks.json and returned."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_empty_tasks_file",
+          "name": "Add Task When tasks.json is Empty",
+          "description": "Verify that a task can be added when tasks.json is empty or contains an empty list.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json is empty or contains [].",
+            "when": "add_task is called with valid parameters.",
+            "then": "A new task is created with id=1 (or appropriate starting id), saved, and returned."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_missing_title",
+          "name": "Add Task with Missing Title",
+          "description": "Verify that the function handles missing title field appropriately.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains valid tasks; input is missing the title field.",
+            "when": "add_task is called.",
+            "then": "An error is raised or a validation error is returned indicating title is required."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_missing_description",
+          "name": "Add Task with Missing Description",
+          "description": "Verify that the function handles missing description field appropriately.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains valid tasks; input is missing the description field.",
+            "when": "add_task is called.",
+            "then": "An error is raised or a validation error is returned indicating description is required."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_missing_priority",
+          "name": "Add Task with Missing Priority",
+          "description": "Verify that the function handles missing priority field appropriately.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains valid tasks; input is missing the priority field.",
+            "when": "add_task is called.",
+            "then": "An error is raised or a validation error is returned indicating priority is required."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_missing_due_date",
+          "name": "Add Task with Missing Due Date",
+          "description": "Verify that the function handles missing due date field appropriately.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains valid tasks; input is missing the due date field.",
+            "when": "add_task is called.",
+            "then": "An error is raised or a validation error is returned indicating due date is required."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_duplicate_title",
+          "name": "Add Task with Duplicate Title",
+          "description": "Verify behavior when adding a task with a title that already exists.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains a task with title 'Task A'; input uses title 'Task A'.",
+            "when": "add_task is called.",
+            "then": "An error is raised or the task is added (depending on business rules)."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_invalid_priority",
+          "name": "Add Task with Invalid Priority",
+          "description": "Verify that the function handles invalid priority values (e.g., out of allowed range or wrong type).",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains valid tasks; input uses priority='urgent' (string instead of expected int/enum).",
+            "when": "add_task is called.",
+            "then": "An error is raised or a validation error is returned."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_invalid_due_date_format",
+          "name": "Add Task with Invalid Due Date Format",
+          "description": "Verify that the function handles due date in an invalid format.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains valid tasks; input uses due_date='31-12-2026' (wrong format).",
+            "when": "add_task is called.",
+            "then": "An error is raised or a validation error is returned."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_large_title_description",
+          "name": "Add Task with Large Title and Description",
+          "description": "Verify that the function can handle very large title and description fields.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains valid tasks; input uses a very long title and description.",
+            "when": "add_task is called.",
+            "then": "Task is added successfully if within allowed limits, or an error is raised if limits are exceeded."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_tasks_file_missing",
+          "name": "Add Task When tasks.json is Missing",
+          "description": "Verify that the function can handle the case where tasks.json does not exist.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json file does not exist.",
+            "when": "add_task is called with valid parameters.",
+            "then": "tasks.json is created, the new task is added, and returned."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_tasks_file_corrupted",
+          "name": "Add Task When tasks.json is Corrupted",
+          "description": "Verify that the function handles a corrupted tasks.json file gracefully.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains invalid JSON.",
+            "when": "add_task is called.",
+            "then": "An error is raised indicating the file is corrupted."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_minimum_fields",
+          "name": "Add Task with Minimum Required Fields",
+          "description": "Verify that the function works when only the minimum required fields are provided.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains valid tasks; input provides only required fields.",
+            "when": "add_task is called.",
+            "then": "Task is added successfully."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_extra_fields",
+          "name": "Add Task with Extra Fields",
+          "description": "Verify that the function ignores or handles extra fields in the input.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains valid tasks; input includes extra fields not defined in the Task model.",
+            "when": "add_task is called.",
+            "then": "Task is added successfully, and extra fields are ignored or handled as per implementation."
+          },
+          "implementation_id": "2"
+        },
+        {
+          "id": "add_task_concurrent_adds",
+          "name": "Concurrent Add Task Operations",
+          "description": "Verify that concurrent calls to add_task do not result in duplicate ids or data loss.",
+          "type": "negative",
+          "test_setup": {
+            "given": "Multiple add_task calls are made simultaneously.",
+            "when": "add_task is called concurrently.",
+            "then": "All tasks are added with unique ids, or appropriate locking/error handling occurs."
+          },
+          "implementation_id": "2"
+        }
+      ]
+    },
+    {
+      "implementation_id": "4",
+      "test_cases": [
+        {
+          "id": "update_existing_task_success",
+          "name": "Update an existing task successfully",
+          "description": "Verify that updating an existing task with valid fields replaces the task and returns the updated Task object.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains a task with id=1; valid update fields (e.g., new title, description, priority, due date) are provided.",
+            "when": "update_task(task_id=1, updated_fields) is called.",
+            "then": "The task with id=1 is updated in tasks.json and the updated Task object is returned."
+          },
+          "implementation_id": "4"
+        },
+        {
+          "id": "update_nonexistent_task",
+          "name": "Attempt to update a non-existent task",
+          "description": "Verify that updating a task with an id not present in tasks.json returns None and does not modify the file.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains tasks with ids 1, 2, 3; update is attempted for task_id=999.",
+            "when": "update_task(task_id=999, updated_fields) is called.",
+            "then": "None is returned and tasks.json remains unchanged."
+          },
+          "implementation_id": "4"
+        },
+        {
+          "id": "update_task_partial_fields",
+          "name": "Update only some fields of an existing task",
+          "description": "Verify that updating only a subset of fields (e.g., just the title) leaves other fields unchanged.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains a task with id=2; only the title field is provided for update.",
+            "when": "update_task(task_id=2, updated_fields={'title': 'New Title'}) is called.",
+            "then": "The task with id=2 has its title updated, other fields remain unchanged, and the updated Task object is returned."
+          },
+          "implementation_id": "4"
+        },
+        {
+          "id": "update_task_empty_fields",
+          "name": "Update with empty fields",
+          "description": "Verify that providing an empty update (no fields to change) does not alter the task.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains a task with id=3; updated_fields is empty.",
+            "when": "update_task(task_id=3, updated_fields={}) is called.",
+            "then": "The task with id=3 remains unchanged and the original Task object is returned."
+          },
+          "implementation_id": "4"
+        },
+        {
+          "id": "update_task_invalid_field_type",
+          "name": "Update with invalid field type",
+          "description": "Verify that providing an invalid field type (e.g., priority as a string instead of int) is handled gracefully.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains a task with id=4; updated_fields={'priority': 'high'} (should be int).",
+            "when": "update_task(task_id=4, updated_fields={'priority': 'high'}) is called.",
+            "then": "The function raises a validation error or returns None, and tasks.json remains unchanged."
+          },
+          "implementation_id": "4"
+        },
+        {
+          "id": "update_task_to_duplicate_title",
+          "name": "Update task to a duplicate title",
+          "description": "Verify behavior when updating a task's title to one that already exists in another task (if uniqueness is enforced).",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains tasks with id=5 (title='Task A') and id=6 (title='Task B'); update id=6 to title='Task A'.",
+            "when": "update_task(task_id=6, updated_fields={'title': 'Task A'}) is called.",
+            "then": "If title uniqueness is enforced, the function returns None or raises an error; otherwise, both tasks have the same title."
+          },
+          "implementation_id": "4"
+        },
+        {
+          "id": "update_task_mark_completed",
+          "name": "Mark a task as completed",
+          "description": "Verify that updating the status field to 'Completed' correctly updates the task.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains a task with id=7, status='Pending'.",
+            "when": "update_task(task_id=7, updated_fields={'status': 'Completed'}) is called.",
+            "then": "The task with id=7 has status updated to 'Completed' and the updated Task object is returned."
+          },
+          "implementation_id": "4"
+        },
+        {
+          "id": "update_task_file_missing",
+          "name": "tasks.json file missing",
+          "description": "Verify that the function handles the case where tasks.json does not exist.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json file is missing from the filesystem.",
+            "when": "update_task(task_id=1, updated_fields) is called.",
+            "then": "The function returns None or raises a file not found error."
+          },
+          "implementation_id": "4"
+        },
+        {
+          "id": "update_task_file_corrupted",
+          "name": "tasks.json file is corrupted",
+          "description": "Verify that the function handles the case where tasks.json contains invalid JSON.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains invalid/corrupted JSON.",
+            "when": "update_task(task_id=1, updated_fields) is called.",
+            "then": "The function returns None or raises a JSON decode error."
+          },
+          "implementation_id": "4"
+        },
+        {
+          "id": "update_task_boundary_id",
+          "name": "Update task with boundary id value",
+          "description": "Verify that updating a task with a boundary id value (e.g., 0 or max int) is handled correctly.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains a task with id=0.",
+            "when": "update_task(task_id=0, updated_fields={'title': 'Boundary Update'}) is called.",
+            "then": "The task with id=0 is updated and the updated Task object is returned."
+          },
+          "implementation_id": "4"
+        },
+        {
+          "id": "update_task_no_tasks",
+          "name": "Update when no tasks exist",
+          "description": "Verify that updating a task when tasks.json is empty returns None.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json is an empty list [].",
+            "when": "update_task(task_id=1, updated_fields) is called.",
+            "then": "The function returns None and tasks.json remains unchanged."
+          },
+          "implementation_id": "4"
+        }
+      ]
+    },
+    {
+      "implementation_id": "6",
+      "test_cases": [
+        {
+          "id": "delete_existing_task_success",
+          "name": "Delete existing task successfully",
+          "description": "Deletes a task that exists in tasks.json and verifies it is removed and the function returns True.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains a task with id=1 and other tasks.",
+            "when": "delete_task(1) is called.",
+            "then": "The task with id=1 is removed from tasks.json and the function returns True."
+          },
+          "implementation_id": "6"
+        },
+        {
+          "id": "delete_nonexistent_task",
+          "name": "Attempt to delete a non-existent task",
+          "description": "Attempts to delete a task with an id not present in tasks.json and verifies the function returns False.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains tasks with ids 2, 3, 4.",
+            "when": "delete_task(1) is called.",
+            "then": "tasks.json remains unchanged and the function returns False."
+          },
+          "implementation_id": "6"
+        },
+        {
+          "id": "delete_task_from_empty_list",
+          "name": "Attempt to delete from an empty task list",
+          "description": "Attempts to delete a task when tasks.json is empty and verifies the function returns False.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json is an empty list [].",
+            "when": "delete_task(1) is called.",
+            "then": "tasks.json remains empty and the function returns False."
+          },
+          "implementation_id": "6"
+        },
+        {
+          "id": "delete_task_with_multiple_same_ids",
+          "name": "Delete when multiple tasks have the same id",
+          "description": "Deletes a task when multiple tasks have the same id and verifies only one is removed and the function returns True.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains two tasks with id=1 and other tasks.",
+            "when": "delete_task(1) is called.",
+            "then": "Only one task with id=1 is removed, the other remains, and the function returns True."
+          },
+          "implementation_id": "6"
+        },
+        {
+          "id": "delete_task_invalid_id_type",
+          "name": "Delete with invalid id type",
+          "description": "Attempts to delete a task with an invalid id type (e.g., string instead of int) and verifies the function returns False.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains tasks with integer ids.",
+            "when": "delete_task('abc') is called.",
+            "then": "tasks.json remains unchanged and the function returns False."
+          },
+          "implementation_id": "6"
+        },
+        {
+          "id": "delete_task_id_is_none",
+          "name": "Delete with None as id",
+          "description": "Attempts to delete a task with None as the id and verifies the function returns False.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains tasks with valid ids.",
+            "when": "delete_task(None) is called.",
+            "then": "tasks.json remains unchanged and the function returns False."
+          },
+          "implementation_id": "6"
+        },
+        {
+          "id": "delete_task_boundary_id_zero",
+          "name": "Delete task with id zero (boundary case)",
+          "description": "Attempts to delete a task with id=0 and verifies correct behavior.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains a task with id=0.",
+            "when": "delete_task(0) is called.",
+            "then": "The task with id=0 is removed and the function returns True."
+          },
+          "implementation_id": "6"
+        },
+        {
+          "id": "delete_task_boundary_id_negative",
+          "name": "Delete task with negative id (boundary case)",
+          "description": "Attempts to delete a task with a negative id and verifies correct behavior.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains a task with id=-1.",
+            "when": "delete_task(-1) is called.",
+            "then": "The task with id=-1 is removed and the function returns True."
+          },
+          "implementation_id": "6"
+        },
+        {
+          "id": "delete_task_file_missing",
+          "name": "Delete when tasks.json file is missing",
+          "description": "Attempts to delete a task when tasks.json does not exist and verifies the function returns False.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json file does not exist.",
+            "when": "delete_task(1) is called.",
+            "then": "No exception is raised, tasks.json remains missing, and the function returns False."
+          },
+          "implementation_id": "6"
+        },
+        {
+          "id": "delete_task_file_corrupted",
+          "name": "Delete when tasks.json is corrupted",
+          "description": "Attempts to delete a task when tasks.json contains invalid JSON and verifies error handling.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains invalid/corrupted JSON.",
+            "when": "delete_task(1) is called.",
+            "then": "An appropriate exception is raised or the function returns False, and tasks.json remains unchanged."
+          },
+          "implementation_id": "6"
+        },
+        {
+          "id": "delete_task_last_task",
+          "name": "Delete the last remaining task",
+          "description": "Deletes the only task in tasks.json and verifies the file is empty afterward.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks.json contains a single task with id=1.",
+            "when": "delete_task(1) is called.",
+            "then": "tasks.json becomes an empty list and the function returns True."
+          },
+          "implementation_id": "6"
+        },
+        {
+          "id": "delete_task_id_as_string_number",
+          "name": "Delete with id as string number",
+          "description": "Attempts to delete a task with id provided as a string representing a number and verifies correct behavior.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks.json contains a task with id=1 (integer).",
+            "when": "delete_task('1') is called.",
+            "then": "tasks.json remains unchanged and the function returns False."
+          },
+          "implementation_id": "6"
+        }
+      ]
+    },
+    {
+      "implementation_id": "7",
+      "test_cases": [
+        {
+          "id": "tc_create_task_minimal_required",
+          "name": "create_task_with_minimal_required_fields",
+          "description": "Create a Task with only the required 'title' field. All optional fields should take default values.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Input: { 'title': 'Buy groceries' }",
+            "when": "TaskCreate is instantiated",
+            "then": "Task is created with title='Buy groceries', description=None, priority=Medium, category=None, due_date=None, completed=False"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_all_fields",
+          "name": "create_task_with_all_fields",
+          "description": "Create a Task with all fields provided, including optional ones.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Input: { 'title': 'Read book', 'description': 'Read 50 pages', 'priority': 'High', 'category': 'Personal', 'due_date': '2026-01-10', 'completed': true }",
+            "when": "TaskCreate is instantiated",
+            "then": "Task is created with all fields set as provided"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_missing_title",
+          "name": "create_task_missing_required_title",
+          "description": "Attempt to create a Task without the required 'title' field.",
+          "type": "negative",
+          "test_setup": {
+            "given": "Input: { 'description': 'No title' }",
+            "when": "TaskCreate is instantiated",
+            "then": "Validation error is raised indicating 'title' is required"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_empty_title",
+          "name": "create_task_with_empty_title",
+          "description": "Attempt to create a Task with an empty string as the title.",
+          "type": "negative",
+          "test_setup": {
+            "given": "Input: { 'title': '' }",
+            "when": "TaskCreate is instantiated",
+            "then": "Validation error is raised for empty title (if enforced by model)"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_invalid_priority",
+          "name": "create_task_with_invalid_priority",
+          "description": "Attempt to create a Task with an invalid priority value.",
+          "type": "negative",
+          "test_setup": {
+            "given": "Input: { 'title': 'Test', 'priority': 'Urgent' }",
+            "when": "TaskCreate is instantiated",
+            "then": "Validation error is raised for invalid priority"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_invalid_due_date",
+          "name": "create_task_with_invalid_due_date",
+          "description": "Attempt to create a Task with an invalid due_date format.",
+          "type": "negative",
+          "test_setup": {
+            "given": "Input: { 'title': 'Test', 'due_date': 'not-a-date' }",
+            "when": "TaskCreate is instantiated",
+            "then": "Validation error is raised for due_date format"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_past_due_date",
+          "name": "create_task_with_past_due_date",
+          "description": "Create a Task with a due_date in the past (if allowed by model).",
+          "type": "positive",
+          "test_setup": {
+            "given": "Input: { 'title': 'Past Task', 'due_date': '2020-01-01' }",
+            "when": "TaskCreate is instantiated",
+            "then": "Task is created with due_date set to past date (unless validation prohibits it)"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_long_title",
+          "name": "create_task_with_very_long_title",
+          "description": "Create a Task with a very long title string.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Input: { 'title': 'A' * 256 }",
+            "when": "TaskCreate is instantiated",
+            "then": "Task is created if no max length is enforced; otherwise, validation error"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_null_optional_fields",
+          "name": "create_task_with_null_optional_fields",
+          "description": "Create a Task with all optional fields explicitly set to null.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Input: { 'title': 'Nulls', 'description': null, 'priority': null, 'category': null, 'due_date': null, 'completed': null }",
+            "when": "TaskCreate is instantiated",
+            "then": "Task is created with defaults for fields where null is not allowed, or null where allowed"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_task_inheritance_id_field",
+          "name": "task_inheritance_adds_id_field",
+          "description": "Ensure Task model includes all TaskBase fields plus an 'id' field.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Input: Valid TaskBase fields plus id='123'",
+            "when": "Task is instantiated",
+            "then": "Task instance has all TaskBase fields and id='123'"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_completed_true",
+          "name": "create_task_with_completed_true",
+          "description": "Create a Task with 'completed' explicitly set to true.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Input: { 'title': 'Done', 'completed': true }",
+            "when": "TaskCreate is instantiated",
+            "then": "Task is created with completed=true"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_invalid_category",
+          "name": "create_task_with_invalid_category",
+          "description": "Attempt to create a Task with an invalid category value.",
+          "type": "negative",
+          "test_setup": {
+            "given": "Input: { 'title': 'Test', 'category': 'UnknownCategory' }",
+            "when": "TaskCreate is instantiated",
+            "then": "Validation error is raised for invalid category"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_description_empty_string",
+          "name": "create_task_with_empty_description",
+          "description": "Create a Task with an empty string as description.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Input: { 'title': 'Test', 'description': '' }",
+            "when": "TaskCreate is instantiated",
+            "then": "Task is created with description=''"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_priority_default",
+          "name": "create_task_with_default_priority",
+          "description": "Create a Task without specifying priority to ensure default is set to Medium.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Input: { 'title': 'Default Priority' }",
+            "when": "TaskCreate is instantiated",
+            "then": "Task is created with priority=Medium"
+          },
+          "implementation_id": "7"
+        },
+        {
+          "id": "tc_create_task_completed_default",
+          "name": "create_task_with_default_completed",
+          "description": "Create a Task without specifying completed to ensure default is set to False.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Input: { 'title': 'Default Completed' }",
+            "when": "TaskCreate is instantiated",
+            "then": "Task is created with completed=False"
+          },
+          "implementation_id": "7"
+        }
+      ]
+    }
+  ],
+  "component": [
+    {
+      "implementation_id": "app_component",
+      "test_cases": [
+        {
+          "id": "app_loads_tasks_on_mount",
+          "name": "Loads tasks on mount",
+          "description": "Verifies that the App component fetches and displays tasks when mounted.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Component is mounted with empty initial state.",
+            "when": "ComponentDidMount lifecycle runs.",
+            "then": "loadTasks is called, tasks are fetched from API, and rendered in the UI."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_filter_by_status_completed",
+          "name": "Filter tasks by Completed status",
+          "description": "Checks that only completed tasks are shown when the filter is set to 'Completed'.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks state contains a mix of completed and pending tasks.",
+            "when": "User selects 'Completed' in the filter dropdown.",
+            "then": "Only tasks with status 'completed' are rendered."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_filter_by_status_pending",
+          "name": "Filter tasks by Pending status",
+          "description": "Checks that only pending tasks are shown when the filter is set to 'Pending'.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks state contains a mix of completed and pending tasks.",
+            "when": "User selects 'Pending' in the filter dropdown.",
+            "then": "Only tasks with status 'pending' are rendered."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_filter_by_status_all",
+          "name": "Filter tasks by All status",
+          "description": "Checks that all tasks are shown when the filter is set to 'All'.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks state contains a mix of completed and pending tasks.",
+            "when": "User selects 'All' in the filter dropdown.",
+            "then": "All tasks are rendered."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_sort_by_due_date",
+          "name": "Sort tasks by due date",
+          "description": "Ensures tasks are sorted by due date when the sort option is set.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks state contains tasks with different due dates.",
+            "when": "User selects 'Due Date' in the sort dropdown.",
+            "then": "Tasks are rendered in ascending order of due date."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_sort_by_priority",
+          "name": "Sort tasks by priority",
+          "description": "Ensures tasks are sorted by priority when the sort option is set.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks state contains tasks with different priorities.",
+            "when": "User selects 'Priority' in the sort dropdown.",
+            "then": "Tasks are rendered in order of priority (e.g., High > Medium > Low)."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_open_task_form",
+          "name": "Open TaskForm for new task",
+          "description": "Checks that the TaskForm is displayed when the user initiates adding a new task.",
+          "type": "positive",
+          "test_setup": {
+            "given": "isFormOpen is false.",
+            "when": "User clicks the 'Add Task' button.",
+            "then": "isFormOpen is set to true and TaskForm is rendered."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_create_task_success",
+          "name": "Create task successfully",
+          "description": "Verifies that a new task is created and displayed after submitting the TaskForm.",
+          "type": "positive",
+          "test_setup": {
+            "given": "TaskForm is open and user enters valid task data.",
+            "when": "User submits the form.",
+            "then": "handleCreateTask is called, API creates the task, tasks are reloaded, and TaskForm closes."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_create_task_validation_error",
+          "name": "Create task with invalid data",
+          "description": "Ensures validation errors are shown when submitting invalid data in TaskForm.",
+          "type": "negative",
+          "test_setup": {
+            "given": "TaskForm is open.",
+            "when": "User submits the form with missing required fields (e.g., empty title).",
+            "then": "Task is not created, and validation error messages are displayed."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_edit_task_success",
+          "name": "Edit task successfully",
+          "description": "Checks that editing a task updates it and reflects the changes in the UI.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A task is selected for editing and TaskForm is open with its data.",
+            "when": "User updates fields and submits the form.",
+            "then": "handleUpdateTask is called, API updates the task, tasks are reloaded, and TaskForm closes."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_edit_task_api_failure",
+          "name": "Edit task API failure",
+          "description": "Ensures error handling when the API fails to update a task.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A task is being edited.",
+            "when": "User submits the form and the API returns an error.",
+            "then": "Task is not updated, TaskForm remains open, and an error message is displayed."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_delete_task_success",
+          "name": "Delete task successfully",
+          "description": "Verifies that a task is removed from the UI after deletion.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks state contains multiple tasks.",
+            "when": "User clicks the delete button on a TaskItem.",
+            "then": "handleDeleteTask is called, API deletes the task, and it is removed from the UI."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_delete_task_api_failure",
+          "name": "Delete task API failure",
+          "description": "Ensures error handling when the API fails to delete a task.",
+          "type": "negative",
+          "test_setup": {
+            "given": "tasks state contains multiple tasks.",
+            "when": "User clicks the delete button and the API returns an error.",
+            "then": "Task remains in the UI and an error message is displayed."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_toggle_task_complete",
+          "name": "Toggle task completion status",
+          "description": "Checks that toggling a task's completion updates its status.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A task is rendered as incomplete.",
+            "when": "User clicks the complete checkbox.",
+            "then": "handleToggleComplete is called, API updates the task, and the UI reflects the new status."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_toggle_task_complete_api_failure",
+          "name": "Toggle task completion API failure",
+          "description": "Ensures error handling when toggling completion fails.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A task is rendered as incomplete.",
+            "when": "User clicks the complete checkbox and the API returns an error.",
+            "then": "Task status does not change and an error message is displayed."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_loading_state",
+          "name": "Display loading state",
+          "description": "Verifies that a loading indicator is shown while tasks are being fetched.",
+          "type": "positive",
+          "test_setup": {
+            "given": "isLoading is true.",
+            "when": "Component is fetching tasks from the API.",
+            "then": "A loading spinner or indicator is rendered."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_empty_task_list",
+          "name": "Render empty state when no tasks",
+          "description": "Checks that an appropriate message is shown when there are no tasks.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks state is an empty array.",
+            "when": "Component renders.",
+            "then": "A message like 'No tasks found' is displayed."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_filter_no_results",
+          "name": "Filter returns no results",
+          "description": "Ensures the UI handles cases where filtering yields no tasks.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks state contains only completed tasks.",
+            "when": "User filters by 'Pending'.",
+            "then": "No tasks are rendered and a 'No tasks found' message is displayed."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_sort_with_equal_values",
+          "name": "Sort tasks with equal values",
+          "description": "Checks that sorting is stable when tasks have equal due dates or priorities.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks state contains tasks with identical due dates or priorities.",
+            "when": "User sorts by the corresponding field.",
+            "then": "Tasks retain their relative order (stable sort)."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_api_failure_on_load",
+          "name": "API failure on initial load",
+          "description": "Ensures error handling when the initial fetch of tasks fails.",
+          "type": "negative",
+          "test_setup": {
+            "given": "Component is mounted.",
+            "when": "loadTasks API call fails.",
+            "then": "No tasks are rendered and an error message is displayed."
+          },
+          "implementation_id": "app_component"
+        },
+        {
+          "id": "app_rapid_filter_sort_changes",
+          "name": "Rapid filter and sort changes",
+          "description": "Checks UI stability when the user quickly changes filter and sort options.",
+          "type": "positive",
+          "test_setup": {
+            "given": "tasks state contains multiple tasks.",
+            "when": "User rapidly switches between filter and sort options.",
+            "then": "UI updates correctly without errors or inconsistent state."
+          },
+          "implementation_id": "app_component"
+        }
+      ]
+    },
+    {
+      "implementation_id": "taskform_component",
+      "test_cases": [
+        {
+          "id": "taskform_render_all_fields",
+          "name": "Render all form fields",
+          "description": "Ensures all input fields (title, description, priority, category, due date) and buttons are rendered.",
+          "type": "positive",
+          "test_setup": {
+            "given": "TaskForm rendered with default/empty state",
+            "when": "Component mounts",
+            "then": "Title input, description input, priority select, category select, due date input, Save and Cancel buttons are visible"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_input_title",
+          "name": "Input title updates state",
+          "description": "Typing in the title input updates the component state.",
+          "type": "positive",
+          "test_setup": {
+            "given": "TaskForm rendered",
+            "when": "User types 'Buy groceries' in the title input",
+            "then": "Component state for title is updated to 'Buy groceries'"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_input_description",
+          "name": "Input description updates state",
+          "description": "Typing in the description input updates the component state.",
+          "type": "positive",
+          "test_setup": {
+            "given": "TaskForm rendered",
+            "when": "User types 'Milk, eggs, bread' in the description input",
+            "then": "Component state for description is updated to 'Milk, eggs, bread'"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_select_priority",
+          "name": "Select priority updates state",
+          "description": "Selecting a priority updates the component state.",
+          "type": "positive",
+          "test_setup": {
+            "given": "TaskForm rendered",
+            "when": "User selects 'High' from the priority dropdown",
+            "then": "Component state for priority is updated to 'High'"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_select_category",
+          "name": "Select category updates state",
+          "description": "Selecting a category updates the component state.",
+          "type": "positive",
+          "test_setup": {
+            "given": "TaskForm rendered",
+            "when": "User selects 'Work' from the category dropdown",
+            "then": "Component state for category is updated to 'Work'"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_input_due_date",
+          "name": "Input due date updates state",
+          "description": "Typing/selecting a due date updates the component state.",
+          "type": "positive",
+          "test_setup": {
+            "given": "TaskForm rendered",
+            "when": "User enters '2026-01-10' in the due date input",
+            "then": "Component state for dueDate is updated to '2026-01-10'"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_submit_valid",
+          "name": "Submit with valid data",
+          "description": "Submitting the form with all valid fields calls onSubmit with correct task data.",
+          "type": "positive",
+          "test_setup": {
+            "given": "All fields filled with valid values",
+            "when": "User clicks Save",
+            "then": "onSubmit is called with task object containing title, description, priority, category, due_date"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_cancel_button",
+          "name": "Cancel button resets or closes form",
+          "description": "Clicking Cancel resets the form or triggers the cancel handler.",
+          "type": "positive",
+          "test_setup": {
+            "given": "TaskForm rendered with filled fields",
+            "when": "User clicks Cancel",
+            "then": "Form is reset or onCancel handler is called"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_missing_title",
+          "name": "Submit with missing title",
+          "description": "Submitting the form without a title shows a validation error and does not call onSubmit.",
+          "type": "negative",
+          "test_setup": {
+            "given": "All fields filled except title",
+            "when": "User clicks Save",
+            "then": "Validation error is shown for title, onSubmit is not called"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_missing_priority",
+          "name": "Submit with missing priority",
+          "description": "Submitting the form without selecting a priority shows a validation error.",
+          "type": "negative",
+          "test_setup": {
+            "given": "All fields filled except priority",
+            "when": "User clicks Save",
+            "then": "Validation error is shown for priority, onSubmit is not called"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_invalid_due_date",
+          "name": "Submit with invalid due date",
+          "description": "Submitting the form with an invalid due date (e.g., past date or wrong format) shows a validation error.",
+          "type": "negative",
+          "test_setup": {
+            "given": "Due date input set to an invalid value",
+            "when": "User clicks Save",
+            "then": "Validation error is shown for due date, onSubmit is not called"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_edit_mode_prefill",
+          "name": "Edit mode pre-fills fields",
+          "description": "When editing an existing task, the form fields are pre-filled with the task's data.",
+          "type": "positive",
+          "test_setup": {
+            "given": "TaskForm rendered with existing task data as props",
+            "when": "Component mounts",
+            "then": "All form fields are pre-filled with the task's data"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_trim_title",
+          "name": "Trim whitespace in title",
+          "description": "Submitting a title with leading/trailing whitespace trims the value before submission.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Title input set to '  Task  '",
+            "when": "User clicks Save",
+            "then": "onSubmit is called with title 'Task' (whitespace trimmed)"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_special_characters",
+          "name": "Allow special characters in description",
+          "description": "The description field accepts special characters and emojis.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Description input set to 'Finish report! \ud83d\ude80 #urgent'",
+            "when": "User clicks Save",
+            "then": "onSubmit is called with description 'Finish report! \ud83d\ude80 #urgent'"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_multiple_submits",
+          "name": "Prevent multiple submissions",
+          "description": "Clicking Save multiple times rapidly only triggers onSubmit once.",
+          "type": "negative",
+          "test_setup": {
+            "given": "All fields valid",
+            "when": "User clicks Save button multiple times quickly",
+            "then": "onSubmit is only called once"
+          },
+          "implementation_id": "taskform_component"
+        },
+        {
+          "id": "taskform_reset_on_success",
+          "name": "Form resets after successful submit",
+          "description": "After a successful submission, the form resets to its initial state.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Form submitted successfully",
+            "when": "onSubmit resolves",
+            "then": "All form fields are reset to default values"
+          },
+          "implementation_id": "taskform_component"
+        }
+      ]
+    },
+    {
+      "implementation_id": "taskitem_component",
+      "test_cases": [
+        {
+          "id": "renders_all_fields_with_full_task",
+          "name": "Render all fields with complete task data",
+          "description": "Ensures TaskItem renders title, priority, category, description, due date, and all action buttons when all props are provided.",
+          "type": "positive",
+          "test_setup": {
+            "given": "task with title, priority, category, description, dueDate, completed: false; valid onToggleComplete, onDelete, onEdit handlers",
+            "when": "Component is rendered",
+            "then": "Title, priority badge, category badge, description, due date, and Done, Edit, Delete buttons are visible"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "strikethrough_title_when_completed",
+          "name": "Strikethrough title when task is completed",
+          "description": "Checks that the task title is rendered with a strikethrough style when the task is marked as completed.",
+          "type": "positive",
+          "test_setup": {
+            "given": "task with completed: true",
+            "when": "Component is rendered",
+            "then": "Title is displayed with strikethrough styling"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "hide_category_and_description_when_absent",
+          "name": "Hide category and description when not present",
+          "description": "Ensures category badge and description are not rendered if the task does not have those fields.",
+          "type": "positive",
+          "test_setup": {
+            "given": "task with no category and no description",
+            "when": "Component is rendered",
+            "then": "Category badge and description are not present in the DOM"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "hide_due_date_when_absent",
+          "name": "Hide due date when not present",
+          "description": "Ensures due date is not rendered if the task does not have a due date.",
+          "type": "positive",
+          "test_setup": {
+            "given": "task with no dueDate",
+            "when": "Component is rendered",
+            "then": "Due date element is not present in the DOM"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "toggle_completion_calls_handler",
+          "name": "Toggle completion calls onToggleComplete",
+          "description": "Verifies that clicking the Done/Undo button calls the onToggleComplete handler with the correct task.",
+          "type": "positive",
+          "test_setup": {
+            "given": "task with completed: false; mock onToggleComplete",
+            "when": "User clicks Done button",
+            "then": "onToggleComplete is called once with the task as argument"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "edit_button_calls_handler",
+          "name": "Edit button calls onEdit",
+          "description": "Checks that clicking the Edit button calls the onEdit handler with the correct task.",
+          "type": "positive",
+          "test_setup": {
+            "given": "task; mock onEdit",
+            "when": "User clicks Edit button",
+            "then": "onEdit is called once with the task as argument"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "delete_button_confirms_and_calls_handler",
+          "name": "Delete button confirms and calls onDelete",
+          "description": "Ensures that clicking Delete prompts for confirmation and, if confirmed, calls onDelete with the task id.",
+          "type": "positive",
+          "test_setup": {
+            "given": "task with id; mock onDelete; confirmation dialog returns true",
+            "when": "User clicks Delete button and confirms",
+            "then": "onDelete is called once with the task id"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "delete_button_cancel_does_not_call_handler",
+          "name": "Delete button cancel does not call onDelete",
+          "description": "Ensures that if the user cancels the delete confirmation, onDelete is not called.",
+          "type": "negative",
+          "test_setup": {
+            "given": "task with id; mock onDelete; confirmation dialog returns false",
+            "when": "User clicks Delete button and cancels",
+            "then": "onDelete is not called"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "renders_priority_badge_for_all_levels",
+          "name": "Render priority badge for all priority levels",
+          "description": "Checks that the priority badge is rendered correctly for each possible priority value.",
+          "type": "positive",
+          "test_setup": {
+            "given": "task with priority set to each allowed value (e.g., High, Medium, Low)",
+            "when": "Component is rendered",
+            "then": "Priority badge displays the correct label and style for each value"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "handles_missing_handlers_gracefully",
+          "name": "Handles missing handlers gracefully",
+          "description": "Ensures the component does not throw errors if onToggleComplete, onEdit, or onDelete are undefined.",
+          "type": "negative",
+          "test_setup": {
+            "given": "task; one or more handler props are undefined",
+            "when": "User clicks Done, Edit, or Delete",
+            "then": "No uncaught errors are thrown; component remains stable"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "handles_null_task_prop",
+          "name": "Handles null task prop",
+          "description": "Checks that the component does not crash and renders nothing or a fallback if the task prop is null.",
+          "type": "negative",
+          "test_setup": {
+            "given": "task is null",
+            "when": "Component is rendered",
+            "then": "Component renders nothing or a fallback UI; no errors are thrown"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "renders_undo_button_when_completed",
+          "name": "Renders Undo button when task is completed",
+          "description": "Ensures the Undo button is shown instead of Done when the task is completed.",
+          "type": "positive",
+          "test_setup": {
+            "given": "task with completed: true",
+            "when": "Component is rendered",
+            "then": "Undo button is visible; Done button is not"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "renders_done_button_when_pending",
+          "name": "Renders Done button when task is pending",
+          "description": "Ensures the Done button is shown when the task is not completed.",
+          "type": "positive",
+          "test_setup": {
+            "given": "task with completed: false",
+            "when": "Component is rendered",
+            "then": "Done button is visible; Undo button is not"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "long_title_and_description_truncation",
+          "name": "Long title and description are truncated or wrapped",
+          "description": "Checks that very long titles and descriptions are handled gracefully (truncated, wrapped, or overflow managed).",
+          "type": "positive",
+          "test_setup": {
+            "given": "task with very long title and description",
+            "when": "Component is rendered",
+            "then": "Text does not overflow the component; UI remains usable"
+          },
+          "implementation_id": "taskitem_component"
+        },
+        {
+          "id": "invalid_due_date_format",
+          "name": "Handles invalid due date format",
+          "description": "Ensures the component does not crash and displays a fallback or nothing if due date is invalid.",
+          "type": "negative",
+          "test_setup": {
+            "given": "task with dueDate set to an invalid string",
+            "when": "Component is rendered",
+            "then": "No errors are thrown; due date is not displayed or a fallback is shown"
+          },
+          "implementation_id": "taskitem_component"
+        }
+      ]
+    }
+  ],
+  "endpoint": [
+    {
+      "implementation_id": "5",
+      "test_cases": [
+        {
+          "id": "delete_task_success",
+          "name": "Delete existing task successfully",
+          "description": "Verify that deleting an existing task returns a success message and the task is removed.",
+          "type": "positive",
+          "request_method": "DELETE",
+          "request_url": "/tasks/123",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 200,
+          "response_body_json": "{\"message\": \"Task deleted successfully\"}",
+          "test_setup": {
+            "given": "A task with ID 123 exists in the database.",
+            "when": "A DELETE request is sent to /tasks/123.",
+            "then": "The response status is 200 and the task is removed from the database."
+          },
+          "implementation_id": "5"
+        },
+        {
+          "id": "delete_task_not_found",
+          "name": "Delete non-existent task",
+          "description": "Verify that deleting a non-existent task returns a 404 error.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/99999",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 404,
+          "response_body_json": "{\"detail\": \"Task not found\"}",
+          "test_setup": {
+            "given": "No task with ID 99999 exists in the database.",
+            "when": "A DELETE request is sent to /tasks/99999.",
+            "then": "The response status is 404 with an appropriate error message."
+          },
+          "implementation_id": "5"
+        },
+        {
+          "id": "delete_task_invalid_id_format",
+          "name": "Delete task with invalid ID format",
+          "description": "Verify that deleting a task with an invalid ID format returns a 422 or 400 error.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/abc",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 422,
+          "response_body_json": "{\"detail\": \"Invalid task ID format\"}",
+          "test_setup": {
+            "given": "The task_id parameter is not a valid integer.",
+            "when": "A DELETE request is sent to /tasks/abc.",
+            "then": "The response status is 422 or 400 with an error indicating invalid ID format."
+          },
+          "implementation_id": "5"
+        },
+        {
+          "id": "delete_task_already_deleted",
+          "name": "Delete task that was already deleted",
+          "description": "Verify that deleting a task that was already deleted returns a 404 error.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/124",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 404,
+          "response_body_json": "{\"detail\": \"Task not found\"}",
+          "test_setup": {
+            "given": "A task with ID 124 existed but was deleted previously.",
+            "when": "A DELETE request is sent to /tasks/124.",
+            "then": "The response status is 404 with an appropriate error message."
+          },
+          "implementation_id": "5"
+        },
+        {
+          "id": "delete_task_no_auth",
+          "name": "Delete task without authentication",
+          "description": "Verify that deleting a task without authentication returns a 401 error if authentication is required.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/125",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 401,
+          "response_body_json": "{\"detail\": \"Not authenticated\"}",
+          "test_setup": {
+            "given": "A task with ID 125 exists and the API requires authentication.",
+            "when": "A DELETE request is sent to /tasks/125 without authentication headers.",
+            "then": "The response status is 401 with an authentication error message."
+          },
+          "implementation_id": "5"
+        },
+        {
+          "id": "delete_task_boundary_id_zero",
+          "name": "Delete task with ID zero",
+          "description": "Verify that deleting a task with ID 0 returns a 404 or 422 error.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/0",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 404,
+          "response_body_json": "{\"detail\": \"Task not found\"}",
+          "test_setup": {
+            "given": "No task with ID 0 exists.",
+            "when": "A DELETE request is sent to /tasks/0.",
+            "then": "The response status is 404 or 422 with an appropriate error message."
+          },
+          "implementation_id": "5"
+        },
+        {
+          "id": "delete_task_boundary_id_negative",
+          "name": "Delete task with negative ID",
+          "description": "Verify that deleting a task with a negative ID returns a 422 or 404 error.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/-1",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 422,
+          "response_body_json": "{\"detail\": \"Invalid task ID format\"}",
+          "test_setup": {
+            "given": "The task_id parameter is negative.",
+            "when": "A DELETE request is sent to /tasks/-1.",
+            "then": "The response status is 422 or 404 with an error indicating invalid ID."
+          },
+          "implementation_id": "5"
+        },
+        {
+          "id": "delete_task_extra_body",
+          "name": "Delete task with extra request body",
+          "description": "Verify that sending a DELETE request with an unexpected body is handled gracefully.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/126",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "{\"unexpected\": \"data\"}",
+          "response_status_code": 200,
+          "response_body_json": "{\"message\": \"Task deleted successfully\"}",
+          "test_setup": {
+            "given": "A task with ID 126 exists.",
+            "when": "A DELETE request is sent to /tasks/126 with an extra JSON body.",
+            "then": "The response status is 200 and the task is deleted, ignoring the extra body."
+          },
+          "implementation_id": "5"
+        }
+      ]
+    }
+  ]
+}
