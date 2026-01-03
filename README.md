@@ -5,7 +5,7 @@ Personal Todo manager
 
 ### 1. Task Management
 - Add new tasks with: 
-  - Title
+  - Title 
   - Description
   - Priority
   - Due date
