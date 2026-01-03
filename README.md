@@ -12,7 +12,7 @@ Personal Todo manager
 - Edit existing tasks
 - Delete tasks
 - Mark tasks as **Completed** or **Pending**   
-
+ 
 ### 2. Task Organization
 - Categorize tasks (e.g., Work, Personal, Study)
 - Filter tasks by status:
