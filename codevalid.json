@@ -1,0 +1,15 @@
+{
+  "breakdowns": [
+    {
+      "id": "manage_tasks",
+      "header": "Manage Tasks",
+      "description": "Enables users to add new tasks with a title, description, priority, and due date; edit existing tasks; delete tasks; and mark tasks as Completed or Pending.",
+      "conditions": [
+        "A new task must include a title, description, priority, and due date."
+      ],
+      "change_status": "new"
+    }
+  ],
+  "last_updated": "2026-01-04T00:25:50.139985",
+  "version": "1.0"
+}
