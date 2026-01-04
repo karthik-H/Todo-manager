@@ -3,13 +3,13 @@
     {
       "id": "manage_tasks",
       "header": "Manage Tasks",
-      "description": "Enables users to add new tasks with a title, description, priority, due date, and tag; edit existing tasks; delete tasks; and mark tasks as Completed or Pending.",
+      "description": "Enables users to add new tasks with a title, description, priority, and due date; edit existing tasks; delete tasks; and mark tasks as Completed or Pending.",
       "conditions": [
-        "A new task must include a title, description, priority, due date, and tag."
+        "A new task must include a title, description, priority, and due date."
       ],
       "change_status": "updated"
     }
   ],
-  "last_updated": "2026-01-04T00:34:59.617519",
+  "last_updated": "2026-01-04T00:40:46.757938",
   "version": "1.0"
 }
