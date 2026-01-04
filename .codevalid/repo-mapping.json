@@ -1,0 +1,90 @@
+{
+  "manage_tasks": {
+    "implementation": [
+      {
+        "id": "endpoint-list-tasks",
+        "name": "read_tasks",
+        "file_path": "backend/main.py",
+        "type": "endpoint",
+        "How_is_it_connected_to_implementation": "API endpoint to retrieve all tasks. This is part of managing tasks, as it allows users to view the current list of tasks.",
+        "pseudo_code": "When a GET request is made to /tasks:\n    Call database.get_tasks()\n    Return the list of tasks"
+      },
+      {
+        "id": "endpoint-create-task",
+        "name": "create_task",
+        "file_path": "backend/main.py",
+        "type": "endpoint",
+        "How_is_it_connected_to_implementation": "API endpoint to add a new task. Receives a TaskCreate object and delegates to the database layer.",
+        "pseudo_code": "When a POST request is made to /tasks with a TaskCreate payload:\n    Call database.add_task(task)\n    Return the created task"
+      },
+      {
+        "id": "db-add-task",
+        "name": "add_task",
+        "file_path": "backend/database.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Handles the logic for adding a new task to the persistent storage. Ensures a unique ID is assigned and saves the task.",
+        "pseudo_code": "Get all tasks\nCreate a new Task with a unique id and fields from TaskCreate\nAppend the new task to the list\nSave all tasks to disk\nReturn the new task"
+      },
+      {
+        "id": "endpoint-update-task",
+        "name": "update_task",
+        "file_path": "backend/main.py",
+        "type": "endpoint",
+        "How_is_it_connected_to_implementation": "API endpoint to edit an existing task. Receives updated task data and delegates to the database layer.",
+        "pseudo_code": "When a PUT request is made to /tasks/{task_id} with a TaskCreate payload:\n    Call database.update_task(task_id, task)\n    If no task is found, raise 404 error\n    Return the updated task"
+      },
+      {
+        "id": "db-update-task",
+        "name": "update_task",
+        "file_path": "backend/database.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Handles updating an existing task in persistent storage. Finds the task by ID and replaces it with the updated data.",
+        "pseudo_code": "Get all tasks\nFor each task:\n    If task.id matches task_id:\n        Create updated Task with new data\n        Replace the old task\n        Save all tasks to disk\n        Return updated task\nIf not found, return None"
+      },
+      {
+        "id": "endpoint-delete-task",
+        "name": "delete_task",
+        "file_path": "backend/main.py",
+        "type": "endpoint",
+        "How_is_it_connected_to_implementation": "API endpoint to delete a task. Delegates deletion to the database layer.",
+        "pseudo_code": "When a DELETE request is made to /tasks/{task_id}:\n    Call database.delete_task(task_id)\n    If not found, raise 404 error\n    Return success message"
+      },
+      {
+        "id": "db-delete-task",
+        "name": "delete_task",
+        "file_path": "backend/database.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Handles removing a task from persistent storage by ID.",
+        "pseudo_code": "Get all tasks\nFilter out the task with the given id\nIf a task was removed:\n    Save all tasks to disk\n    Return True\nElse:\n    Return False"
+      },
+      {
+        "id": "model-task-base",
+        "name": "TaskBase",
+        "file_path": "backend/models.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Defines the schema for a task, including title, description, priority, due date, and completed status. Used for validation and serialization.",
+        "pseudo_code": "Define a TaskBase model with fields:\n    title (str)\n    description (Optional[str])\n    priority (Priority)\n    category (Optional[Category])\n    due_date (Optional[date])\n    completed (bool, default False)"
+      },
+      {
+        "id": "model-task-create",
+        "name": "TaskCreate",
+        "file_path": "backend/models.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Model for creating a new task. Inherits from TaskBase and is used for input validation when adding or editing tasks.",
+        "pseudo_code": "Define TaskCreate model that inherits from TaskBase"
+      },
+      {
+        "id": "model-task",
+        "name": "Task",
+        "file_path": "backend/models.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Model representing a task with an ID. Used for storing and returning tasks.",
+        "pseudo_code": "Define Task model that inherits from TaskBase\nAdd id (str) field"
+      }
+    ],
+    "missing_implementations": [
+      "A new task must include a title, description, priority, and due date.",
+      "Mark tasks as Completed or Pending."
+    ]
+  }
+}
