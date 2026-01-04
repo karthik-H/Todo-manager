@@ -9,5 +9,5 @@ Personal Todo manager
   - Due date
 - Edit existing tasks
 - Delete tasks
-- Mark tasks as **Completed** or **Pending**     
+- Mark tasks as **Completed** or **Pending**      
   
