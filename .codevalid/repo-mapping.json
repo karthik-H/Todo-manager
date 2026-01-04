@@ -2,83 +2,72 @@
   "manage_tasks": {
     "implementation": [
       {
-        "id": "endpoint-list-tasks",
+        "id": "endpoint-get-tasks",
         "name": "read_tasks",
         "file_path": "backend/main.py",
         "type": "endpoint",
-        "How_is_it_connected_to_implementation": "API endpoint to retrieve all tasks. Enables users to view the list of tasks, which is foundational for managing them.",
+        "How_is_it_connected_to_implementation": "API endpoint to retrieve all tasks. Supports listing tasks for management.",
         "pseudo_code": "When a GET request is made to /tasks:\n    Call database.get_tasks()\n    Return the list of tasks"
       },
       {
-        "id": "db-get-tasks",
+        "id": "function-get-tasks",
         "name": "get_tasks",
         "file_path": "backend/database.py",
         "type": "function",
-        "How_is_it_connected_to_implementation": "Fetches all tasks from the persistent storage. Used by endpoints to display or manipulate tasks.",
-        "pseudo_code": "If the tasks file does not exist:\n    Return an empty list\nOpen the tasks file\nTry to load JSON data\n    For each item, create a Task object\n    Return the list of Task objects\nIf JSON is invalid:\n    Return an empty list"
+        "How_is_it_connected_to_implementation": "Reads all tasks from the persistent storage (tasks.json). Used by endpoints to fetch tasks.",
+        "pseudo_code": "If tasks.json does not exist:\n    Return empty list\nOpen tasks.json\nTry to load JSON data\n    For each item, create a Task object\n    Return list of Task objects\nIf JSON decode fails:\n    Return empty list"
       },
       {
         "id": "endpoint-create-task",
         "name": "create_task",
         "file_path": "backend/main.py",
         "type": "endpoint",
-        "How_is_it_connected_to_implementation": "API endpoint to add a new task. Receives task data and delegates creation to the database layer.",
-        "pseudo_code": "When a POST request is made to /tasks with a TaskCreate payload:\n    Call database.add_task(task)\n    Return the created Task"
+        "How_is_it_connected_to_implementation": "API endpoint to add a new task. Receives all required fields and delegates creation to the database layer.",
+        "pseudo_code": "When a POST request is made to /tasks with TaskCreate data:\n    Call database.add_task(task)\n    Return the created Task"
       },
       {
-        "id": "db-add-task",
+        "id": "function-add-task",
         "name": "add_task",
         "file_path": "backend/database.py",
         "type": "function",
-        "How_is_it_connected_to_implementation": "Handles the logic for adding a new task, assigning a unique ID, and saving it to storage.",
-        "pseudo_code": "Get the current list of tasks\nCreate a new Task with a unique id and data from TaskCreate\nAppend the new Task to the list\nSave the updated list\nReturn the new Task"
+        "How_is_it_connected_to_implementation": "Creates a new Task with all required fields and saves it. Ensures all fields from TaskCreate are present.",
+        "pseudo_code": "Get all tasks\nCreate a new Task with a unique id and fields from TaskCreate\nAppend new Task to tasks list\nSave tasks list to tasks.json\nReturn the new Task"
       },
       {
         "id": "endpoint-update-task",
         "name": "update_task",
         "file_path": "backend/main.py",
         "type": "endpoint",
-        "How_is_it_connected_to_implementation": "API endpoint to edit an existing task. Receives updated data and delegates update logic to the database layer.",
-        "pseudo_code": "When a PUT request is made to /tasks/{task_id} with a TaskCreate payload:\n    Call database.update_task(task_id, task)\n    If no task is found:\n        Raise 404 error\n    Return the updated Task"
+        "How_is_it_connected_to_implementation": "API endpoint to edit an existing task. Receives updated fields and delegates update to the database layer.",
+        "pseudo_code": "When a PUT request is made to /tasks/{task_id} with TaskCreate data:\n    Call database.update_task(task_id, task)\n    If updated_task is None:\n        Raise 404 error\n    Return updated_task"
       },
       {
-        "id": "db-update-task",
+        "id": "function-update-task",
         "name": "update_task",
         "file_path": "backend/database.py",
         "type": "function",
-        "How_is_it_connected_to_implementation": "Updates an existing task by ID with new data and saves the changes.",
-        "pseudo_code": "Get the current list of tasks\nFor each task in the list:\n    If task.id matches task_id:\n        Create updated Task with new data\n        Replace the old task\n        Save the updated list\n        Return the updated Task\nIf not found:\n    Return None"
+        "How_is_it_connected_to_implementation": "Updates an existing task with new data. Ensures all fields are updated as per TaskCreate.",
+        "pseudo_code": "Get all tasks\nFor each task in tasks:\n    If task.id matches task_id:\n        Create updated Task with new data\n        Replace old task with updated Task\n        Save tasks list\n        Return updated Task\nIf not found, return None"
       },
       {
         "id": "endpoint-delete-task",
         "name": "delete_task",
         "file_path": "backend/main.py",
         "type": "endpoint",
-        "How_is_it_connected_to_implementation": "API endpoint to delete a task by ID. Delegates deletion to the database layer.",
-        "pseudo_code": "When a DELETE request is made to /tasks/{task_id}:\n    Call database.delete_task(task_id)\n    If deletion fails:\n        Raise 404 error\n    Return success message"
+        "How_is_it_connected_to_implementation": "API endpoint to delete a task by id.",
+        "pseudo_code": "When a DELETE request is made to /tasks/{task_id}:\n    Call database.delete_task(task_id)\n    If not success:\n        Raise 404 error\n    Return success message"
       },
       {
-        "id": "db-delete-task",
+        "id": "function-delete-task",
         "name": "delete_task",
         "file_path": "backend/database.py",
         "type": "function",
-        "How_is_it_connected_to_implementation": "Removes a task from storage by its ID.",
-        "pseudo_code": "Get the current list of tasks\nRemove the task with the matching id\nIf a task was removed:\n    Save the updated list\n    Return True\nElse:\n    Return False"
-      },
-      {
-        "id": "model-task",
-        "name": "Task",
-        "file_path": "backend/models.py",
-        "type": "function",
-        "How_is_it_connected_to_implementation": "Data model representing a task, including fields for title, description, priority, due date, and completion status.",
-        "pseudo_code": "Define a Task with:\n    id: string\n    title: string\n    description: optional string\n    priority: enum (Low, Medium, High)\n    category: optional enum\n    due_date: optional date\n    completed: boolean"
+        "How_is_it_connected_to_implementation": "Removes a task from the persistent storage by id.",
+        "pseudo_code": "Get all tasks\nFilter out the task with matching id\nIf a task was removed:\n    Save updated tasks list\n    Return True\nElse:\n    Return False"
       }
     ],
     "missing_implementations": [
-      "A new task must include a description (currently optional in the model).",
-      "A new task must include a priority (currently defaults to Medium, not enforced as required input).",
-      "A new task must include a due date (currently optional in the model).",
-      "Marking tasks as Pending (completed: false) is only possible by editing the task, not via a dedicated endpoint or explicit action."
+      "Mark tasks as Completed or Pending"
     ]
   }
 }
