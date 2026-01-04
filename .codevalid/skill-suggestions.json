@@ -1,0 +1,78 @@
+{
+  "suggestions": [
+    {
+      "skill_name": "architecture-skill",
+      "category": "API Design",
+      "breakdown_id": "manage_tasks",
+      "suggestion": "Define the API endpoints (e.g., RESTful routes for create, update, delete, and status change) for task management, including request/response schemas, error codes, and versioning strategy.",
+      "priority": "High",
+      "rationale": "Clear API contracts are essential for frontend-backend integration, maintainability, and future extensibility."
+    },
+    {
+      "skill_name": "architecture-skill",
+      "category": "Data Architecture",
+      "breakdown_id": "manage_tasks",
+      "suggestion": "Specify the data model for tasks, including field types, nullability, indexing (e.g., on due date or priority), and whether tags are a separate entity or a simple field.",
+      "priority": "High",
+      "rationale": "A well-defined data model is critical for data integrity, query performance, and supporting future features like filtering or sorting."
+    },
+    {
+      "skill_name": "architecture-skill",
+      "category": "Error Handling & Resilience",
+      "breakdown_id": "manage_tasks",
+      "suggestion": "Define expected error scenarios (e.g., missing required fields, invalid dates, unauthorized edits) and how errors are communicated to the client.",
+      "priority": "High",
+      "rationale": "Explicit error handling ensures robust user experience and simplifies debugging and maintenance."
+    },
+    {
+      "skill_name": "architecture-skill",
+      "category": "Security & Access Control",
+      "breakdown_id": "manage_tasks",
+      "suggestion": "Clarify authentication and authorization requirements for task operations (e.g., are tasks user-specific, is there role-based access, how is data isolation enforced).",
+      "priority": "High",
+      "rationale": "Security is essential to prevent unauthorized access and data leakage, especially in multi-user systems."
+    },
+    {
+      "skill_name": "architecture-skill",
+      "category": "UI / UX Design Considerations",
+      "breakdown_id": "manage_tasks",
+      "suggestion": "Define UI states for loading, empty task list, error, and permission denied. Specify validation rules and user feedback for each operation.",
+      "priority": "Medium",
+      "rationale": "Comprehensive UI state handling improves usability and accessibility, reducing user confusion."
+    },
+    {
+      "skill_name": "architecture-skill",
+      "category": "Scalability & Performance",
+      "breakdown_id": "manage_tasks",
+      "suggestion": "Estimate expected usage (number of tasks per user, concurrent users) and determine if pagination, filtering, or search is needed for task lists.",
+      "priority": "Medium",
+      "rationale": "Planning for scalability early prevents performance bottlenecks as the system grows."
+    },
+    {
+      "skill_name": "architecture-skill",
+      "category": "Acceptance Criteria & Validation",
+      "breakdown_id": "manage_tasks",
+      "suggestion": "Define Given/When/Then scenarios for each operation (add, edit, delete, status change), including edge cases (e.g., editing a completed task).",
+      "priority": "Medium",
+      "rationale": "Clear acceptance criteria ensure the feature meets requirements and is testable."
+    },
+    {
+      "skill_name": "architecture-skill",
+      "category": "Deployment & Infrastructure",
+      "breakdown_id": "general",
+      "suggestion": "Specify if any database migrations are needed for the task model, and if zero-downtime deployment is required.",
+      "priority": "Low",
+      "rationale": "Deployment planning avoids outages and data loss during releases."
+    },
+    {
+      "skill_name": "architecture-skill",
+      "category": "Documentation Requirements",
+      "breakdown_id": "general",
+      "suggestion": "Document API endpoints, data model, and UI usage notes for developers and users.",
+      "priority": "Low",
+      "rationale": "Good documentation accelerates onboarding and reduces support burden."
+    }
+  ],
+  "last_updated": "2026-01-04T14:48:15.060658",
+  "version": "1.0"
+}
