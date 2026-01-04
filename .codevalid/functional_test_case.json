@@ -1,0 +1,797 @@
+{
+  "function": [
+    {
+      "implementation_id": "function_add_task",
+      "test_cases": [
+        {
+          "id": "add_task_valid_input",
+          "name": "test_add_task_with_valid_input",
+          "description": "Verify that add_task successfully adds a new task with all valid fields.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A valid title, description, priority, and due date are provided. The tasks list is initially empty.",
+            "when": "add_task is called with these parameters.",
+            "then": "A new task with a unique ID is returned, the task is appended to the tasks list, and the tasks file is updated."
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_missing_title",
+          "name": "test_add_task_missing_title",
+          "description": "Verify that add_task fails when the title is missing.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A description, priority, and due date are provided, but the title is missing or None.",
+            "when": "add_task is called.",
+            "then": "An error is raised or the function returns an error indicating that the title is required."
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_duplicate_id",
+          "name": "test_add_task_duplicate_id_generation",
+          "description": "Ensure that add_task generates a unique ID even if existing tasks have similar IDs.",
+          "type": "positive",
+          "test_setup": {
+            "given": "The tasks list contains tasks with existing IDs.",
+            "when": "add_task is called to add a new task.",
+            "then": "The new task receives a unique ID not present in the existing tasks."
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_invalid_priority",
+          "name": "test_add_task_invalid_priority",
+          "description": "Verify that add_task handles invalid priority values.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A title, description, and due date are provided, but priority is outside the allowed range or not recognized.",
+            "when": "add_task is called.",
+            "then": "An error is raised or the function returns an error indicating invalid priority."
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_persistence_failure",
+          "name": "test_add_task_persistence_failure",
+          "description": "Verify that add_task handles file write errors gracefully.",
+          "type": "negative",
+          "test_setup": {
+            "given": "The tasks file is read-only or the disk is full.",
+            "when": "add_task attempts to save the tasks list.",
+            "then": "An error is raised or the function returns an error indicating persistence failure. The new task is not considered added."
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_minimal_fields",
+          "name": "test_add_task_with_minimal_fields",
+          "description": "Verify that add_task can add a task when only required fields are provided.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Only the required fields (e.g., title) are provided, optional fields are omitted.",
+            "when": "add_task is called.",
+            "then": "A new task is created with default values for missing optional fields."
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_long_title_description",
+          "name": "test_add_task_long_title_description",
+          "description": "Verify that add_task handles very long title and description fields.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A very long title and description are provided.",
+            "when": "add_task is called.",
+            "then": "The task is added successfully if within allowed limits, or an error is raised if limits are exceeded."
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_invalid_due_date",
+          "name": "test_add_task_invalid_due_date",
+          "description": "Verify that add_task handles invalid due date formats.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A title, description, and priority are provided, but due date is in an invalid format.",
+            "when": "add_task is called.",
+            "then": "An error is raised or the function returns an error indicating invalid due date."
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_empty_tasks_list",
+          "name": "test_add_task_empty_tasks_list",
+          "description": "Verify that add_task works when the tasks list is initially empty.",
+          "type": "positive",
+          "test_setup": {
+            "given": "The tasks list is empty.",
+            "when": "add_task is called.",
+            "then": "A new task is created with a unique ID and added as the first task."
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_special_characters",
+          "name": "test_add_task_special_characters",
+          "description": "Verify that add_task handles special characters in title and description.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Title and description contain special characters and emojis.",
+            "when": "add_task is called.",
+            "then": "The task is added successfully and special characters are preserved."
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_null_fields",
+          "name": "test_add_task_null_fields",
+          "description": "Verify that add_task handles None/null values for optional fields.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Optional fields (description, priority, due date) are None.",
+            "when": "add_task is called.",
+            "then": "The task is added with default values for those fields."
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_storage_corruption",
+          "name": "test_add_task_storage_corruption",
+          "description": "Verify that add_task handles corrupted tasks storage gracefully.",
+          "type": "negative",
+          "test_setup": {
+            "given": "The tasks file contains corrupted or invalid data.",
+            "when": "add_task is called.",
+            "then": "An error is raised or the function returns an error indicating storage corruption."
+          },
+          "implementation_id": "function_add_task"
+        }
+      ]
+    },
+    {
+      "implementation_id": "function_update_task",
+      "test_cases": [
+        {
+          "id": "update_existing_task_success",
+          "name": "Update an existing task successfully",
+          "description": "Verify that updating an existing task with valid data replaces the old task and returns the updated task.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A list of tasks exists with a task having id=1. New data for title, description, priority, and due date is provided.",
+            "when": "update_task is called with task_id=1 and the new data.",
+            "then": "The task with id=1 is updated with the new data, saved, and the updated task is returned."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_not_found",
+          "name": "Attempt to update a non-existent task",
+          "description": "Verify that attempting to update a task with an ID that does not exist returns None.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A list of tasks exists with no task having id=999.",
+            "when": "update_task is called with task_id=999 and some data.",
+            "then": "None is returned, and no tasks are modified."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_partial_fields",
+          "name": "Update only some fields of an existing task",
+          "description": "Verify that updating only a subset of fields (e.g., just the title) updates only those fields and leaves others unchanged.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A task with id=2 exists with all fields set. Only a new title is provided.",
+            "when": "update_task is called with task_id=2 and new title.",
+            "then": "The task with id=2 has its title updated, other fields remain unchanged, and the updated task is returned."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_empty_tasks_list",
+          "name": "Update when tasks list is empty",
+          "description": "Verify that updating a task when the tasks list is empty returns None.",
+          "type": "negative",
+          "test_setup": {
+            "given": "The tasks list is empty.",
+            "when": "update_task is called with any task_id and data.",
+            "then": "None is returned, and the tasks list remains empty."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_invalid_id_type",
+          "name": "Update with invalid task_id type",
+          "description": "Verify that providing a non-integer task_id (e.g., a string) does not update any task and returns None.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A list of tasks exists with integer IDs.",
+            "when": "update_task is called with task_id='abc' (string) and some data.",
+            "then": "None is returned, and no tasks are modified."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_boundary_id",
+          "name": "Update task with boundary ID value",
+          "description": "Verify that updating a task with the lowest or highest possible valid ID works as expected.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Tasks exist with id=0 and id=MAX_INT.",
+            "when": "update_task is called with task_id=0 or task_id=MAX_INT and new data.",
+            "then": "The corresponding task is updated and returned."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_no_changes",
+          "name": "Update with identical data (no changes)",
+          "description": "Verify that updating a task with data identical to the current values still returns the task and saves.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A task with id=3 exists with specific data.",
+            "when": "update_task is called with task_id=3 and the same data.",
+            "then": "The task is returned unchanged, and the tasks list is saved."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_save_failure",
+          "name": "Simulate failure when saving tasks to file",
+          "description": "Verify that if saving tasks to file fails (e.g., due to IO error), the function handles the error gracefully (if implemented).",
+          "type": "negative",
+          "test_setup": {
+            "given": "A task with id=4 exists. Saving to file will raise an exception.",
+            "when": "update_task is called with task_id=4 and new data.",
+            "then": "The function raises an exception or returns an error indicator, and the tasks list may not be updated."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_completed_status",
+          "name": "Update task status to Completed",
+          "description": "Verify that updating a task's status to 'Completed' works and is reflected in the returned task.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A task with id=5 exists with status 'Pending'.",
+            "when": "update_task is called with task_id=5 and status='Completed'.",
+            "then": "The task's status is updated to 'Completed' and the updated task is returned."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_invalid_field_data",
+          "name": "Update with invalid field data",
+          "description": "Verify that providing invalid data for a field (e.g., negative priority, malformed date) is handled appropriately.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A task with id=6 exists.",
+            "when": "update_task is called with task_id=6 and invalid data (e.g., priority=-1, due_date='not-a-date').",
+            "then": "The function raises a validation error or returns None, and the task is not updated."
+          },
+          "implementation_id": "function_update_task"
+        }
+      ]
+    },
+    {
+      "implementation_id": "function_delete_task",
+      "test_cases": [
+        {
+          "id": "delete_existing_task_success",
+          "name": "test_delete_existing_task_success",
+          "description": "Successfully deletes a task when a valid task ID is provided.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A list of tasks exists, including a task with ID 5.",
+            "when": "delete_task(5) is called.",
+            "then": "The function returns True, the task with ID 5 is removed, and the updated list is saved."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_nonexistent_task",
+          "name": "test_delete_nonexistent_task",
+          "description": "Attempts to delete a task with an ID that does not exist in the task list.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A list of tasks exists, none with ID 99.",
+            "when": "delete_task(99) is called.",
+            "then": "The function returns False, no tasks are removed, and the list is not saved."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_empty_list",
+          "name": "test_delete_task_empty_list",
+          "description": "Attempts to delete a task when the task list is empty.",
+          "type": "negative",
+          "test_setup": {
+            "given": "The task list is empty.",
+            "when": "delete_task(1) is called.",
+            "then": "The function returns False, and no save operation is performed."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_multiple_same_id",
+          "name": "test_delete_task_multiple_same_id",
+          "description": "Handles the case where multiple tasks have the same ID (data inconsistency).",
+          "type": "edge",
+          "test_setup": {
+            "given": "The task list contains two tasks with ID 7.",
+            "when": "delete_task(7) is called.",
+            "then": "Both tasks with ID 7 are removed, the function returns True, and the updated list is saved."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_first_in_list",
+          "name": "test_delete_task_first_in_list",
+          "description": "Deletes the first task in the list.",
+          "type": "positive",
+          "test_setup": {
+            "given": "The task list contains tasks with IDs [1, 2, 3].",
+            "when": "delete_task(1) is called.",
+            "then": "The function returns True, task with ID 1 is removed, and the updated list is saved."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_last_in_list",
+          "name": "test_delete_task_last_in_list",
+          "description": "Deletes the last task in the list.",
+          "type": "positive",
+          "test_setup": {
+            "given": "The task list contains tasks with IDs [1, 2, 3].",
+            "when": "delete_task(3) is called.",
+            "then": "The function returns True, task with ID 3 is removed, and the updated list is saved."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_only_one_in_list",
+          "name": "test_delete_task_only_one_in_list",
+          "description": "Deletes the only task in the list, resulting in an empty list.",
+          "type": "positive",
+          "test_setup": {
+            "given": "The task list contains a single task with ID 42.",
+            "when": "delete_task(42) is called.",
+            "then": "The function returns True, the list becomes empty, and the updated list is saved."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_invalid_id_type",
+          "name": "test_delete_task_invalid_id_type",
+          "description": "Handles the case where the provided ID is not an integer.",
+          "type": "negative",
+          "test_setup": {
+            "given": "The task list contains tasks with integer IDs.",
+            "when": "delete_task('abc') is called.",
+            "then": "The function returns False, no tasks are removed, and the list is not saved."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_id_is_none",
+          "name": "test_delete_task_id_is_none",
+          "description": "Handles the case where the provided ID is None.",
+          "type": "negative",
+          "test_setup": {
+            "given": "The task list contains tasks with integer IDs.",
+            "when": "delete_task(None) is called.",
+            "then": "The function returns False, no tasks are removed, and the list is not saved."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_save_failure",
+          "name": "test_delete_task_save_failure",
+          "description": "Simulates a failure when saving the updated task list after deletion.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A task with ID 10 exists, and the save operation will raise an exception.",
+            "when": "delete_task(10) is called.",
+            "then": "The function attempts to remove the task, but an exception is raised during save. The function should handle the exception gracefully (e.g., propagate or log error)."
+          },
+          "implementation_id": "function_delete_task"
+        }
+      ]
+    }
+  ],
+  "component": [],
+  "endpoint": [
+    {
+      "implementation_id": "endpoint_get_tasks",
+      "test_cases": [
+        {
+          "id": "read_tasks_positive_all_tasks_returned",
+          "name": "Retrieve all tasks successfully",
+          "description": "Verify that the GET /tasks endpoint returns the complete list of tasks with all required fields.",
+          "type": "positive",
+          "request_method": "GET",
+          "request_url": "/tasks",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 200,
+          "response_body_json": "[{\"id\":1,\"title\":\"Task 1\",\"description\":\"First task\",\"priority\":\"High\",\"due_date\":\"2026-01-10\",\"status\":\"Pending\"},{\"id\":2,\"title\":\"Task 2\",\"description\":\"Second task\",\"priority\":\"Low\",\"due_date\":\"2026-01-12\",\"status\":\"Completed\"}]",
+          "test_setup": {
+            "given": "Database contains two tasks with all fields populated.",
+            "when": "A GET request is made to /tasks.",
+            "then": "The response contains both tasks with correct fields and values."
+          },
+          "implementation_id": "endpoint_get_tasks"
+        },
+        {
+          "id": "read_tasks_positive_empty_list",
+          "name": "Retrieve tasks when no tasks exist",
+          "description": "Verify that the endpoint returns an empty list when there are no tasks in the database.",
+          "type": "positive",
+          "request_method": "GET",
+          "request_url": "/tasks",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 200,
+          "response_body_json": "[]",
+          "test_setup": {
+            "given": "Database contains no tasks.",
+            "when": "A GET request is made to /tasks.",
+            "then": "The response is an empty JSON array."
+          },
+          "implementation_id": "endpoint_get_tasks"
+        },
+        {
+          "id": "read_tasks_positive_completed_pending",
+          "name": "Retrieve tasks with mixed completion status",
+          "description": "Verify that the endpoint returns tasks with both 'Completed' and 'Pending' statuses.",
+          "type": "positive",
+          "request_method": "GET",
+          "request_url": "/tasks",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 200,
+          "response_body_json": "[{\"id\":1,\"title\":\"Task 1\",\"description\":\"First task\",\"priority\":\"High\",\"due_date\":\"2026-01-10\",\"status\":\"Completed\"},{\"id\":2,\"title\":\"Task 2\",\"description\":\"Second task\",\"priority\":\"Low\",\"due_date\":\"2026-01-12\",\"status\":\"Pending\"}]",
+          "test_setup": {
+            "given": "Database contains one completed and one pending task.",
+            "when": "A GET request is made to /tasks.",
+            "then": "The response contains both tasks with correct status values."
+          },
+          "implementation_id": "endpoint_get_tasks"
+        },
+        {
+          "id": "read_tasks_negative_invalid_method_post",
+          "name": "Invalid method POST to /tasks",
+          "description": "Verify that sending a POST request to the GET-only /tasks endpoint returns a 405 Method Not Allowed error.",
+          "type": "negative",
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "{}",
+          "response_status_code": 405,
+          "response_body_json": "{\"detail\":\"Method Not Allowed\"}",
+          "test_setup": {
+            "given": "API is running.",
+            "when": "A POST request is made to /tasks.",
+            "then": "The response status is 405 and contains an appropriate error message."
+          },
+          "implementation_id": "endpoint_get_tasks"
+        },
+        {
+          "id": "read_tasks_negative_invalid_method_put",
+          "name": "Invalid method PUT to /tasks",
+          "description": "Verify that sending a PUT request to the GET-only /tasks endpoint returns a 405 Method Not Allowed error.",
+          "type": "negative",
+          "request_method": "PUT",
+          "request_url": "/tasks",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "{}",
+          "response_status_code": 405,
+          "response_body_json": "{\"detail\":\"Method Not Allowed\"}",
+          "test_setup": {
+            "given": "API is running.",
+            "when": "A PUT request is made to /tasks.",
+            "then": "The response status is 405 and contains an appropriate error message."
+          },
+          "implementation_id": "endpoint_get_tasks"
+        },
+        {
+          "id": "read_tasks_negative_invalid_accept_header",
+          "name": "Invalid Accept header",
+          "description": "Verify that the endpoint returns a 406 Not Acceptable error when the Accept header requests an unsupported format.",
+          "type": "negative",
+          "request_method": "GET",
+          "request_url": "/tasks",
+          "request_headers": {
+            "Content-Type": "application/json",
+            "Accept": "application/xml"
+          },
+          "request_body_json": "",
+          "response_status_code": 406,
+          "response_body_json": "{\"detail\":\"Not Acceptable\"}",
+          "test_setup": {
+            "given": "API is running.",
+            "when": "A GET request is made to /tasks with Accept: application/xml.",
+            "then": "The response status is 406 and contains an appropriate error message."
+          },
+          "implementation_id": "endpoint_get_tasks"
+        },
+        {
+          "id": "read_tasks_negative_database_failure",
+          "name": "Database failure when retrieving tasks",
+          "description": "Verify that the endpoint returns a 500 Internal Server Error if the database is unavailable.",
+          "type": "negative",
+          "request_method": "GET",
+          "request_url": "/tasks",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 500,
+          "response_body_json": "{\"detail\":\"Internal Server Error\"}",
+          "test_setup": {
+            "given": "Database is down or unreachable.",
+            "when": "A GET request is made to /tasks.",
+            "then": "The response status is 500 and contains an appropriate error message."
+          },
+          "implementation_id": "endpoint_get_tasks"
+        },
+        {
+          "id": "read_tasks_positive_large_number_of_tasks",
+          "name": "Retrieve a large number of tasks",
+          "description": "Verify that the endpoint can handle and return a large list of tasks (e.g., 1000 tasks).",
+          "type": "positive",
+          "request_method": "GET",
+          "request_url": "/tasks",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 200,
+          "response_body_json": "[{\"id\":1,\"title\":\"Task 1\",\"description\":\"...\",\"priority\":\"Low\",\"due_date\":\"2026-01-10\",\"status\":\"Pending\"},...,{\"id\":1000,\"title\":\"Task 1000\",\"description\":\"...\",\"priority\":\"High\",\"due_date\":\"2026-12-31\",\"status\":\"Completed\"}]",
+          "test_setup": {
+            "given": "Database contains 1000 tasks.",
+            "when": "A GET request is made to /tasks.",
+            "then": "The response contains all 1000 tasks without error."
+          },
+          "implementation_id": "endpoint_get_tasks"
+        },
+        {
+          "id": "read_tasks_positive_field_validation",
+          "name": "Validate all required fields in response",
+          "description": "Verify that each task in the response contains all required fields: id, title, description, priority, due_date, status.",
+          "type": "positive",
+          "request_method": "GET",
+          "request_url": "/tasks",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 200,
+          "response_body_json": "[{\"id\":1,\"title\":\"Task 1\",\"description\":\"First task\",\"priority\":\"High\",\"due_date\":\"2026-01-10\",\"status\":\"Pending\"}]",
+          "test_setup": {
+            "given": "Database contains at least one task with all fields populated.",
+            "when": "A GET request is made to /tasks.",
+            "then": "Each task in the response contains all required fields."
+          },
+          "implementation_id": "endpoint_get_tasks"
+        },
+        {
+          "id": "read_tasks_negative_malformed_url",
+          "name": "Malformed URL returns 404",
+          "description": "Verify that accessing a malformed endpoint (e.g., /task instead of /tasks) returns a 404 Not Found error.",
+          "type": "negative",
+          "request_method": "GET",
+          "request_url": "/task",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 404,
+          "response_body_json": "{\"detail\":\"Not Found\"}",
+          "test_setup": {
+            "given": "API is running.",
+            "when": "A GET request is made to /task.",
+            "then": "The response status is 404 and contains an appropriate error message."
+          },
+          "implementation_id": "endpoint_get_tasks"
+        }
+      ]
+    },
+    {
+      "implementation_id": "endpoint_delete_task",
+      "test_cases": [
+        {
+          "id": "delete_existing_task_success",
+          "name": "Delete existing task successfully",
+          "description": "Verify that deleting an existing task returns a success message and the task is removed.",
+          "type": "positive",
+          "request_method": "DELETE",
+          "request_url": "/tasks/123",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 200,
+          "response_body_json": "{\"message\": \"Task deleted successfully\"}",
+          "test_setup": {
+            "given": "A task with ID 123 exists in the database.",
+            "when": "A DELETE request is sent to /tasks/123.",
+            "then": "The response status is 200 and the message confirms deletion."
+          },
+          "implementation_id": "endpoint_delete_task"
+        },
+        {
+          "id": "delete_nonexistent_task_404",
+          "name": "Delete non-existent task returns 404",
+          "description": "Verify that attempting to delete a non-existent task returns a 404 error.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/99999",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 404,
+          "response_body_json": "{\"detail\": \"Task not found\"}",
+          "test_setup": {
+            "given": "No task with ID 99999 exists in the database.",
+            "when": "A DELETE request is sent to /tasks/99999.",
+            "then": "The response status is 404 with an appropriate error message."
+          },
+          "implementation_id": "endpoint_delete_task"
+        },
+        {
+          "id": "delete_task_invalid_id_format",
+          "name": "Delete task with invalid ID format",
+          "description": "Verify that providing an invalid task_id format returns a 422 validation error.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/abc",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 422,
+          "response_body_json": "{\"detail\": \"Invalid task_id format\"}",
+          "test_setup": {
+            "given": "The API expects an integer task_id.",
+            "when": "A DELETE request is sent to /tasks/abc.",
+            "then": "The response status is 422 with a validation error message."
+          },
+          "implementation_id": "endpoint_delete_task"
+        },
+        {
+          "id": "delete_task_missing_id",
+          "name": "Delete task with missing ID",
+          "description": "Verify that omitting the task_id in the URL returns a 404 or 405 error.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 404,
+          "response_body_json": "{\"detail\": \"Not Found\"}",
+          "test_setup": {
+            "given": "The endpoint requires a task_id parameter.",
+            "when": "A DELETE request is sent to /tasks/ without a task_id.",
+            "then": "The response status is 404 or 405 indicating the endpoint is not found or method not allowed."
+          },
+          "implementation_id": "endpoint_delete_task"
+        },
+        {
+          "id": "delete_task_already_deleted",
+          "name": "Delete task that was already deleted",
+          "description": "Verify that deleting a task that was already deleted returns a 404 error.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/124",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 404,
+          "response_body_json": "{\"detail\": \"Task not found\"}",
+          "test_setup": {
+            "given": "A task with ID 124 existed but was deleted previously.",
+            "when": "A DELETE request is sent to /tasks/124.",
+            "then": "The response status is 404 with an appropriate error message."
+          },
+          "implementation_id": "endpoint_delete_task"
+        },
+        {
+          "id": "delete_task_no_auth",
+          "name": "Delete task without authentication",
+          "description": "Verify that deleting a task without authentication returns a 401 or 403 error if authentication is required.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/125",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 401,
+          "response_body_json": "{\"detail\": \"Not authenticated\"}",
+          "test_setup": {
+            "given": "The API requires authentication to delete tasks.",
+            "when": "A DELETE request is sent to /tasks/125 without authentication headers.",
+            "then": "The response status is 401 or 403 with an authentication error message."
+          },
+          "implementation_id": "endpoint_delete_task"
+        },
+        {
+          "id": "delete_task_boundary_id_zero",
+          "name": "Delete task with boundary ID (zero)",
+          "description": "Verify that deleting a task with ID 0 returns a 404 or validation error.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/0",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 404,
+          "response_body_json": "{\"detail\": \"Task not found\"}",
+          "test_setup": {
+            "given": "No task with ID 0 exists.",
+            "when": "A DELETE request is sent to /tasks/0.",
+            "then": "The response status is 404 or a validation error is returned."
+          },
+          "implementation_id": "endpoint_delete_task"
+        },
+        {
+          "id": "delete_task_boundary_id_negative",
+          "name": "Delete task with negative ID",
+          "description": "Verify that deleting a task with a negative ID returns a 422 validation error.",
+          "type": "negative",
+          "request_method": "DELETE",
+          "request_url": "/tasks/-1",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "",
+          "response_status_code": 422,
+          "response_body_json": "{\"detail\": \"Invalid task_id format\"}",
+          "test_setup": {
+            "given": "The API expects a positive integer task_id.",
+            "when": "A DELETE request is sent to /tasks/-1.",
+            "then": "The response status is 422 with a validation error message."
+          },
+          "implementation_id": "endpoint_delete_task"
+        },
+        {
+          "id": "delete_task_extra_body_ignored",
+          "name": "Delete task with extra request body",
+          "description": "Verify that sending a DELETE request with an unnecessary body does not affect the outcome.",
+          "type": "positive",
+          "request_method": "DELETE",
+          "request_url": "/tasks/126",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_body_json": "{\"irrelevant\": \"data\"}",
+          "response_status_code": 200,
+          "response_body_json": "{\"message\": \"Task deleted successfully\"}",
+          "test_setup": {
+            "given": "A task with ID 126 exists.",
+            "when": "A DELETE request is sent to /tasks/126 with an extra JSON body.",
+            "then": "The response status is 200 and the task is deleted, ignoring the body."
+          },
+          "implementation_id": "endpoint_delete_task"
+        }
+      ]
+    }
+  ]
+}
