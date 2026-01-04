@@ -623,7 +623,8 @@
           },
           "implementation_id": "function-get-tasks"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/manage_tasks/function-get-tasks.py"
     },
     {
       "implementation_id": "function-add-task",
@@ -844,7 +845,8 @@
           },
           "implementation_id": "function-add-task"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/manage_tasks/function-add-task.py"
     },
     {
       "implementation_id": "function-update-task",
@@ -969,7 +971,8 @@
           },
           "implementation_id": "function-update-task"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/manage_tasks/function-update-task.py"
     },
     {
       "implementation_id": "function-delete-task",
@@ -1118,7 +1121,8 @@
           },
           "implementation_id": "function-delete-task"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/manage_tasks/function-delete-task.py"
     }
   ],
   "component": [],
@@ -1621,7 +1625,8 @@
           },
           "implementation_id": "endpoint-update-task"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/manage_tasks/endpoint-update-task.py"
     },
     {
       "implementation_id": "endpoint-delete-task",
@@ -1824,7 +1829,8 @@
           },
           "implementation_id": "endpoint-delete-task"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/manage_tasks/endpoint-delete-task.py"
     },
     {
       "implementation_id": "endpoint-get-tasks",
@@ -2040,7 +2046,8 @@
           },
           "implementation_id": "endpoint-get-tasks"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/manage_tasks/endpoint-get-tasks.py"
     },
     {
       "implementation_id": "endpoint-create-task",
@@ -2438,7 +2445,8 @@
           },
           "implementation_id": "endpoint-create-task"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/manage_tasks/endpoint-create-task.py"
     }
   ]
 }
