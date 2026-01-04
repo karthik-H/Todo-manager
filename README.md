@@ -11,11 +11,3 @@ Personal Todo manager
 - Delete tasks
 - Mark tasks as **Completed** or **Pending**    
  
-- Categorize tasks (e.g., Work, Personal, Study)
-- Filter tasks by status:
-  - All
-  - Completed
-  - Pending
-- Sort tasks by:
-  - Due date
-  - Priority
