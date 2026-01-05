@@ -34,7 +34,7 @@
         "pseudo_code": "@app.get('/tasks')\nCall database.get_tasks()\nReturn list of tasks"
       },
       {
-        "id": "backend-tasks-post-endpoint",
+        "id": "endpoint-create-task",
         "name": "create_task",
         "file_path": "backend/main.py",
         "type": "endpoint",
