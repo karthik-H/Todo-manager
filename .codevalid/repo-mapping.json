@@ -66,7 +66,7 @@
         "pseudo_code": "Frontend calls @app.put('/tasks/{task_id}')\nPasses updated 'completed' status\nDatabase updates the task"
       },
       {
-        "id": "backend-add-task-function",
+        "id": "function-add-task",
         "name": "add_task",
         "file_path": "backend/database.py",
         "type": "function",
