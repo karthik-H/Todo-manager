@@ -93,5 +93,77 @@
     "missing_implementations": [
       "A new task must include a tag (the UI uses 'category' as a tag, but the backend expects 'tag' per requirement; ensure naming is consistent and enforced as required)."
     ]
+  },
+  "manage_events": {
+    "implementation": [
+      {
+        "id": "endpoint_get_tasks",
+        "name": "read_tasks",
+        "file_path": "backend/main.py",
+        "type": "endpoint",
+        "How_is_it_connected_to_implementation": "API endpoint to retrieve all tasks (events). This is the entry point for listing events.",
+        "pseudo_code": "When a GET request is made to /tasks:\n    Call get_tasks()\n    Return the list of tasks"
+      },
+      {
+        "id": "function_get_tasks",
+        "name": "get_tasks",
+        "file_path": "backend/database.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Retrieves all tasks (events) from the database file. Called by the read_tasks endpoint.",
+        "pseudo_code": "If the database file does not exist:\n    Return an empty list\nOpen the database file\nTry to load JSON data\n    For each item in data:\n        Create a Task object\n    Return the list of Task objects\nIf JSON decode fails:\n    Return an empty list"
+      },
+      {
+        "id": "endpoint_create_task",
+        "name": "create_task",
+        "file_path": "backend/main.py",
+        "type": "endpoint",
+        "How_is_it_connected_to_implementation": "API endpoint to add a new task (event). Entry point for event creation.",
+        "pseudo_code": "When a POST request is made to /tasks with a TaskCreate payload:\n    Call add_task(task)\n    Return the created task"
+      },
+      {
+        "id": "function_add_task",
+        "name": "add_task",
+        "file_path": "backend/database.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Adds a new task (event) to the database. Called by the create_task endpoint.",
+        "pseudo_code": "Call get_tasks() to get current tasks\nCreate a new Task object with a unique id and data from TaskCreate\nAppend the new task to the list\nSave the updated list to the database\nReturn the new task"
+      },
+      {
+        "id": "endpoint_update_task",
+        "name": "update_task",
+        "file_path": "backend/main.py",
+        "type": "endpoint",
+        "How_is_it_connected_to_implementation": "API endpoint to edit an existing task (event). Entry point for event editing.",
+        "pseudo_code": "When a PUT request is made to /tasks/{task_id} with a TaskCreate payload:\n    Call update_task(task_id, task)\n    If no task is found:\n        Raise 404 error\n    Return the updated task"
+      },
+      {
+        "id": "function_update_task",
+        "name": "update_task",
+        "file_path": "backend/database.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Updates an existing task (event) in the database. Called by the update_task endpoint.",
+        "pseudo_code": "Call get_tasks() to get current tasks\nFor each task in the list:\n    If task.id matches task_id:\n        Create updated Task object\n        Replace the old task with the updated one\n        Save the updated list to the database\n        Return the updated task\nIf no match found:\n    Return None"
+      },
+      {
+        "id": "endpoint_delete_task",
+        "name": "delete_task",
+        "file_path": "backend/main.py",
+        "type": "endpoint",
+        "How_is_it_connected_to_implementation": "API endpoint to delete an existing task (event). Entry point for event deletion.",
+        "pseudo_code": "When a DELETE request is made to /tasks/{task_id}:\n    Call delete_task(task_id)\n    If deletion fails:\n        Raise 404 error\n    Return success message"
+      },
+      {
+        "id": "function_delete_task",
+        "name": "delete_task",
+        "file_path": "backend/database.py",
+        "type": "function",
+        "How_is_it_connected_to_implementation": "Deletes a task (event) from the database. Called by the delete_task endpoint.",
+        "pseudo_code": "Call get_tasks() to get current tasks\nFilter out the task with the given id\nIf a task was removed:\n    Save the updated list to the database\n    Return True\nElse:\n    Return False"
+      }
+    ],
+    "missing_implementations": [
+      "A new event must include a name, description, and location.",
+      "Mark events as archived."
+    ]
   }
 }
