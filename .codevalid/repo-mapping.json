@@ -42,7 +42,7 @@
         "pseudo_code": "@app.post('/tasks')\n    Call database.add_task with TaskCreate data\n    Return created Task"
       },
       {
-        "id": "backend-update-task-endpoint",
+        "id": "endpoint-update-task",
         "name": "update_task",
         "file_path": "backend/main.py",
         "type": "endpoint",
