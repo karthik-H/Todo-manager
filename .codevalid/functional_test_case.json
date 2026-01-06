@@ -1570,6 +1570,692 @@
           "implementation_id": "backend-delete-task-function"
         }
       ]
+    },
+    {
+      "implementation_id": "function_get_tasks",
+      "test_cases": [
+        {
+          "id": "get_tasks_file_missing",
+          "name": "File does not exist",
+          "description": "Test that get_tasks returns an empty list when the database file does not exist.",
+          "type": "edge",
+          "test_setup": {
+            "given": "The database file path does not exist on disk.",
+            "when": "get_tasks() is called.",
+            "then": "An empty list is returned."
+          },
+          "implementation_id": "function_get_tasks"
+        },
+        {
+          "id": "get_tasks_empty_file",
+          "name": "Empty database file",
+          "description": "Test that get_tasks returns an empty list when the database file exists but is empty.",
+          "type": "edge",
+          "test_setup": {
+            "given": "The database file exists and is empty (zero bytes).",
+            "when": "get_tasks() is called.",
+            "then": "An empty list is returned."
+          },
+          "implementation_id": "function_get_tasks"
+        },
+        {
+          "id": "get_tasks_invalid_json",
+          "name": "Invalid JSON in database file",
+          "description": "Test that get_tasks returns an empty list when the database file contains invalid JSON.",
+          "type": "negative",
+          "test_setup": {
+            "given": "The database file exists and contains malformed JSON.",
+            "when": "get_tasks() is called.",
+            "then": "An empty list is returned."
+          },
+          "implementation_id": "function_get_tasks"
+        },
+        {
+          "id": "get_tasks_valid_empty_list",
+          "name": "Valid JSON with empty list",
+          "description": "Test that get_tasks returns an empty list when the database file contains a valid empty JSON list.",
+          "type": "positive",
+          "test_setup": {
+            "given": "The database file exists and contains '[]' as valid JSON.",
+            "when": "get_tasks() is called.",
+            "then": "An empty list is returned."
+          },
+          "implementation_id": "function_get_tasks"
+        },
+        {
+          "id": "get_tasks_valid_single_task",
+          "name": "Valid JSON with one task",
+          "description": "Test that get_tasks returns a list with one Task object when the database file contains a single valid task.",
+          "type": "positive",
+          "test_setup": {
+            "given": "The database file exists and contains a valid JSON list with one task object.",
+            "when": "get_tasks() is called.",
+            "then": "A list with one Task object is returned, matching the data in the file."
+          },
+          "implementation_id": "function_get_tasks"
+        },
+        {
+          "id": "get_tasks_valid_multiple_tasks",
+          "name": "Valid JSON with multiple tasks",
+          "description": "Test that get_tasks returns a list of Task objects when the database file contains multiple valid tasks.",
+          "type": "positive",
+          "test_setup": {
+            "given": "The database file exists and contains a valid JSON list with multiple task objects.",
+            "when": "get_tasks() is called.",
+            "then": "A list of Task objects is returned, each matching the data in the file."
+          },
+          "implementation_id": "function_get_tasks"
+        },
+        {
+          "id": "get_tasks_task_missing_fields",
+          "name": "Task object missing fields",
+          "description": "Test that get_tasks handles tasks with missing fields gracefully.",
+          "type": "edge",
+          "test_setup": {
+            "given": "The database file contains a valid JSON list with a task object missing one or more required fields.",
+            "when": "get_tasks() is called.",
+            "then": "The function either skips the invalid task or returns a Task object with default/None values for missing fields, depending on implementation."
+          },
+          "implementation_id": "function_get_tasks"
+        },
+        {
+          "id": "get_tasks_task_extra_fields",
+          "name": "Task object with extra fields",
+          "description": "Test that get_tasks handles tasks with extra fields not defined in the Task model.",
+          "type": "edge",
+          "test_setup": {
+            "given": "The database file contains a valid JSON list with a task object that has additional fields.",
+            "when": "get_tasks() is called.",
+            "then": "The function returns a Task object, ignoring extra fields or storing them if supported."
+          },
+          "implementation_id": "function_get_tasks"
+        },
+        {
+          "id": "get_tasks_non_list_json",
+          "name": "Database file contains non-list JSON",
+          "description": "Test that get_tasks returns an empty list when the database file contains valid JSON that is not a list.",
+          "type": "negative",
+          "test_setup": {
+            "given": "The database file contains valid JSON, but the root object is not a list (e.g., a dict/object).",
+            "when": "get_tasks() is called.",
+            "then": "An empty list is returned."
+          },
+          "implementation_id": "function_get_tasks"
+        },
+        {
+          "id": "get_tasks_large_number_of_tasks",
+          "name": "Large number of tasks",
+          "description": "Test that get_tasks can handle a database file containing a large number of tasks efficiently.",
+          "type": "edge",
+          "test_setup": {
+            "given": "The database file contains a valid JSON list with a large number (e.g., 10,000) of task objects.",
+            "when": "get_tasks() is called.",
+            "then": "A list of Task objects is returned, matching the data in the file, and performance is acceptable."
+          },
+          "implementation_id": "function_get_tasks"
+        }
+      ]
+    },
+    {
+      "implementation_id": "function_add_task",
+      "test_cases": [
+        {
+          "id": "add_task_valid_input",
+          "name": "Add Task with Valid Input",
+          "description": "Verify that add_task successfully adds a new task when provided with valid name, description, and location.",
+          "type": "positive",
+          "test_setup": {
+            "given": {
+              "existing_tasks": [],
+              "input": {
+                "name": "Team Meeting",
+                "description": "Discuss project milestones",
+                "location": "Conference Room"
+              }
+            },
+            "when": "add_task is called with the input",
+            "then": {
+              "new_task": {
+                "id": "unique_id_generated",
+                "name": "Team Meeting",
+                "description": "Discuss project milestones",
+                "location": "Conference Room"
+              },
+              "database_contains": [
+                {
+                  "id": "unique_id_generated",
+                  "name": "Team Meeting",
+                  "description": "Discuss project milestones",
+                  "location": "Conference Room"
+                }
+              ]
+            }
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_missing_name",
+          "name": "Add Task with Missing Name",
+          "description": "Verify that add_task fails when the name field is missing.",
+          "type": "negative",
+          "test_setup": {
+            "given": {
+              "existing_tasks": [],
+              "input": {
+                "description": "Discuss project milestones",
+                "location": "Conference Room"
+              }
+            },
+            "when": "add_task is called with the input",
+            "then": {
+              "error": "Missing required field: name",
+              "database_contains": []
+            }
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_empty_name",
+          "name": "Add Task with Empty Name",
+          "description": "Verify that add_task fails when the name field is an empty string.",
+          "type": "negative",
+          "test_setup": {
+            "given": {
+              "existing_tasks": [],
+              "input": {
+                "name": "",
+                "description": "Discuss project milestones",
+                "location": "Conference Room"
+              }
+            },
+            "when": "add_task is called with the input",
+            "then": {
+              "error": "Name cannot be empty",
+              "database_contains": []
+            }
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_long_name",
+          "name": "Add Task with Maximum Length Name",
+          "description": "Verify that add_task accepts a name at the maximum allowed length.",
+          "type": "edge",
+          "test_setup": {
+            "given": {
+              "existing_tasks": [],
+              "input": {
+                "name": "T.repeat(255)",
+                "description": "Long name test",
+                "location": "Main Hall"
+              }
+            },
+            "when": "add_task is called with the input",
+            "then": {
+              "new_task": {
+                "id": "unique_id_generated",
+                "name": "T.repeat(255)",
+                "description": "Long name test",
+                "location": "Main Hall"
+              },
+              "database_contains": [
+                {
+                  "id": "unique_id_generated",
+                  "name": "T.repeat(255)",
+                  "description": "Long name test",
+                  "location": "Main Hall"
+                }
+              ]
+            }
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_duplicate_id",
+          "name": "Add Task with Duplicate ID",
+          "description": "Verify that add_task generates a unique ID even if a task with similar data exists.",
+          "type": "edge",
+          "test_setup": {
+            "given": {
+              "existing_tasks": [
+                {
+                  "id": "1",
+                  "name": "Team Meeting",
+                  "description": "Discuss project milestones",
+                  "location": "Conference Room"
+                }
+              ],
+              "input": {
+                "name": "Team Meeting",
+                "description": "Discuss project milestones",
+                "location": "Conference Room"
+              }
+            },
+            "when": "add_task is called with the input",
+            "then": {
+              "new_task": {
+                "id": "unique_id_generated_not_1",
+                "name": "Team Meeting",
+                "description": "Discuss project milestones",
+                "location": "Conference Room"
+              },
+              "database_contains": [
+                {
+                  "id": "1",
+                  "name": "Team Meeting",
+                  "description": "Discuss project milestones",
+                  "location": "Conference Room"
+                },
+                {
+                  "id": "unique_id_generated_not_1",
+                  "name": "Team Meeting",
+                  "description": "Discuss project milestones",
+                  "location": "Conference Room"
+                }
+              ]
+            }
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_missing_description",
+          "name": "Add Task with Missing Description",
+          "description": "Verify that add_task fails when the description field is missing.",
+          "type": "negative",
+          "test_setup": {
+            "given": {
+              "existing_tasks": [],
+              "input": {
+                "name": "Team Meeting",
+                "location": "Conference Room"
+              }
+            },
+            "when": "add_task is called with the input",
+            "then": {
+              "error": "Missing required field: description",
+              "database_contains": []
+            }
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_missing_location",
+          "name": "Add Task with Missing Location",
+          "description": "Verify that add_task fails when the location field is missing.",
+          "type": "negative",
+          "test_setup": {
+            "given": {
+              "existing_tasks": [],
+              "input": {
+                "name": "Team Meeting",
+                "description": "Discuss project milestones"
+              }
+            },
+            "when": "add_task is called with the input",
+            "then": {
+              "error": "Missing required field: location",
+              "database_contains": []
+            }
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_empty_description",
+          "name": "Add Task with Empty Description",
+          "description": "Verify that add_task accepts an empty description if allowed.",
+          "type": "edge",
+          "test_setup": {
+            "given": {
+              "existing_tasks": [],
+              "input": {
+                "name": "Team Meeting",
+                "description": "",
+                "location": "Conference Room"
+              }
+            },
+            "when": "add_task is called with the input",
+            "then": {
+              "new_task": {
+                "id": "unique_id_generated",
+                "name": "Team Meeting",
+                "description": "",
+                "location": "Conference Room"
+              },
+              "database_contains": [
+                {
+                  "id": "unique_id_generated",
+                  "name": "Team Meeting",
+                  "description": "",
+                  "location": "Conference Room"
+                }
+              ]
+            }
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_empty_location",
+          "name": "Add Task with Empty Location",
+          "description": "Verify that add_task fails when the location field is an empty string.",
+          "type": "negative",
+          "test_setup": {
+            "given": {
+              "existing_tasks": [],
+              "input": {
+                "name": "Team Meeting",
+                "description": "Discuss project milestones",
+                "location": ""
+              }
+            },
+            "when": "add_task is called with the input",
+            "then": {
+              "error": "Location cannot be empty",
+              "database_contains": []
+            }
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_database_unavailable",
+          "name": "Add Task when Database is Unavailable",
+          "description": "Verify that add_task handles database unavailability gracefully.",
+          "type": "negative",
+          "test_setup": {
+            "given": {
+              "existing_tasks": [],
+              "input": {
+                "name": "Team Meeting",
+                "description": "Discuss project milestones",
+                "location": "Conference Room"
+              },
+              "database_available": false
+            },
+            "when": "add_task is called with the input",
+            "then": {
+              "error": "Database unavailable",
+              "database_contains": []
+            }
+          },
+          "implementation_id": "function_add_task"
+        },
+        {
+          "id": "add_task_large_number_of_existing_tasks",
+          "name": "Add Task with Large Number of Existing Tasks",
+          "description": "Verify that add_task can add a new task when the database already contains a large number of tasks.",
+          "type": "edge",
+          "test_setup": {
+            "given": {
+              "existing_tasks": "T.repeat(10000, {id: T.toString(i), name: 'Task'+T.toString(i), description: 'Desc'+T.toString(i), location: 'Loc'+T.toString(i)})",
+              "input": {
+                "name": "Team Meeting",
+                "description": "Discuss project milestones",
+                "location": "Conference Room"
+              }
+            },
+            "when": "add_task is called with the input",
+            "then": {
+              "new_task": {
+                "id": "unique_id_generated",
+                "name": "Team Meeting",
+                "description": "Discuss project milestones",
+                "location": "Conference Room"
+              },
+              "database_contains": "T.repeat(10001, ...)"
+            }
+          },
+          "implementation_id": "function_add_task"
+        }
+      ]
+    },
+    {
+      "implementation_id": "function_update_task",
+      "test_cases": [
+        {
+          "id": "update_existing_task_success",
+          "name": "Update an existing task successfully",
+          "description": "Verify that updating an existing task with valid data replaces the old task and returns the updated task.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A database containing a task with id=1. Update data includes new name, description, and location.",
+            "when": "update_task(task_id=1, updated_data) is called",
+            "then": "The task with id=1 is updated in the database and the updated task object is returned."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_nonexistent_task",
+          "name": "Attempt to update a non-existent task",
+          "description": "Verify that attempting to update a task with an id not present in the database returns None.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A database containing tasks with ids [1,2,3]. Update data for task_id=99.",
+            "when": "update_task(task_id=99, updated_data) is called",
+            "then": "None is returned and the database remains unchanged."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_empty_database",
+          "name": "Update task when database is empty",
+          "description": "Verify that updating a task when the database has no tasks returns None.",
+          "type": "edge",
+          "test_setup": {
+            "given": "An empty database (no tasks). Update data for any task_id.",
+            "when": "update_task(task_id=1, updated_data) is called",
+            "then": "None is returned and the database remains empty."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_partial_data",
+          "name": "Update task with partial data",
+          "description": "Verify that updating a task with missing optional fields (e.g., location) only updates provided fields.",
+          "type": "edge",
+          "test_setup": {
+            "given": "A database containing a task with id=2. Update data includes only name and description.",
+            "when": "update_task(task_id=2, updated_data) is called",
+            "then": "The task with id=2 is updated with new name and description, location remains unchanged."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_invalid_id_type",
+          "name": "Update task with invalid id type",
+          "description": "Verify that passing a non-integer task_id (e.g., string) returns None or raises an error.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A database containing tasks with integer ids. Update data for task_id='abc' (string).",
+            "when": "update_task(task_id='abc', updated_data) is called",
+            "then": "None is returned or a type error is raised. Database remains unchanged."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_no_changes",
+          "name": "Update task with identical data",
+          "description": "Verify that updating a task with data identical to the existing task still returns the task and saves to the database.",
+          "type": "edge",
+          "test_setup": {
+            "given": "A database containing a task with id=3. Update data matches the current task data.",
+            "when": "update_task(task_id=3, updated_data) is called",
+            "then": "The task with id=3 is returned and the database is updated (even if unchanged)."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_archived_status",
+          "name": "Update task to mark as archived",
+          "description": "Verify that updating a task to set its archived status works correctly.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A database containing a task with id=4 and archived=false. Update data sets archived=true.",
+            "when": "update_task(task_id=4, updated_data) is called",
+            "then": "The task with id=4 is updated with archived=true and returned."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_missing_required_fields",
+          "name": "Update task with missing required fields",
+          "description": "Verify that updating a task with missing required fields (e.g., name) returns None or raises an error.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A database containing a task with id=5. Update data omits the required 'name' field.",
+            "when": "update_task(task_id=5, updated_data) is called",
+            "then": "None is returned or a validation error is raised. Database remains unchanged."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_multiple_tasks",
+          "name": "Update one task among multiple tasks",
+          "description": "Verify that updating one task does not affect other tasks in the database.",
+          "type": "positive",
+          "test_setup": {
+            "given": "A database containing tasks with ids [6,7,8]. Update data for task_id=7.",
+            "when": "update_task(task_id=7, updated_data) is called",
+            "then": "Only the task with id=7 is updated; tasks with ids 6 and 8 remain unchanged."
+          },
+          "implementation_id": "function_update_task"
+        },
+        {
+          "id": "update_task_database_save_failure",
+          "name": "Database save failure during update",
+          "description": "Simulate a failure when saving the updated task list to the database and verify error handling.",
+          "type": "negative",
+          "test_setup": {
+            "given": "A database containing a task with id=9. Simulate a database write failure after updating the task.",
+            "when": "update_task(task_id=9, updated_data) is called",
+            "then": "An error is raised or None is returned. The database may remain unchanged or partially updated depending on error handling."
+          },
+          "implementation_id": "function_update_task"
+        }
+      ]
+    },
+    {
+      "implementation_id": "function_delete_task",
+      "test_cases": [
+        {
+          "id": "delete_existing_task",
+          "name": "Delete an existing task by valid ID",
+          "description": "Verify that delete_task removes a task when a valid ID is provided and returns True.",
+          "type": "positive",
+          "test_setup": {
+            "given": "Database contains tasks with IDs [1, 2, 3].",
+            "when": "delete_task(2) is called.",
+            "then": "Task with ID 2 is removed from the database. Function returns True."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_nonexistent_task",
+          "name": "Attempt to delete a non-existent task",
+          "description": "Verify that delete_task returns False when the provided ID does not exist.",
+          "type": "negative",
+          "test_setup": {
+            "given": "Database contains tasks with IDs [1, 2, 3].",
+            "when": "delete_task(99) is called.",
+            "then": "No task is removed. Function returns False."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_empty_db",
+          "name": "Attempt to delete from an empty database",
+          "description": "Verify that delete_task returns False when the database is empty.",
+          "type": "edge",
+          "test_setup": {
+            "given": "Database contains no tasks.",
+            "when": "delete_task(1) is called.",
+            "then": "No task is removed. Function returns False."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_multiple_same_id",
+          "name": "Delete when multiple tasks have the same ID",
+          "description": "Verify that delete_task removes all tasks with the given ID if duplicates exist.",
+          "type": "edge",
+          "test_setup": {
+            "given": "Database contains tasks with IDs [1, 2, 2, 3].",
+            "when": "delete_task(2) is called.",
+            "then": "All tasks with ID 2 are removed. Function returns True."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_invalid_id_type",
+          "name": "Delete with invalid ID type (e.g., string)",
+          "description": "Verify that delete_task handles invalid ID types gracefully.",
+          "type": "negative",
+          "test_setup": {
+            "given": "Database contains tasks with IDs [1, 2, 3].",
+            "when": "delete_task(\"abc\") is called.",
+            "then": "No task is removed. Function returns False or raises a TypeError."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_none_id",
+          "name": "Delete with None as ID",
+          "description": "Verify that delete_task handles None as the ID parameter.",
+          "type": "edge",
+          "test_setup": {
+            "given": "Database contains tasks with IDs [1, 2, 3].",
+            "when": "delete_task(None) is called.",
+            "then": "No task is removed. Function returns False or raises a TypeError."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_negative_id",
+          "name": "Delete with negative ID",
+          "description": "Verify that delete_task handles negative IDs correctly.",
+          "type": "edge",
+          "test_setup": {
+            "given": "Database contains tasks with IDs [1, -2, 3].",
+            "when": "delete_task(-2) is called.",
+            "then": "Task with ID -2 is removed if present. Function returns True."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_zero_id",
+          "name": "Delete with zero as ID",
+          "description": "Verify that delete_task handles zero as a valid ID.",
+          "type": "edge",
+          "test_setup": {
+            "given": "Database contains tasks with IDs [0, 1, 2].",
+            "when": "delete_task(0) is called.",
+            "then": "Task with ID 0 is removed. Function returns True."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_db_save_failure",
+          "name": "Database save failure after deletion",
+          "description": "Simulate a database save failure after removing a task and verify error handling.",
+          "type": "negative",
+          "test_setup": {
+            "given": "Database contains tasks with IDs [1, 2, 3]. Database save operation will fail.",
+            "when": "delete_task(2) is called.",
+            "then": "Task with ID 2 is removed from in-memory list, but database save fails. Function should handle the error gracefully (e.g., return False or raise an exception)."
+          },
+          "implementation_id": "function_delete_task"
+        },
+        {
+          "id": "delete_task_all_tasks_removed",
+          "name": "Delete the last remaining task",
+          "description": "Verify that delete_task can remove the last task, resulting in an empty database.",
+          "type": "edge",
+          "test_setup": {
+            "given": "Database contains a single task with ID 1.",
+            "when": "delete_task(1) is called.",
+            "then": "Database becomes empty. Function returns True."
+          },
+          "implementation_id": "function_delete_task"
+        }
+      ]
     }
   ],
   "component": [
