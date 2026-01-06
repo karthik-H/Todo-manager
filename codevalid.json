@@ -7,7 +7,7 @@
       "conditions": [
         "A new task must include a title, description, priority, due date, and tag."
       ],
-      "change_status": "updated"
+      "change_status": ""
     },
     {
       "id": "manage_events",
@@ -16,9 +16,18 @@
       "conditions": [
         "A new event must include a name, description, and location."
       ],
-      "change_status": "updated"
+      "change_status": ""
+    },
+    {
+      "id": "assign_tasks_to_events",
+      "header": "Assign Tasks to Events",
+      "description": "Allows users to assign multiple tasks to an event.",
+      "conditions": [
+        "Multiple tasks can be assigned to a single event."
+      ],
+      "change_status": "new"
     }
   ],
-  "last_updated": "2026-01-06T20:55:43.400104",
+  "last_updated": "2026-01-06T20:58:30.564496",
   "version": "1.0"
 }
