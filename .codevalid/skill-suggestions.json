@@ -4,15 +4,15 @@
       "skill_name": "architecture",
       "category": "Requirement Classification",
       "breakdown_id": "general",
-      "suggestion": "Specify whether this is a backend/API enhancement, UI/UX feature, or a full-stack application. Clarify which components (frontend, backend, database) are involved.",
+      "suggestion": "Specify whether this is a backend/API, UI/UX feature, or a full-stack application. Clarify which components are required (e.g., web UI, mobile app, REST API, database).",
       "priority": "High",
-      "rationale": "Without clear classification, developers cannot determine where to implement the logic or how components interact."
+      "rationale": "Without clear classification, developers cannot determine the scope or where to implement the logic, leading to inconsistent or incomplete solutions."
     },
     {
       "skill_name": "architecture",
       "category": "Authentication/Authorization",
       "breakdown_id": "general",
-      "suggestion": "Clarify if users must be authenticated to manage tasks and events. Specify the authentication method (e.g., username/password, OAuth) and any roles or permissions.",
+      "suggestion": "Clarify if users must be authenticated to manage tasks and events, and specify the authentication method (e.g., email/password, OAuth, API key).",
       "priority": "High",
       "rationale": "Security is critical. Without authentication requirements, unauthorized users may access or modify data."
     },
@@ -20,59 +20,43 @@
       "skill_name": "architecture",
       "category": "Data Storage",
       "breakdown_id": "general",
-      "suggestion": "Specify the type of database to be used (e.g., PostgreSQL, MySQL, MongoDB) and whether any connection or hosting details are required.",
+      "suggestion": "Specify the type of database to be used (e.g., PostgreSQL, MySQL, MongoDB) and any relevant connection or hosting details.",
       "priority": "High",
-      "rationale": "Developers need to know where and how to store tasks and events to design the data layer and ensure persistence."
+      "rationale": "Data storage decisions affect how tasks and events are persisted, queried, and related. Missing this can block implementation."
     },
     {
       "skill_name": "architecture",
       "category": "Data Modeling",
       "breakdown_id": "manage_tasks",
-      "suggestion": "Define the data types, allowed values, and nullability for each task field (title, description, priority, due date, tag, status).",
+      "suggestion": "Define the allowed values for 'priority' and 'tag', and clarify if any fields are optional or required beyond the stated conditions.",
       "priority": "Medium",
-      "rationale": "Precise data modeling prevents errors and ensures consistent data handling."
+      "rationale": "Ambiguity in field values or nullability can cause inconsistent data and validation errors."
     },
     {
       "skill_name": "architecture",
       "category": "Data Modeling",
-      "breakdown_id": "manage_events",
-      "suggestion": "Define the data types, allowed values, and nullability for each event field (name, description, location, status).",
+      "breakdown_id": "assign_tasks_to_events",
+      "suggestion": "Clarify if a task can be assigned to multiple events, or only one event at a time. Specify how unassignment works.",
       "priority": "Medium",
-      "rationale": "Clear field definitions are necessary for database schema and validation logic."
+      "rationale": "The relationship between tasks and events (one-to-many, many-to-many) impacts database schema and UI logic."
     },
     {
       "skill_name": "architecture",
       "category": "UI/UX Design Considerations",
       "breakdown_id": "general",
-      "suggestion": "Describe the user flow for adding, editing, deleting, and marking tasks/events. Include how users access these features, and what success or error messages they see.",
-      "priority": "High",
-      "rationale": "Without user flow details, the user experience may be inconsistent or confusing."
+      "suggestion": "Describe the expected user flow for adding, editing, deleting, and assigning tasks/events. Include how users access these features and what feedback they receive on success or failure.",
+      "priority": "Medium",
+      "rationale": "Clear user flows are needed to design intuitive interfaces and handle edge cases (e.g., validation errors, confirmation dialogs)."
     },
     {
       "skill_name": "architecture",
       "category": "Error Handling & Resilience",
       "breakdown_id": "general",
-      "suggestion": "Specify what should happen if an operation fails (e.g., adding a task fails due to a validation error or network issue). Should users see an error message? Should the system retry?",
-      "priority": "Medium",
-      "rationale": "Clear error handling ensures a robust and user-friendly application."
-    },
-    {
-      "skill_name": "architecture",
-      "category": "Integration Feature",
-      "breakdown_id": "general",
-      "suggestion": "Clarify if there are any integrations with external calendars, notification systems, or other third-party services.",
+      "suggestion": "Specify what should happen if an operation fails (e.g., adding a task fails due to a network error). Should the user see an error message, and should the system retry?",
       "priority": "Low",
-      "rationale": "If integrations are planned, early specification avoids rework and ensures compatibility."
-    },
-    {
-      "skill_name": "architecture",
-      "category": "Technical Specification",
-      "breakdown_id": "general",
-      "suggestion": "Specify the programming language and framework(s) to be used for implementation.",
-      "priority": "Medium",
-      "rationale": "Technical stack decisions impact development approach, deployment, and maintenance."
+      "rationale": "Explicit error handling improves user experience and system reliability, especially in distributed or networked applications."
     }
   ],
-  "last_updated": "2026-01-06T20:56:12.131905",
+  "last_updated": "2026-01-06T20:58:53.901244",
   "version": "1.0"
 }
