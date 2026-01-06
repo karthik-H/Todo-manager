@@ -3,22 +3,25 @@
     {
       "id": "manage_tasks",
       "header": "Manage Tasks",
-      "description": "Enables users to add new tasks with a title, description, priority, due date, and tag; edit existing tasks; delete tasks; and mark tasks as Completed or Pending.",
+      "description": "Enables users to add new tasks with a title, description, priority, due date, and tag; edit existing tasks; delete tasks; mark tasks as Completed or Pending; and assign tasks to events, including assigning multiple tasks to a single event.",
       "conditions": [
-        "A new task must include a title, description, priority, due date, and tag."
+        "A new task must include a title, description, priority, due date, and tag.",
+        "Tasks can be assigned to events.",
+        "Multiple tasks can be assigned to a single event."
       ],
-      "change_status": ""
+      "change_status": "updated"
     },
     {
       "id": "manage_events",
       "header": "Manage Events",
-      "description": "Enables users to add events with a name, description, and location; edit existing events; delete events; and mark events as archived.",
+      "description": "Enables users to add events with a name, description, and location; edit existing events; delete events; mark events as archived; and have tasks assigned to events.",
       "conditions": [
-        "A new event must include a name, description, and location."
+        "A new event must include a name, description, and location.",
+        "Events can have multiple tasks assigned to them."
       ],
-      "change_status": "new"
+      "change_status": "updated"
     }
   ],
-  "last_updated": "2026-01-06T20:47:23.256938",
+  "last_updated": "2026-01-06T20:53:32.551917",
   "version": "1.0"
 }
