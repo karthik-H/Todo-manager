@@ -4,75 +4,75 @@
       "skill_name": "architecture",
       "category": "Requirement Classification",
       "breakdown_id": "general",
-      "suggestion": "Specify whether this is a backend/API enhancement, a UI/UX feature, or a full-stack application. Clarify which components (frontend, backend, database) are in scope.",
+      "suggestion": "Specify whether this is a backend/API enhancement, UI/UX feature, or a full-stack application. Clarify which components (frontend, backend, database) are involved.",
       "priority": "High",
-      "rationale": "Without clear classification, developers cannot determine where to implement the logic or which teams are responsible."
+      "rationale": "Without clear classification, developers cannot determine where to implement the logic or how components interact."
     },
     {
       "skill_name": "architecture",
       "category": "Authentication/Authorization",
       "breakdown_id": "general",
-      "suggestion": "Define if users must be authenticated to manage tasks and events. Specify the authentication method (e.g., username/password, OAuth, etc.) and any roles or permissions (e.g., can all users edit/delete all tasks?).",
+      "suggestion": "Clarify if users must be authenticated to manage tasks and events. Specify the authentication method (e.g., username/password, OAuth) and any roles or permissions.",
       "priority": "High",
-      "rationale": "Security and access control are critical for protecting user data and ensuring only authorized actions are allowed."
+      "rationale": "Security is critical. Without authentication requirements, unauthorized users may access or modify data."
     },
     {
       "skill_name": "architecture",
       "category": "Data Storage",
       "breakdown_id": "general",
-      "suggestion": "Specify the type of database to be used (e.g., PostgreSQL, MySQL, MongoDB) and any relevant connection or hosting details.",
+      "suggestion": "Specify the type of database to be used (e.g., PostgreSQL, MySQL, MongoDB) and whether any connection or hosting details are required.",
       "priority": "High",
-      "rationale": "Developers need to know where and how to persist tasks and events to design the data layer and ensure data integrity."
+      "rationale": "Developers need to know where and how to store tasks and events to design the data layer and ensure persistence."
     },
     {
       "skill_name": "architecture",
       "category": "Data Modeling",
       "breakdown_id": "manage_tasks",
-      "suggestion": "Provide field definitions for tasks (e.g., data types, allowed values for priority and tag, nullability rules). Clarify if tags are free-form or from a predefined list.",
+      "suggestion": "Define the data types, allowed values, and nullability for each task field (title, description, priority, due date, tag, status).",
       "priority": "Medium",
-      "rationale": "Clear data modeling prevents inconsistencies and ensures the UI and backend handle data correctly."
+      "rationale": "Precise data modeling prevents errors and ensures consistent data handling."
     },
     {
       "skill_name": "architecture",
       "category": "Data Modeling",
       "breakdown_id": "manage_events",
-      "suggestion": "Provide field definitions for events (e.g., data types for location, description, name; nullability rules).",
+      "suggestion": "Define the data types, allowed values, and nullability for each event field (name, description, location, status).",
       "priority": "Medium",
-      "rationale": "Precise field definitions are necessary for database schema design and validation."
+      "rationale": "Clear field definitions are necessary for database schema and validation logic."
     },
     {
       "skill_name": "architecture",
       "category": "UI/UX Design Considerations",
       "breakdown_id": "general",
-      "suggestion": "Describe the user flow for managing tasks and events: How do users access these features? What are the steps for adding, editing, deleting, and assigning tasks/events? What do users see on success or failure?",
+      "suggestion": "Describe the user flow for adding, editing, deleting, and marking tasks/events. Include how users access these features, and what success or error messages they see.",
       "priority": "High",
-      "rationale": "Without user flow details, the UI/UX may not meet user expectations or could be inconsistent."
+      "rationale": "Without user flow details, the user experience may be inconsistent or confusing."
     },
     {
       "skill_name": "architecture",
       "category": "Error Handling & Resilience",
       "breakdown_id": "general",
-      "suggestion": "Define how errors should be handled (e.g., what happens if saving a task fails, or if a user tries to delete a non-existent event). Should users see error messages, and should the system retry failed operations?",
+      "suggestion": "Specify what should happen if an operation fails (e.g., adding a task fails due to a validation error or network issue). Should users see an error message? Should the system retry?",
       "priority": "Medium",
-      "rationale": "Clear error handling improves user experience and system reliability."
+      "rationale": "Clear error handling ensures a robust and user-friendly application."
     },
     {
       "skill_name": "architecture",
       "category": "Integration Feature",
       "breakdown_id": "general",
-      "suggestion": "Clarify if there are any integrations with external calendars, notification systems, or other third-party services for events or tasks.",
+      "suggestion": "Clarify if there are any integrations with external calendars, notification systems, or other third-party services.",
       "priority": "Low",
-      "rationale": "If integrations are required, they impact architecture and implementation scope."
+      "rationale": "If integrations are planned, early specification avoids rework and ensures compatibility."
     },
     {
       "skill_name": "architecture",
       "category": "Technical Specification",
       "breakdown_id": "general",
-      "suggestion": "Specify the programming language and framework(s) to be used for both frontend and backend (if applicable).",
+      "suggestion": "Specify the programming language and framework(s) to be used for implementation.",
       "priority": "Medium",
-      "rationale": "Technical stack decisions are necessary for consistent implementation and deployment."
+      "rationale": "Technical stack decisions impact development approach, deployment, and maintenance."
     }
   ],
-  "last_updated": "2026-01-06T20:53:56.469390",
+  "last_updated": "2026-01-06T20:56:12.131905",
   "version": "1.0"
 }
