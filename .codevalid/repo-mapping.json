@@ -212,5 +212,11 @@
     "missing_implementations": [
       "A new event must include a location"
     ]
+  },
+  "assign_tasks_to_events": {
+    "implementation": [],
+    "missing_implementations": [
+      "Multiple tasks can be assigned to a single event."
+    ]
   }
 }
