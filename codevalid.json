@@ -16,7 +16,7 @@
       "conditions": [
         "A new event must include a name, description, and location."
       ],
-      "change_status": ""
+      "change_status": "updated"
     },
     {
       "id": "assign_tasks_to_events",
@@ -25,9 +25,9 @@
       "conditions": [
         "Multiple tasks can be assigned to a single event."
       ],
-      "change_status": "new"
+      "change_status": ""
     }
   ],
-  "last_updated": "2026-01-06T20:58:30.564496",
+  "last_updated": "2026-01-13T18:30:29.326644",
   "version": "1.0"
 }
