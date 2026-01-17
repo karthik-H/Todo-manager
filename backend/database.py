@@ -36,7 +36,6 @@ def update_task(task_id: str, task_update: TaskCreate) -> Optional[Task]:
     for i, task in enumerate(tasks):
         if task.id == task_id:
             updated_task = Task(id=task_id, **task_update.model_dump())
-            tasks[i] = updated_task
             save_tasks(tasks)
             return updated_task
     return None
