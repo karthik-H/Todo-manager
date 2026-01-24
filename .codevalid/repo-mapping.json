@@ -2,88 +2,17 @@
   "manage_tasks": {
     "implementation": [
       {
+        "How_is_it_connected_to_implementation": "Main UI component that manages the state and orchestrates all task operations (add, edit, delete, mark as completed/pending) by calling API methods and rendering TaskForm and TaskItem components.",
+        "change_type": "new",
+        "file_path": "frontend/src/App.tsx",
         "id": "frontend-app-component",
         "name": "App",
-        "file_path": "frontend/src/App.tsx",
-        "type": "component",
-        "How_is_it_connected_to_implementation": "Main UI component that manages the state and orchestrates all task operations (add, edit, delete, mark as completed/pending) by calling API methods and rendering TaskForm and TaskItem components.",
-        "pseudo_code": "On mount:\n    Call loadTasks to fetch all tasks from backend\nOn '+ Add Task' click:\n    Open TaskForm for new task\nOn TaskForm submit:\n    If editingTask is null:\n        Call handleCreateTask (calls api.createTask)\n    Else:\n        Call handleUpdateTask (calls api.updateTask)\nOn delete button:\n    Call handleDeleteTask (calls api.deleteTask)\nOn complete/pending toggle:\n    Call handleToggleComplete (calls api.updateTask with toggled completed)\nRender:\n    TaskForm (for add/edit)\n    List of TaskItem components for each task"
-      },
-      {
-        "id": "frontend-taskform-component",
-        "name": "TaskForm",
-        "file_path": "frontend/src/components/TaskForm.tsx",
-        "type": "component",
-        "How_is_it_connected_to_implementation": "Form component for adding or editing a task. Collects title, description, priority, due date, and category (used as tag), and calls onSubmit with the data.",
-        "pseudo_code": "Render form fields:\n    Title (required)\n    Description\n    Priority (Low/Medium/High)\n    Category (tag)\n    Due Date\nOn submit:\n    Validate required fields\n    Call onSubmit with all field values"
-      },
-      {
-        "id": "frontend-taskitem-component",
-        "name": "TaskItem",
-        "file_path": "frontend/src/components/TaskItem.tsx",
-        "type": "component",
-        "How_is_it_connected_to_implementation": "Displays a single task with its details and provides buttons to edit, delete, or toggle completion status. Calls parent handlers for these actions.",
-        "pseudo_code": "Render task details:\n    Title, Description, Priority, Category, Due Date\nRender buttons:\n    'Done'/'Undo' button calls onToggleComplete\n    'Edit' button calls onEdit\n    'Delete' button calls onDelete"
-      },
-      {
-        "id": "backend-get-tasks-endpoint",
-        "name": "read_tasks",
-        "file_path": "backend/main.py",
-        "type": "endpoint",
-        "How_is_it_connected_to_implementation": "API endpoint to fetch all tasks. Called by frontend to display the list of tasks.",
-        "pseudo_code": "@app.get('/tasks')\n    Return database.get_tasks()"
-      },
-      {
-        "id": "endpoint-create-task",
-        "name": "create_task",
-        "file_path": "backend/main.py",
-        "type": "endpoint",
-        "How_is_it_connected_to_implementation": "API endpoint to add a new task. Receives all task fields from frontend and calls database.add_task.",
-        "pseudo_code": "@app.post('/tasks')\n    Call database.add_task with TaskCreate data\n    Return created Task"
-      },
-      {
-        "id": "endpoint-update-task",
-        "name": "update_task",
-        "file_path": "backend/main.py",
-        "type": "endpoint",
-        "How_is_it_connected_to_implementation": "API endpoint to edit an existing task. Receives updated fields and calls database.update_task.",
-        "pseudo_code": "@app.put('/tasks/{task_id}')\n    Call database.update_task with task_id and TaskCreate data\n    If not found, raise 404\n    Return updated Task"
-      },
-      {
-        "id": "backend-delete-task-endpoint",
-        "name": "delete_task",
-        "file_path": "backend/main.py",
-        "type": "endpoint",
-        "How_is_it_connected_to_implementation": "API endpoint to delete a task. Calls database.delete_task.",
-        "pseudo_code": "@app.delete('/tasks/{task_id}')\n    Call database.delete_task with task_id\n    If not found, raise 404\n    Return success message"
-      },
-      {
-        "id": "backend-add-task-function",
-        "name": "add_task",
-        "file_path": "backend/database.py",
-        "type": "function",
-        "How_is_it_connected_to_implementation": "Creates a new Task object with all fields, assigns a UUID, saves to storage, and returns the new task.",
-        "pseudo_code": "def add_task(task_create):\n    tasks = get_tasks()\n    new_task = Task(id=uuid, **task_create fields)\n    tasks.append(new_task)\n    save_tasks(tasks)\n    return new_task"
-      },
-      {
-        "id": "backend-update-task-function",
-        "name": "update_task",
-        "file_path": "backend/database.py",
-        "type": "function",
-        "How_is_it_connected_to_implementation": "Updates an existing task with new field values, saves, and returns the updated task.",
-        "pseudo_code": "def update_task(task_id, task_update):\n    tasks = get_tasks()\n    for i, task in enumerate(tasks):\n        if task.id == task_id:\n            updated_task = Task(id=task_id, **task_update fields)\n            tasks[i] = updated_task\n            save_tasks(tasks)\n            return updated_task\n    return None"
-      },
-      {
-        "id": "backend-delete-task-function",
-        "name": "delete_task",
-        "file_path": "backend/database.py",
-        "type": "function",
-        "How_is_it_connected_to_implementation": "Removes a task by id from storage.",
-        "pseudo_code": "def delete_task(task_id):\n    tasks = get_tasks()\n    tasks = [t for t in tasks if t.id != task_id]\n    save_tasks(tasks)\n    return True if deleted, else False"
+        "pseudo_code": "On mount:\n    Call loadTasks to fetch all tasks from backend\nOn '+ Add Task' click:\n    Open TaskForm for new task\nOn TaskForm submit:\n    If editingTask is null:\n        Call handleCreateTask (calls api.createTask)\n    Else:\n        Call handleUpdateTask (calls api.updateTask)\nOn delete button:\n    Call handleDeleteTask (calls api.deleteTask)\nOn complete/pending toggle:\n    Call handleToggleComplete (calls api.updateTask with toggled completed)\nRender:\n    TaskForm (for add/edit)\n    List of TaskItem components for each task",
+        "type": "component"
       }
     ],
     "missing_implementations": [
-      "A new task must include a tag (the UI uses 'category' as a tag, but it is not required and can be empty; the backend does not enforce presence of tag/category)."
+      "A new task must include a tag (the UI uses 'category' as tag, but it is not required and can be empty; the backend does not enforce presence of tag/category)."
     ]
   },
   "manage_events": {
