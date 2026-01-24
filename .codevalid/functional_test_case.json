@@ -4037,242 +4037,218 @@
       "implementation_id": "frontend-app-component",
       "test_cases": [
         {
-          "description": "Ensures that all tasks are fetched from the backend when the component mounts.",
+          "description": "Verifies that tasks are fetched from the backend when the App component mounts.",
           "id": "tc_load_tasks_on_mount",
           "implementation_id": "frontend-app-component",
           "name": "Load tasks on component mount",
           "test_setup": {
-            "given": "Component is rendered with no initial tasks.",
-            "then": "The loadTasks API is called and the tasks list is populated with the returned tasks.",
-            "when": "The App component is mounted."
+            "given": "App component is mounted with no initial tasks.",
+            "then": "API method loadTasks is called and tasks are rendered in the UI.",
+            "when": "ComponentDidMount lifecycle event occurs."
           },
           "type": "positive"
         },
         {
-          "description": "Verifies that clicking '+ Add Task' opens TaskForm for creating a new task.",
-          "id": "tc_open_add_task_form",
+          "description": "Checks that clicking '+ Add Task' opens the TaskForm for adding a new task.",
+          "id": "tc_add_task_form_open",
           "implementation_id": "frontend-app-component",
-          "name": "Open TaskForm for adding new task",
+          "name": "Open add task form",
           "test_setup": {
-            "given": "App component is rendered.",
-            "then": "TaskForm is displayed in 'add' mode with empty fields.",
-            "when": "User clicks the '+ Add Task' button."
+            "given": "App is rendered with a list of tasks.",
+            "then": "TaskForm is displayed with empty fields for new task input.",
+            "when": "User clicks '+ Add Task' button."
           },
           "type": "positive"
         },
         {
-          "description": "Tests that submitting the TaskForm with valid data creates a new task and renders it in the task list.",
+          "description": "Ensures a new task is created and displayed when valid data is submitted in TaskForm.",
           "id": "tc_create_task_success",
           "implementation_id": "frontend-app-component",
-          "name": "Add new task successfully",
+          "name": "Create new task successfully",
           "test_setup": {
-            "given": "TaskForm is open with all required fields filled with valid values.",
-            "then": "handleCreateTask is called, api.createTask is successful, and the new task appears in the task list.",
-            "when": "User submits the TaskForm."
+            "given": "TaskForm is open with empty fields.",
+            "then": "handleCreateTask calls api.createTask, new task is added to the list and rendered.",
+            "when": "User fills in title, description, priority, due date, tag, and submits."
           },
           "type": "positive"
         },
         {
-          "description": "Ensures that validation errors are shown if required fields are missing when adding a task.",
-          "id": "tc_create_task_validation_error",
+          "description": "Verifies that submitting TaskForm without a title fails with a validation error.",
+          "id": "tc_create_task_missing_title",
           "implementation_id": "frontend-app-component",
-          "name": "Add new task with missing required fields",
+          "name": "Fail to create task with missing title",
           "test_setup": {
-            "given": "TaskForm is open with missing title field.",
-            "then": "Form validation fails, an error message is displayed, and no API call is made.",
-            "when": "User submits the TaskForm."
+            "given": "TaskForm is open for adding a new task.",
+            "then": "Task is not created, and a validation error is displayed for the title field.",
+            "when": "User leaves the title field empty and submits."
           },
           "type": "negative"
         },
         {
-          "description": "Verifies that editing an existing task updates it and reflects changes in the list.",
-          "id": "tc_edit_task_success",
+          "description": "Checks that the form prevents submission if the due date is in the past.",
+          "id": "tc_create_task_invalid_due_date",
           "implementation_id": "frontend-app-component",
-          "name": "Edit existing task successfully",
+          "name": "Fail to create task with invalid due date",
           "test_setup": {
-            "given": "A task exists in the list; TaskForm is open in edit mode with modified valid data.",
-            "then": "handleUpdateTask is called, api.updateTask is successful, and the edited task shows updated information in the list.",
-            "when": "User submits the TaskForm."
+            "given": "TaskForm is open for a new task.",
+            "then": "Task is not created, and a validation error is shown for the due date.",
+            "when": "User enters a due date in the past and submits the form."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Checks that clicking edit on a TaskItem opens TaskForm populated with the task's data.",
+          "id": "tc_edit_task_form_open",
+          "implementation_id": "frontend-app-component",
+          "name": "Open edit task form",
+          "test_setup": {
+            "given": "A list of tasks is rendered.",
+            "then": "TaskForm is displayed with the selected task's details pre-filled.",
+            "when": "User clicks the edit button on a TaskItem."
           },
           "type": "positive"
         },
         {
-          "description": "Tests that validation errors are displayed when editing a task with invalid data.",
-          "id": "tc_edit_task_validation_error",
+          "description": "Ensures that submitting TaskForm with changes updates the task and reflects the changes in the UI.",
+          "id": "tc_update_task_success",
           "implementation_id": "frontend-app-component",
-          "name": "Edit task with invalid data",
+          "name": "Update existing task successfully",
           "test_setup": {
-            "given": "TaskForm is open in edit mode with missing priority field.",
-            "then": "Form validation fails, error message is shown, and no API call is made.",
-            "when": "User submits the TaskForm."
+            "given": "TaskForm is open with an existing task's data.",
+            "then": "handleUpdateTask calls api.updateTask, updated task is rendered in the list.",
+            "when": "User modifies the data (e.g., changes title) and submits."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Checks that removing the priority field triggers a validation error during task update.",
+          "id": "tc_update_task_missing_priority",
+          "implementation_id": "frontend-app-component",
+          "name": "Fail to update task with missing priority",
+          "test_setup": {
+            "given": "TaskForm is open for editing a task.",
+            "then": "Task is not updated and a validation error for priority is shown.",
+            "when": "User removes the priority and submits."
           },
           "type": "negative"
         },
         {
-          "description": "Ensures that clicking the delete button removes the task from the list.",
+          "description": "Ensures that clicking the delete button removes the task from the UI.",
           "id": "tc_delete_task_success",
           "implementation_id": "frontend-app-component",
-          "name": "Delete a task successfully",
+          "name": "Delete task successfully",
           "test_setup": {
-            "given": "A task exists in the list.",
-            "then": "handleDeleteTask is called, api.deleteTask is successful, and the task is removed from the list.",
-            "when": "User clicks the delete button on the task."
+            "given": "A list of tasks is rendered.",
+            "then": "handleDeleteTask calls api.deleteTask, task is removed from the list and UI.",
+            "when": "User clicks the delete button on a TaskItem."
           },
           "type": "positive"
         },
         {
-          "description": "Ensures that an error is handled gracefully if the API fails to delete the task.",
+          "description": "Verifies that an API failure during task deletion shows an error message and does not remove the task.",
           "id": "tc_delete_task_api_error",
           "implementation_id": "frontend-app-component",
-          "name": "Delete task with API failure",
+          "name": "Handle API error on delete task",
           "test_setup": {
-            "given": "A task exists in the list; api.deleteTask will fail.",
-            "then": "An error message is displayed and the task remains in the list.",
-            "when": "User clicks the delete button on the task."
+            "given": "A list of tasks is rendered.",
+            "then": "Task remains in the UI, and an error message is displayed.",
+            "when": "User clicks the delete button and api.deleteTask fails."
           },
           "type": "negative"
         },
         {
-          "description": "Verifies that toggling the completed status on a task updates its state.",
-          "id": "tc_toggle_task_complete",
+          "description": "Checks that toggling the completed status updates the task and the UI.",
+          "id": "tc_toggle_complete_success",
           "implementation_id": "frontend-app-component",
-          "name": "Toggle task completion status",
+          "name": "Mark task as completed/pending",
           "test_setup": {
-            "given": "A task exists in 'Pending' state.",
-            "then": "handleToggleComplete is called, api.updateTask is successful, and the task status changes to 'Completed'.",
-            "when": "User toggles the complete button."
+            "given": "A list of tasks is rendered.",
+            "then": "handleToggleComplete calls api.updateTask, task's completed status changes in the UI.",
+            "when": "User clicks the complete/pending toggle on a TaskItem."
           },
           "type": "positive"
         },
         {
-          "description": "Ensures that toggling a completed task sets it back to pending.",
-          "id": "tc_toggle_task_pending",
+          "description": "Verifies that an API failure during status toggle shows an error and does not change task status.",
+          "id": "tc_toggle_complete_api_error",
           "implementation_id": "frontend-app-component",
-          "name": "Toggle task from completed to pending",
+          "name": "Handle API error on toggle complete",
           "test_setup": {
-            "given": "A task exists in 'Completed' state.",
-            "then": "handleToggleComplete is called, api.updateTask is successful, and the task status changes to 'Pending'.",
-            "when": "User toggles the complete button."
-          },
-          "type": "positive"
-        },
-        {
-          "description": "Ensures that an error is handled if the API fails to update the completion status.",
-          "id": "tc_toggle_task_api_error",
-          "implementation_id": "frontend-app-component",
-          "name": "Toggle task completion with API failure",
-          "test_setup": {
-            "given": "A task exists; api.updateTask will fail.",
-            "then": "An error message is displayed and the task status does not change.",
-            "when": "User toggles the complete button."
+            "given": "A task is rendered with pending status.",
+            "then": "Task status remains unchanged, error message is displayed.",
+            "when": "User toggles complete and api.updateTask fails."
           },
           "type": "negative"
         },
         {
-          "description": "Checks that TaskForm is correctly rendered with existing task data when editing.",
-          "id": "tc_render_task_form_for_edit",
+          "description": "Checks that a proper message or empty state is rendered when there are no tasks.",
+          "id": "tc_render_task_list_empty",
           "implementation_id": "frontend-app-component",
-          "name": "Render TaskForm in edit mode",
+          "name": "Render empty task list",
           "test_setup": {
-            "given": "User selects 'Edit' on an existing task.",
-            "then": "TaskForm fields are pre-filled with the task's current data.",
-            "when": "TaskForm is opened."
+            "given": "App state has an empty tasks array.",
+            "then": "UI displays an empty state or 'No tasks' message.",
+            "when": "Component renders."
           },
-          "type": "positive"
+          "type": "edge"
         },
         {
-          "description": "Ensures that all fetched tasks are correctly rendered as TaskItem components.",
-          "id": "tc_render_task_list",
-          "implementation_id": "frontend-app-component",
-          "name": "Render list of tasks",
-          "test_setup": {
-            "given": "loadTasks returns a list of tasks.",
-            "then": "Each task is displayed as a TaskItem component with correct information.",
-            "when": "App component renders."
-          },
-          "type": "positive"
-        },
-        {
-          "description": "Tests that adding a task with the maximum allowed title length is accepted.",
+          "description": "Ensures that a task with a title at the maximum allowed length is accepted and rendered.",
           "id": "tc_add_task_max_length_title",
           "implementation_id": "frontend-app-component",
-          "name": "Add new task with maximum title length",
+          "name": "Add task with maximum title length",
           "test_setup": {
-            "given": "TaskForm is open; title field is filled with string of maximum allowed length.",
-            "then": "Task is created and appears in the list.",
-            "when": "User submits the TaskForm."
+            "given": "TaskForm is open for a new task.",
+            "then": "Task is created and displayed in the task list.",
+            "when": "User enters a title with maximum allowed length and submits."
           },
           "type": "edge"
         },
         {
-          "description": "Ensures that adding a task with an empty description field (if allowed) works correctly.",
-          "id": "tc_add_task_empty_description",
+          "description": "Checks handling when a user tries to add a task with a title that already exists.",
+          "id": "tc_add_task_duplicate_title",
           "implementation_id": "frontend-app-component",
-          "name": "Add new task with empty description",
+          "name": "Add task with duplicate title",
           "test_setup": {
-            "given": "TaskForm is open; description field is left blank.",
-            "then": "Task is created successfully if description is optional.",
-            "when": "User submits the TaskForm."
+            "given": "TaskForm is open and a task with the same title already exists.",
+            "then": "Task is either rejected with a validation error or allowed, depending on requirements.",
+            "when": "User submits a new task with duplicate title."
           },
           "type": "edge"
         },
         {
-          "description": "Checks system behavior when editing a task to have a due date in the past.",
-          "id": "tc_edit_task_due_date_past",
+          "description": "Ensures that pressing the cancel button on TaskForm closes the form without changing any tasks.",
+          "id": "tc_cancel_task_form",
           "implementation_id": "frontend-app-component",
-          "name": "Edit task with past due date",
+          "name": "Cancel task creation/edit",
           "test_setup": {
-            "given": "TaskForm is open with due date set to a date before today.",
-            "then": "If allowed, task is updated; if not, a validation error is shown.",
-            "when": "User submits the TaskForm."
+            "given": "TaskForm is open (for add or edit).",
+            "then": "TaskForm closes and no task is added or modified.",
+            "when": "User clicks the cancel button."
           },
-          "type": "edge"
+          "type": "positive"
         },
         {
-          "description": "Ensures that API errors during task creation are handled and shown to the user.",
-          "id": "tc_create_task_api_error",
+          "description": "Checks that missing required fields (e.g., description, tag, due date) prevent task creation.",
+          "id": "tc_add_task_missing_required_fields",
           "implementation_id": "frontend-app-component",
-          "name": "Add new task with API failure",
+          "name": "Fail to add task with missing required fields",
           "test_setup": {
-            "given": "TaskForm is filled with valid data; api.createTask will fail.",
-            "then": "An error message is displayed and the new task does not appear in the list.",
-            "when": "User submits the TaskForm."
+            "given": "TaskForm is open for a new task.",
+            "then": "Task is not created, and validation errors are shown for each missing field.",
+            "when": "User leaves description, tag, or due date empty and submits."
           },
           "type": "negative"
         },
         {
-          "description": "Ensures that API errors during task update are handled and shown to the user.",
-          "id": "tc_update_task_api_error",
+          "description": "Ensures that submitting the edit form without changes does not call update API or change the UI.",
+          "id": "tc_edit_task_no_changes",
           "implementation_id": "frontend-app-component",
-          "name": "Edit task with API failure",
+          "name": "Edit task and submit with no changes",
           "test_setup": {
-            "given": "TaskForm is open with valid edits; api.updateTask will fail.",
-            "then": "An error message is displayed and task data does not update in the list.",
-            "when": "User submits the TaskForm."
-          },
-          "type": "negative"
-        },
-        {
-          "description": "Ensures the UI displays a proper message or empty state when there are no tasks.",
-          "id": "tc_no_tasks_render_empty_state",
-          "implementation_id": "frontend-app-component",
-          "name": "Render empty state when no tasks exist",
-          "test_setup": {
-            "given": "loadTasks returns an empty list.",
-            "then": "An empty state or message is displayed to the user instead of the task list.",
-            "when": "App component renders."
-          },
-          "type": "edge"
-        },
-        {
-          "description": "Ensures that the tag field is optional and tasks can be created without a tag.",
-          "id": "tc_tag_field_optional",
-          "implementation_id": "frontend-app-component",
-          "name": "Add new task with no tag",
-          "test_setup": {
-            "given": "TaskForm is open; tag field is left blank.",
-            "then": "Task is created successfully if tag is optional.",
-            "when": "User submits the TaskForm."
+            "given": "TaskForm is open for editing an existing task.",
+            "then": "api.updateTask is not called, and UI remains unchanged.",
+            "when": "User submits the form without editing any fields."
           },
           "type": "edge"
         }
