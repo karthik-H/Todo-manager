@@ -12,7 +12,7 @@ Personal Todo manager
 - Delete tasks
 - Mark tasks as **Completed** or **Pending**         
     
-- Add events
+- Add events 
 -     Name, description, location
 - Edit, Delete and Mark event as archive
 
