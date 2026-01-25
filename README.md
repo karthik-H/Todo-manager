@@ -16,5 +16,4 @@ Personal Todo manager
 - Edit, Delete and Mark event as archive
 
 Assign tasks to event
-- allow multiple tasks assignement to event  
-- if no tasks assigned to event default it to empty 
+- allow multiple tasks assignement to event 
