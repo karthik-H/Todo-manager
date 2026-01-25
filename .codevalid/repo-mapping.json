@@ -18,81 +18,83 @@
   "manage_events": {
     "implementation": [
       {
-        "id": "frontend_app_task_chain",
-        "name": "App",
-        "file_path": "frontend/src/App.tsx",
-        "type": "component",
-        "How_is_it_connected_to_implementation": "Main React component orchestrating event (task) management: triggers add, edit, delete, and update actions, and renders the form and list UI.",
-        "pseudo_code": "On mount, load all events (tasks)\nWhen user clicks '+ Add Task', open TaskForm for new event\nWhen user clicks 'Edit', open TaskForm with event data\nOn TaskForm submit, call createTask or updateTask\nOn delete, call deleteTask\nOn complete/incomplete, call updateTask\nRender TaskForm and TaskItem for each event"
+        "id": "endpoint-list-tasks",
+        "name": "read_tasks",
+        "file_path": "backend/main.py",
+        "type": "endpoint",
+        "How_is_it_connected_to_implementation": "API endpoint to list all tasks (events). Called to display existing events to the user.",
+        "pseudo_code": "Define GET /tasks endpoint\n  Call get_tasks() from database\n  Return list of tasks"
       },
       {
-        "id": "frontend_taskform_event_add_edit",
-        "name": "TaskForm",
-        "file_path": "frontend/src/components/TaskForm.tsx",
-        "type": "component",
-        "How_is_it_connected_to_implementation": "Form UI for adding or editing events (tasks); collects name (title), description, and other fields, then submits to parent handler.",
-        "pseudo_code": "Display form fields: title (required), description, priority, category, due date\nOn submit:\n    Validate title is present\n    Call onSubmit with form data\nOn cancel:\n    Call onCancel"
-      },
-      {
-        "id": "frontend_taskitem_event_display_delete_edit",
-        "name": "TaskItem",
-        "file_path": "frontend/src/components/TaskItem.tsx",
-        "type": "component",
-        "How_is_it_connected_to_implementation": "Displays each event (task) with name, description, and controls for edit, delete, and mark complete/incomplete.",
-        "pseudo_code": "Render event (task) details: title, description, priority, category, due date\nShow buttons: Edit, Delete, Done/Undo\nOn Edit: call onEdit\nOn Delete: confirm and call onDelete\nOn Done/Undo: call onToggleComplete"
-      },
-      {
-        "id": "backend_create_event_endpoint",
+        "id": "endpoint-create-task",
         "name": "create_task",
         "file_path": "backend/main.py",
         "type": "endpoint",
-        "How_is_it_connected_to_implementation": "API endpoint for adding a new event (task); receives event data and calls database to persist.",
-        "pseudo_code": "POST /tasks\nReceive event data (TaskCreate)\nCall database.add_task with event data\nReturn created event"
+        "How_is_it_connected_to_implementation": "API endpoint to add a new task (event). Called when a user submits the add event form.",
+        "pseudo_code": "Define POST /tasks endpoint\n  Accept TaskCreate payload\n  Call add_task() in database\n  Return created task"
       },
       {
-        "id": "backend_update_event_endpoint",
+        "id": "endpoint-update-task",
         "name": "update_task",
         "file_path": "backend/main.py",
         "type": "endpoint",
-        "How_is_it_connected_to_implementation": "API endpoint for editing an existing event (task); receives updated data and calls database to persist changes.",
-        "pseudo_code": "PUT /tasks/{task_id}\nReceive updated event data (TaskCreate)\nCall database.update_task with event id and data\nIf not found, return 404\nReturn updated event"
+        "How_is_it_connected_to_implementation": "API endpoint to edit an existing task (event). Called when a user submits the edit event form.",
+        "pseudo_code": "Define PUT /tasks/{task_id} endpoint\n  Accept TaskCreate payload\n  Call update_task() in database\n  If not found, raise 404\n  Return updated task"
       },
       {
-        "id": "backend_delete_event_endpoint",
+        "id": "endpoint-delete-task",
         "name": "delete_task",
         "file_path": "backend/main.py",
         "type": "endpoint",
-        "How_is_it_connected_to_implementation": "API endpoint for deleting an event (task); removes event from database.",
-        "pseudo_code": "DELETE /tasks/{task_id}\nCall database.delete_task with event id\nIf not found, return 404\nReturn success message"
+        "How_is_it_connected_to_implementation": "API endpoint to delete an event. Called when a user requests to delete an event.",
+        "pseudo_code": "Define DELETE /tasks/{task_id} endpoint\n  Call delete_task() in database\n  If not found, raise error\n  Return success"
       },
       {
-        "id": "backend_add_event_function",
+        "id": "function-add-task",
         "name": "add_task",
         "file_path": "backend/database.py",
         "type": "function",
-        "How_is_it_connected_to_implementation": "Persists a new event (task) to storage; called by create_task endpoint.",
-        "pseudo_code": "Get all events\nCreate new event with unique id and provided data\nAppend to event list\nSave all events\nReturn new event"
+        "How_is_it_connected_to_implementation": "Adds a new task (event) to the database. Called by the create_task endpoint.",
+        "pseudo_code": "Get all tasks\nCreate new Task object with unique id and provided fields\nAppend to tasks list\nSave tasks\nReturn new task"
       },
       {
-        "id": "backend_update_event_function",
+        "id": "function-update-task",
         "name": "update_task",
         "file_path": "backend/database.py",
         "type": "function",
-        "How_is_it_connected_to_implementation": "Updates an existing event (task) in storage; called by update_task endpoint.",
-        "pseudo_code": "Get all events\nFind event by id\nReplace with updated data\nSave all events\nReturn updated event or None"
+        "How_is_it_connected_to_implementation": "Updates an existing task (event) in the database. Called by the update_task endpoint.",
+        "pseudo_code": "Get all tasks\nFind task by id\nReplace with updated Task object\nSave tasks\nReturn updated task or None"
       },
       {
-        "id": "backend_delete_event_function",
+        "id": "function-delete-task",
         "name": "delete_task",
         "file_path": "backend/database.py",
         "type": "function",
-        "How_is_it_connected_to_implementation": "Removes an event (task) from storage; called by delete_task endpoint.",
-        "pseudo_code": "Get all events\nRemove event with matching id\nSave all events\nReturn True if deleted, False otherwise"
+        "How_is_it_connected_to_implementation": "Deletes a task (event) from the database. Called by the delete_task endpoint.",
+        "pseudo_code": "Get all tasks\nRemove task with matching id\nSave tasks\nReturn True if deleted, False otherwise"
+      },
+      {
+        "id": "component-task-form",
+        "name": "TaskForm",
+        "file_path": "frontend/src/components/TaskForm.tsx",
+        "type": "component",
+        "How_is_it_connected_to_implementation": "UI form for adding and editing events. Collects user input and calls backend endpoints.",
+        "pseudo_code": "Display form fields for title, description, priority, category, due date\nOn submit, call onSubmit with form data\nOn cancel, call onCancel"
+      },
+      {
+        "id": "component-task-item",
+        "name": "TaskItem",
+        "file_path": "frontend/src/components/TaskItem.tsx",
+        "type": "component",
+        "How_is_it_connected_to_implementation": "UI component for displaying, editing, marking complete, and deleting events.",
+        "pseudo_code": "Display event details (title, description, priority, category, due date)\nShow buttons for edit, delete, mark complete\nCall appropriate handlers on button click"
       }
     ],
     "missing_implementations": [
-      "Mark events as archived",
-      "Require location when creating a new event"
+      "A new event must include a location (no location field in backend or frontend).",
+      "A new event must include a description (description is optional, not required).",
+      "Ability to mark events as archived (no archive field or logic in backend or frontend).",
+      "Event uses 'title' instead of 'name' (minor naming mismatch)."
     ]
   },
   "assign_tasks_to_events": {
