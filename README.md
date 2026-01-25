@@ -17,4 +17,4 @@ Personal Todo manager
 
 Assign tasks to event
 - allow multiple tasks assignement to event  
-
+- if no tasks assigned to event default it to empty 
