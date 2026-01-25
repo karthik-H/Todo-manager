@@ -10,7 +10,7 @@ Personal Todo manager
   - Tag
 - Edit existing tasks
 - Delete tasks
-- Mark tasks as **Completed** or **Pending**        
+- Mark tasks as **Completed** or **Pending**         
     
 - Add events
 -     Name, description, location
