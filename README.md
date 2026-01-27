@@ -6,4 +6,4 @@ Personal Todo manager
   - Title 
   - Description      
   
-- Ability to update task : description only
+- Ability to update task : description and title
