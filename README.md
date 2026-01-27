@@ -5,4 +5,5 @@ Personal Todo manager
 - Ability to create tasks with: 
   - Title 
   - Description      
-   
+  
+- Ability to update task : description only
