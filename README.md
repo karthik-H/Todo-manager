@@ -1,7 +1,7 @@
 # Todo-manager
 Personal Todo manager
 
-## Functional Requirements
+## Functional Requirements 
 - Ability to create tasks with: 
   - Title 
   - Description      
