@@ -5521,6 +5521,203 @@
           "implementation_id": "component-task-item"
         }
       ]
+    },
+    {
+      "implementation_id": "ui_task_form_add_new_task",
+      "test_cases": [
+        {
+          "description": "Verify that the form renders inputs for title, description, priority, category, and due date.",
+          "id": "tc_render_all_fields",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Render all form fields",
+          "test_setup": {
+            "given": "TaskForm is rendered with default props.",
+            "then": "Inputs for title, description, priority, category, and due date should be visible.",
+            "when": "Component is mounted."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "User fills all fields with valid data and submits the form. onSubmit should be called with form values.",
+          "id": "tc_submit_valid_form",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Submit form with valid data",
+          "test_setup": {
+            "given": "TaskForm is rendered with a mock onSubmit handler.",
+            "then": "onSubmit is called once with the entered values.",
+            "when": "User enters valid title, description, selects priority and category, picks a future due date, and submits."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Title is left blank (required field). Form should not submit and display validation error.",
+          "id": "tc_missing_title",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Submit form with missing title",
+          "test_setup": {
+            "given": "TaskForm is rendered.",
+            "then": "onSubmit is not called and a validation error for title is shown.",
+            "when": "User leaves title empty and submits form."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Category is left blank (assuming category is required). Form should not submit and display validation error.",
+          "id": "tc_missing_category",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Submit form with missing category",
+          "test_setup": {
+            "given": "TaskForm is rendered.",
+            "then": "onSubmit is not called and a validation error for category is shown.",
+            "when": "User leaves category empty and submits form."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Priority is left blank (assuming priority is required). Form should not submit and display validation error.",
+          "id": "tc_missing_priority",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Submit form with missing priority",
+          "test_setup": {
+            "given": "TaskForm is rendered.",
+            "then": "onSubmit is not called and a validation error for priority is shown.",
+            "when": "User does not select a priority and submits form."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Description is left blank (assuming it's optional). Form submits successfully.",
+          "id": "tc_description_optional",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Submit form with empty description",
+          "test_setup": {
+            "given": "TaskForm is rendered.",
+            "then": "onSubmit is called with description as empty string or undefined.",
+            "when": "User fills all required fields except description and submits."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "User selects a due date in the past. Form should show validation error and not submit.",
+          "id": "tc_invalid_due_date_past",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Submit form with past due date",
+          "test_setup": {
+            "given": "TaskForm is rendered.",
+            "then": "onSubmit is not called and a validation error for due date is shown.",
+            "when": "User selects a due date before today and submits form."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "User does not select a due date (assuming due date is optional). Form submits successfully.",
+          "id": "tc_no_due_date",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Submit form with no due date",
+          "test_setup": {
+            "given": "TaskForm is rendered.",
+            "then": "onSubmit is called with due date as empty/null/undefined.",
+            "when": "User fills all required fields except due date and submits."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "User enters a category with special characters. Form should accept and submit the value.",
+          "id": "tc_category_special_characters",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Category field with special characters",
+          "test_setup": {
+            "given": "TaskForm is rendered.",
+            "then": "onSubmit is called with the special characters in category.",
+            "when": "User enters a category such as '@Work#2024!' and submits."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "User enters a title with the maximum allowed characters. Form should accept and submit.",
+          "id": "tc_title_max_length",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Title field at max allowed length",
+          "test_setup": {
+            "given": "TaskForm is rendered with max title length set (e.g., 100 chars).",
+            "then": "onSubmit is called with the full title.",
+            "when": "User enters a title with 100 characters and submits."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "User enters a title exceeding the maximum allowed length. Form should show validation error and not submit.",
+          "id": "tc_title_over_max_length",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Title field over max allowed length",
+          "test_setup": {
+            "given": "TaskForm is rendered with max title length set (e.g., 100 chars).",
+            "then": "onSubmit is not called and a validation error for title length is shown.",
+            "when": "User enters a title with 101 characters and submits."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify that all expected priority options (e.g., Low, Medium, High) are rendered.",
+          "id": "tc_priority_options",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Priority field options rendering",
+          "test_setup": {
+            "given": "TaskForm is rendered.",
+            "then": "All priority options are visible in the priority field.",
+            "when": "Component is mounted."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that expected category options are rendered if provided as select/dropdown.",
+          "id": "tc_category_options",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Category field options rendering",
+          "test_setup": {
+            "given": "TaskForm is rendered with categories prop (if applicable).",
+            "then": "All provided category options are visible.",
+            "when": "Component is mounted."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "After successful submission, the form fields should be cleared.",
+          "id": "tc_reset_form_after_submit",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Form resets after successful submit",
+          "test_setup": {
+            "given": "TaskForm is rendered and user submits valid data.",
+            "then": "All form fields are reset to their initial values.",
+            "when": "Form submission completes successfully."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "User manipulates the form to submit an invalid priority value. Form should show validation error.",
+          "id": "tc_invalid_priority_value",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Submit form with invalid priority value",
+          "test_setup": {
+            "given": "TaskForm is rendered.",
+            "then": "onSubmit is not called and a validation error for priority is shown.",
+            "when": "User sets priority to an invalid value (not among allowed options) and submits."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "User enters only spaces in the title field. Form should show validation error and not submit.",
+          "id": "tc_whitespace_title",
+          "implementation_id": "ui_task_form_add_new_task",
+          "name": "Title field with only whitespace",
+          "test_setup": {
+            "given": "TaskForm is rendered.",
+            "then": "onSubmit is not called and a validation error for title is shown.",
+            "when": "User enters only whitespace in the title and submits."
+          },
+          "type": "negative"
+        }
+      ]
     }
   ],
   "endpoint": [
