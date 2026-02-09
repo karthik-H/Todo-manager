@@ -2,8 +2,12 @@
 Personal Todo manager
 
 ## Functional Requirements
-- Ability to create tasks with: 
+- Add new tasks with: 
   - Title 
-  - Description      
+  - Description
+  - Priority
+  - Due date
+- Edit existing tasks  
+- Delete tasks   
+- Mark tasks as **Completed** or **Pending**       
   
-- Ability to update task : description and title
