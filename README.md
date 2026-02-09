@@ -7,6 +7,6 @@ Personal Todo manager
   - Description
   - Priority
   - Due date
-- Edit existing tasks  
+- Edit existing tasks   
 - Mark tasks as **Completed** or **Pending**       
   
