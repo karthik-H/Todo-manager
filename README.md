@@ -6,7 +6,8 @@ Personal Todo manager
   - Title 
   - Description
   - Priority
-  - Due date    
+  - Due date
+  - User_name    
 - Edit existing tasks   
 - Mark tasks as **Completed** or **Pending**       
   
