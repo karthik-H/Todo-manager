@@ -104,42 +104,14 @@
     ]
   },
   "task_2467135801_20240610183000": {
-    "implementation": [
-      {
-        "How_is_it_connected_to_implementation": "Provides the Delete button in the UI, shows a confirmation dialog, and triggers the deletion callback when confirmed.",
-        "file_path": "frontend/src/components/TaskItem.tsx",
-        "id": "ui_taskitem_delete_button_confirm",
-        "name": "TaskItem component (handleDelete)",
-        "pseudo_code": "When user clicks Delete button:\n    IF window.confirm('Are you sure you want to delete this task?') returns true:\n        Call onDelete(task.id) to initiate deletion",
-        "type": "component"
-      },
-      {
-        "How_is_it_connected_to_implementation": "Receives HTTP DELETE requests for a task, calls the database delete function, and returns success or error.",
-        "file_path": "backend/main.py",
-        "id": "api_delete_task_endpoint",
-        "name": "delete_task endpoint",
-        "pseudo_code": "On DELETE /tasks/{task_id}:\n    Call database.delete_task(task_id)\n    IF success:\n        Return success message\n    ELSE:\n        Raise HTTP 404 error",
-        "type": "endpoint"
-      },
-      {
-        "How_is_it_connected_to_implementation": "Removes the task from the persistent storage (tasks.json) and saves the updated list.",
-        "file_path": "backend/database.py",
-        "id": "service_delete_task_function",
-        "name": "delete_task function",
-        "pseudo_code": "def delete_task(task_id):\n    tasks = get_tasks()\n    initial_len = len(tasks)\n    tasks = [t for t in tasks if t.id != task_id]\n    IF len(tasks) < initial_len:\n        save_tasks(tasks)\n        return True\n    ELSE:\n        return False",
-        "type": "function"
-      }
-    ],
-    "missing_implementations": [
-      "Cascade or update workflow and dependencies linked to the deleted task is not implemented.",
-      "No explicit UI update logic for workflow/dependency changes after deletion.",
-      "No undo or recovery mechanism for deleted tasks."
-    ]
+    "implementation": [],
+    "missing_implementations": []
   },
   "task_1015623897_20240610183000__MERGED_STATUS_UPDATE": {
     "implementation": [
       {
         "How_is_it_connected_to_implementation": "Provides the UI button for toggling a task's status between 'Completed' and 'Pending'. Visually distinguishes completed tasks (opacity, line-through, button label). Calls the handler to update status.",
+        "change_type": "unchanged",
         "file_path": "frontend/src/components/TaskItem.tsx",
         "id": "ui_taskitem_toggle_status_button",
         "name": "TaskItem component (Toggle Complete Button)",
@@ -148,6 +120,7 @@
       },
       {
         "How_is_it_connected_to_implementation": "Handles toggling the task status in the UI. Invoked by TaskItem, updates the task's completed status via API, reloads tasks to reflect changes instantly.",
+        "change_type": "unchanged",
         "file_path": "frontend/src/App.tsx",
         "id": "ui_app_toggle_complete_handler",
         "name": "handleToggleComplete",
@@ -156,6 +129,7 @@
       },
       {
         "How_is_it_connected_to_implementation": "Allows users to review tasks by status ('Completed', 'Pending', 'All'). Filters tasks in the UI based on their completed state.",
+        "change_type": "unchanged",
         "file_path": "frontend/src/App.tsx",
         "id": "ui_app_status_filter",
         "name": "filterStatus logic",
@@ -164,6 +138,7 @@
       },
       {
         "How_is_it_connected_to_implementation": "Sends updated task status to backend via PUT request. Ensures status change is persisted in storage.",
+        "change_type": "unchanged",
         "file_path": "frontend/src/api.ts",
         "id": "frontend_api_update_task",
         "name": "api.updateTask",
@@ -172,6 +147,7 @@
       },
       {
         "How_is_it_connected_to_implementation": "Receives task update requests from frontend. Calls database logic to persist status change.",
+        "change_type": "unchanged",
         "file_path": "backend/main.py",
         "id": "backend_endpoint_update_task",
         "name": "update_task endpoint",
@@ -180,6 +156,7 @@
       },
       {
         "How_is_it_connected_to_implementation": "Updates the task's completed status (and other fields) in persistent storage. Saves changes to tasks.json.",
+        "change_type": "unchanged",
         "file_path": "backend/database.py",
         "id": "backend_db_update_task",
         "name": "database.update_task",
@@ -187,9 +164,7 @@
         "type": "function"
       }
     ],
-    "missing_implementations": [
-      "No missing implementations detected. All requirement conditions (toggle status, UI update, persistence, visual distinction, review by status, instant reflection) are implemented."
-    ]
+    "missing_implementations": []
   },
   "task_7348159203_20240610183000__MERGED_TASK_UPDATE": {
     "implementation": [
@@ -242,15 +217,17 @@
   "task_8794632014_20240610183000": {
     "implementation": [
       {
-        "How_is_it_connected_to_implementation": "Provides the UI form for users to input title, description, priority, and due date for a new task. Calls onSubmit when the form is submitted.",
+        "How_is_it_connected_to_implementation": "Provides the UI form for users to input title, description, priority, due date, and category for a new task. Calls onSubmit when the form is submitted. Now includes 'category' field, but does NOT include 'user_name' as required by the specification.",
+        "change_type": "modified",
         "file_path": "frontend/src/components/TaskForm.tsx",
         "id": "ui_task_form_add_new_task",
         "name": "TaskForm",
-        "pseudo_code": "Display a form with fields: title, description, priority, due date\nOn form submit:\n    Call onSubmit with the entered task data",
+        "pseudo_code": "Display a form with fields: title, description, priority, category, due date\nOn form submit:\n    Call onSubmit with the entered task data",
         "type": "component"
       },
       {
         "How_is_it_connected_to_implementation": "Receives task data from TaskForm's onSubmit, calls api.createTask to send the new task to the backend, then reloads tasks.",
+        "change_type": "unchanged",
         "file_path": "frontend/src/App.tsx",
         "id": "app_handle_create_task",
         "name": "handleCreateTask",
@@ -259,6 +236,7 @@
       },
       {
         "How_is_it_connected_to_implementation": "Sends a POST request to the backend /tasks endpoint with the new task data for persistent storage.",
+        "change_type": "unchanged",
         "file_path": "frontend/src/api.ts",
         "id": "api_create_task_function",
         "name": "api.createTask",
@@ -267,6 +245,7 @@
       },
       {
         "How_is_it_connected_to_implementation": "Handles POST requests to /tasks, receives task data, and calls database.add_task to persist the new task.",
+        "change_type": "unchanged",
         "file_path": "backend/main.py",
         "id": "backend_post_tasks_endpoint",
         "name": "create_task",
@@ -275,6 +254,7 @@
       },
       {
         "How_is_it_connected_to_implementation": "Creates a new Task object with a unique ID, appends it to the task list, saves the updated list to persistent storage (tasks.json), and returns the new task.",
+        "change_type": "unchanged",
         "file_path": "backend/database.py",
         "id": "database_add_task_function",
         "name": "add_task",
@@ -282,6 +262,58 @@
         "type": "function"
       }
     ],
-    "missing_implementations": []
+    "missing_implementations": [
+      "Support for user_name field in task creation (UI, API, backend, and database logic)",
+      "Validation for user_name field",
+      "Validation for all fields (title, description, priority, due date, user_name) in frontend and backend"
+    ]
+  },
+  "task_7348159203_20240610183000": {
+    "implementation": [
+      {
+        "How_is_it_connected_to_implementation": "Provides the UI trigger for editing an existing task. When the Edit button is clicked, it invokes the onEdit callback with the current task, initiating the edit flow.",
+        "file_path": "frontend/src/components/TaskItem.tsx",
+        "id": "ui_taskitem_edit_button",
+        "name": "TaskItem.onEdit",
+        "pseudo_code": "IF user clicks 'Edit' button on a task\n    CALL onEdit(task)\n    // Typically opens TaskForm with task details pre-filled",
+        "type": "component"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Handles the form submission for editing a task. Collects updated values for title, description, priority, and due date, then calls onSubmit to update the task.",
+        "file_path": "frontend/src/components/TaskForm.tsx",
+        "id": "ui_taskform_edit_handler",
+        "name": "TaskForm.handleSubmit",
+        "pseudo_code": "ON form submit\n    PREVENT default event\n    CREATE updatedTask object with title, description, priority, due_date\n    CALL onSubmit(updatedTask)",
+        "type": "component"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Sends a PUT request to the backend to update the task with the specified ID and new details. Ensures edits are sent to the server for persistence.",
+        "file_path": "frontend/src/api.ts",
+        "id": "frontend_api_update_task",
+        "name": "api.updateTask",
+        "pseudo_code": "CALL fetch('/tasks/{id}', method='PUT', body=updatedTask)\nIF response is not OK\n    THROW error\nRETURN updated task from response",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Defines the backend API endpoint for updating a task. Receives the updated task data, calls the database update function, and returns the updated task.",
+        "file_path": "backend/main.py",
+        "id": "backend_endpoint_update_task",
+        "name": "update_task",
+        "pseudo_code": "ON PUT /tasks/{task_id}\n    CALL database.update_task(task_id, task)\n    IF updated_task is None\n        RAISE 404 error\n    RETURN updated_task",
+        "type": "endpoint"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Implements the database logic for updating a task. Finds the task by ID, replaces its details with the new values, and saves the updated list to disk.",
+        "file_path": "backend/database.py",
+        "id": "backend_db_update_task",
+        "name": "update_task",
+        "pseudo_code": "LOAD tasks from storage\nFOR each task in tasks\n    IF task.id == task_id\n        CREATE updated_task with new values, retaining task_id\n        REPLACE task with updated_task\n        SAVE tasks to storage\n        RETURN updated_task\nRETURN None if not found",
+        "type": "function"
+      }
+    ],
+    "missing_implementations": [
+      "Validation for data integrity (e.g., checking for valid title, due date, priority) is not explicitly implemented in frontend or backend.",
+      "Instant reflection of edits in UI is dependent on parent component logic, which is not shown here (e.g., App.tsx)."
+    ]
   }
 }
