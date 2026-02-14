@@ -12,6 +12,7 @@ def get_tasks() -> List[Task]:
     with open(DB_FILE, "r") as f:
         try:
             data = json.load(f)
+            print('this is test')
             return [Task(**t) for t in data]
         except json.JSONDecodeError:
             return []
