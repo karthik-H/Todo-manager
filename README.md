@@ -9,7 +9,4 @@ Personal Todo manager
   - Due date
   - User_name    
 - Edit existing tasks   
-- Mark tasks as **Completed** or **Pending**          
-  
- 
- 
+- Mark tasks as **Completed** or **Pending**    
