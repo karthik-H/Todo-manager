@@ -29,7 +29,6 @@ async def create_task(task: TaskCreate):
 
 @app.put("/tasks/{task_id}", response_model=Task)
 async def update_task(task_id: str, task: TaskCreate):
-    updated_task = database.update_task(task_id, task)
     if updated_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
     return updated_task
