@@ -1476,7 +1476,8 @@
           },
           "type": "positive"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_2951374280_20260212112220/frontend_create_task_api_function.ts"
     },
     {
       "implementation_id": "backend_add_task_function",
@@ -1927,7 +1928,8 @@
           },
           "type": "negative"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_2951374280_20260212112220/backend_add_task_function.py"
     },
     {
       "implementation_id": "frontend_update_task_api_function",
@@ -2309,7 +2311,8 @@
           },
           "type": "edge"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_2951374280_20260212112220/frontend_update_task_api_function.ts"
     },
     {
       "implementation_id": "backend_update_task_function",
@@ -2659,7 +2662,8 @@
           },
           "type": "edge"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_2951374280_20260212112220/backend_update_task_function.py"
     },
     {
       "implementation_id": "frontend_api_update_task",
@@ -2962,7 +2966,8 @@
           },
           "type": "negative"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_8513490273_20260212112221/frontend_api_update_task.ts"
     },
     {
       "implementation_id": "backend_logic_update_task",
@@ -3425,7 +3430,8 @@
           },
           "type": "negative"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_8513490273_20260212112221/backend_logic_update_task.py"
     }
   ],
   "component": [
@@ -3636,7 +3642,8 @@
           },
           "type": "edge"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_2951374280_20260212112220/ui_task_form_component.ts"
     },
     {
       "implementation_id": "ui_task_item_component",
@@ -3881,7 +3888,8 @@
           },
           "type": "positive"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_2951374280_20260212112220/ui_task_item_component.ts"
     },
     {
       "implementation_id": "ui_taskitem_edit_button",
@@ -4006,7 +4014,8 @@
           },
           "type": "negative"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_8513490273_20260212112221/ui_taskitem_edit_button.ts"
     },
     {
       "implementation_id": "ui_taskform_edit_handler",
@@ -4179,7 +4188,8 @@
           },
           "type": "positive"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_8513490273_20260212112221/ui_taskform_edit_handler.ts"
     }
   ],
   "endpoint": [
@@ -5906,7 +5916,8 @@
           },
           "type": "positive"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_2951374280_20260212112220/backend_create_task_endpoint.py"
     },
     {
       "implementation_id": "backend_update_task_endpoint",
@@ -6352,7 +6363,8 @@
           },
           "type": "edge"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_2951374280_20260212112220/backend_update_task_endpoint.py"
     },
     {
       "implementation_id": "backend_endpoint_update_task",
@@ -6650,7 +6662,8 @@
           },
           "type": "negative"
         }
-      ]
+      ],
+      "test_path": ".codevalid/tests/task_8513490273_20260212112221/backend_endpoint_update_task.py"
     }
   ]
 }
