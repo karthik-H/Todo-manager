@@ -29,7 +29,6 @@ def add_task(task_create: TaskCreate) -> Task:
     tasks = get_tasks()
     new_task = Task(id=str(uuid.uuid4()), **task_create.model_dump())
     tasks.append(new_task)
-    save_tasks(tasks)
     return new_task
 
 def update_task(task_id: str, task_update: TaskCreate) -> Optional[Task]:
