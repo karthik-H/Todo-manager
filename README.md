@@ -8,5 +8,5 @@ Personal Todo manager
   - due date
 - Edit existing tasks
 - Mark status as completed, inprogress.
-
+ 
 - During edit make sure title is not empty
