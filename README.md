@@ -9,5 +9,4 @@ Personal Todo manager
 - Edit existing tasks
 - Mark status as completed, inprogress.
 
-- 
 - During edit make sure title is not empty
