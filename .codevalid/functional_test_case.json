@@ -4051,6 +4051,2716 @@
           "implementation_id": "backend-delete_task-function"
         }
       ]
+    },
+    {
+      "implementation_id": "handletogglecomplete",
+      "test_cases": [
+        {
+          "description": "Verify task completion toggles from false to true and tasks reload after successful API update.",
+          "id": "toggle_completion_from_false_to_true_success",
+          "implementation_id": "handletogglecomplete",
+          "name": "toggle_completion_from_false_to_true_success",
+          "test_setup": {
+            "given": "A task with completed=false and api.updateTask succeeds",
+            "then": "api.updateTask is called with completed=true and loadTasks is executed",
+            "when": "handleToggleComplete(task) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify task completion toggles from true to false and tasks reload after successful API update.",
+          "id": "toggle_completion_from_true_to_false_success",
+          "implementation_id": "handletogglecomplete",
+          "name": "toggle_completion_from_true_to_false_success",
+          "test_setup": {
+            "given": "A task with completed=true and api.updateTask succeeds",
+            "then": "api.updateTask is called with completed=false and loadTasks is executed",
+            "when": "handleToggleComplete(task) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensure error alert appears when updateTask throws an error.",
+          "id": "api_update_failure_shows_error_alert",
+          "implementation_id": "handletogglecomplete",
+          "name": "api_update_failure_shows_error_alert",
+          "test_setup": {
+            "given": "A valid task but api.updateTask throws an exception",
+            "then": "Alert 'Failed to update task status' is shown and loadTasks is not called",
+            "when": "handleToggleComplete(task) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensure error is handled if task.completed is undefined.",
+          "id": "task_object_missing_completed_field",
+          "implementation_id": "handletogglecomplete",
+          "name": "task_object_missing_completed_field",
+          "test_setup": {
+            "given": "A task object without a completed property",
+            "then": "api.updateTask fails or throws and the error alert displays",
+            "when": "handleToggleComplete(task) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Ensure update fails safely when task.id is null or invalid.",
+          "id": "task_id_missing_or_invalid",
+          "implementation_id": "handletogglecomplete",
+          "name": "task_id_missing_or_invalid",
+          "test_setup": {
+            "given": "A task with id=null or id not a valid identifier",
+            "then": "api.updateTask throws or rejects, and the user sees error alert",
+            "when": "handleToggleComplete(task) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify loadTasks is only called after a successful update.",
+          "id": "tasks_reload_only_on_success",
+          "implementation_id": "handletogglecomplete",
+          "name": "tasks_reload_only_on_success",
+          "test_setup": {
+            "given": "A valid task and api.updateTask succeeds",
+            "then": "loadTasks is invoked exactly once after updateTask success",
+            "when": "handleToggleComplete(task) is executed"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensure system behaves consistently if toggled multiple times quickly.",
+          "id": "rapid_consecutive_toggle_requests",
+          "implementation_id": "handletogglecomplete",
+          "name": "rapid_consecutive_toggle_requests",
+          "test_setup": {
+            "given": "User triggers multiple rapid toggle actions on the same task",
+            "then": "Each call sends correct toggled state and loads tasks after each success",
+            "when": "handleToggleComplete(task) is called repeatedly"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Ensure function handles extra fields without breaking update behavior.",
+          "id": "large_task_object_with_additional_properties",
+          "implementation_id": "handletogglecomplete",
+          "name": "large_task_object_with_additional_properties",
+          "test_setup": {
+            "given": "A large task object with non\u2011required extra fields",
+            "then": "api.updateTask sends full task object with toggled completed field and succeeds",
+            "when": "handleToggleComplete(task) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Ensure unexpected types on completed field are handled gracefully.",
+          "id": "task_completed_field_not_boolean",
+          "implementation_id": "handletogglecomplete",
+          "name": "task_completed_field_not_boolean",
+          "test_setup": {
+            "given": "A task with completed set to a non-boolean value (e.g., string or number)",
+            "then": "The NOT operation may fail causing api.updateTask to reject and error alert to display",
+            "when": "handleToggleComplete(task) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify error from loadTasks does not affect update but surfaces appropriately.",
+          "id": "load_tasks_failure_after_successful_update",
+          "implementation_id": "handletogglecomplete",
+          "name": "load_tasks_failure_after_successful_update",
+          "test_setup": {
+            "given": "A valid task and updateTask succeeds but loadTasks throws",
+            "then": "Completed value is updated but tasks may not refresh; error behavior depends on implementation (not caught here)",
+            "when": "handleToggleComplete(task) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Check behavior when user lacks permission and backend rejects update.",
+          "id": "no_permissions_to_update_task",
+          "implementation_id": "handletogglecomplete",
+          "name": "no_permissions_to_update_task",
+          "test_setup": {
+            "given": "Backend returns forbidden error due to permissions",
+            "then": "Error alert is shown and tasks do not reload",
+            "when": "handleToggleComplete(task) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "System should show error alert if updateTask times out.",
+          "id": "network_timeout_on_update",
+          "implementation_id": "handletogglecomplete",
+          "name": "network_timeout_on_update",
+          "test_setup": {
+            "given": "Network latency causes updateTask to timeout",
+            "then": "Error alert appears and loadTasks is not triggered",
+            "when": "handleToggleComplete(task) is called"
+          },
+          "type": "negative"
+        }
+      ]
+    },
+    {
+      "implementation_id": "updatetask",
+      "test_cases": [
+        {
+          "description": "Successfully updates an existing task when valid ID and task data are provided",
+          "id": "update_existing_task_success",
+          "implementation_id": "updatetask",
+          "name": "update_existing_task_success",
+          "test_setup": {
+            "given": {
+              "id": "123",
+              "request_body_json": {
+                "completed": false,
+                "description": "Updated description",
+                "title": "Updated Task"
+              },
+              "server_state": "Task with ID 123 exists"
+            },
+            "then": {
+              "expected_behavior": "Function returns updated task JSON",
+              "response_body_json": {
+                "completed": false,
+                "description": "Updated description",
+                "id": "123",
+                "title": "Updated Task"
+              }
+            },
+            "when": "updateTask('123', request_body_json) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Fails when attempting to update a task that does not exist",
+          "id": "update_task_not_found",
+          "implementation_id": "updatetask",
+          "name": "update_task_not_found",
+          "test_setup": {
+            "given": {
+              "id": "999",
+              "request_body_json": {
+                "completed": true,
+                "description": "Task does not exist",
+                "title": "Does Not Matter"
+              },
+              "server_state": "Task with ID 999 does not exist"
+            },
+            "then": {
+              "expected_behavior": "Function throws error 'Failed to update task'"
+            },
+            "when": "updateTask('999', request_body_json) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Handles 500 Internal Server Error response from backend",
+          "id": "update_task_server_error",
+          "implementation_id": "updatetask",
+          "name": "update_task_server_error",
+          "test_setup": {
+            "given": {
+              "id": "123",
+              "request_body_json": {
+                "completed": false,
+                "description": "Server will throw 500",
+                "title": "Valid Update"
+              },
+              "server_state": "Backend returns 500"
+            },
+            "then": {
+              "expected_behavior": "Function throws error 'Failed to update task'"
+            },
+            "when": "updateTask('123', request_body_json) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Fails when task ID format is invalid (e.g., empty string)",
+          "id": "update_task_invalid_id_format",
+          "implementation_id": "updatetask",
+          "name": "update_task_invalid_id_format",
+          "test_setup": {
+            "given": {
+              "id": "",
+              "request_body_json": {
+                "completed": false,
+                "description": "Valid desc",
+                "title": "Valid Task"
+              }
+            },
+            "then": {
+              "expected_behavior": "Backend returns 400; function throws 'Failed to update task'"
+            },
+            "when": "updateTask('', request_body_json) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Fails when required fields in task body are missing",
+          "id": "update_task_missing_required_fields",
+          "implementation_id": "updatetask",
+          "name": "update_task_missing_required_fields",
+          "test_setup": {
+            "given": {
+              "id": "123",
+              "request_body_json": {
+                "completed": true,
+                "description": "Missing title"
+              },
+              "server_state": "Backend validates required fields and returns 400"
+            },
+            "then": {
+              "expected_behavior": "Function throws 'Failed to update task'"
+            },
+            "when": "updateTask('123', request_body_json) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Tests boundary case where title is an empty string",
+          "id": "update_task_empty_title",
+          "implementation_id": "updatetask",
+          "name": "update_task_empty_title",
+          "test_setup": {
+            "given": {
+              "id": "123",
+              "request_body_json": {
+                "completed": false,
+                "description": "Empty title test",
+                "title": ""
+              },
+              "server_state": "Backend rejects empty title with 422"
+            },
+            "then": {
+              "expected_behavior": "Function throws 'Failed to update task'"
+            },
+            "when": "updateTask('123', request_body_json) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Successfully updates task with maximum allowed title length",
+          "id": "update_task_max_length_title",
+          "implementation_id": "updatetask",
+          "name": "update_task_max_length_title",
+          "test_setup": {
+            "given": {
+              "id": "123",
+              "request_body_json": {
+                "completed": true,
+                "description": "Testing max title length",
+                "title": "T.repeat(255)"
+              },
+              "server_state": "Backend accepts 255-length title"
+            },
+            "then": {
+              "expected_behavior": "Task is successfully updated",
+              "response_body_json": {
+                "completed": true,
+                "description": "Testing max title length",
+                "id": "123",
+                "title": "T.repeat(255)"
+              }
+            },
+            "when": "updateTask('123', request_body_json) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Tests toggling completed field from false to true",
+          "id": "update_task_boolean_edge_case",
+          "implementation_id": "updatetask",
+          "name": "update_task_boolean_edge_case",
+          "test_setup": {
+            "given": {
+              "id": "456",
+              "request_body_json": {
+                "completed": true,
+                "description": "Toggle completed",
+                "title": "Task"
+              },
+              "server_state": "Task exists with completed = false"
+            },
+            "then": {
+              "expected_behavior": "Completed flag is updated",
+              "response_body_json": {
+                "completed": true,
+                "description": "Toggle completed",
+                "id": "456",
+                "title": "Task"
+              }
+            },
+            "when": "updateTask('456', request_body_json) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Fails when request body contains invalid JSON",
+          "id": "update_task_invalid_json_body",
+          "implementation_id": "updatetask",
+          "name": "update_task_invalid_json_body",
+          "test_setup": {
+            "given": {
+              "id": "123",
+              "request_body_json": "INVALID_JSON_LITERAL",
+              "server_state": "Frontend throws internal JSON.stringify error"
+            },
+            "then": {
+              "expected_behavior": "Function throws JSON serialization error before making request"
+            },
+            "when": "updateTask('123', request_body_json) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Fails when the network request cannot reach backend",
+          "id": "update_task_network_failure",
+          "implementation_id": "updatetask",
+          "name": "update_task_network_failure",
+          "test_setup": {
+            "given": {
+              "id": "123",
+              "network_state": "Connection refused",
+              "request_body_json": {
+                "completed": true,
+                "description": "Network down scenario",
+                "title": "Network Test"
+              }
+            },
+            "then": {
+              "expected_behavior": "Function throws network-level error"
+            },
+            "when": "updateTask('123', request_body_json) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Fails when user does not have permission to update the task",
+          "id": "update_task_unauthorized",
+          "implementation_id": "updatetask",
+          "name": "update_task_unauthorized",
+          "test_setup": {
+            "given": {
+              "id": "123",
+              "request_body_json": {
+                "completed": false,
+                "description": "User does not have permission",
+                "title": "Unauthorized Update"
+              },
+              "server_state": "Backend returns 401 Unauthorized"
+            },
+            "then": {
+              "expected_behavior": "Function throws 'Failed to update task'"
+            },
+            "when": "updateTask('123', request_body_json) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Fails when the user is authenticated but not allowed to update the task",
+          "id": "update_task_forbidden",
+          "implementation_id": "updatetask",
+          "name": "update_task_forbidden",
+          "test_setup": {
+            "given": {
+              "id": "123",
+              "request_body_json": {
+                "completed": false,
+                "description": "User lacks proper role",
+                "title": "Forbidden Update"
+              },
+              "server_state": "Backend returns 403 Forbidden"
+            },
+            "then": {
+              "expected_behavior": "Function throws 'Failed to update task'"
+            },
+            "when": "updateTask('123', request_body_json) is called"
+          },
+          "type": "negative"
+        }
+      ]
+    },
+    {
+      "implementation_id": "update_task_e254",
+      "test_cases": [
+        {
+          "description": "Successfully updates an existing task with a new completed status",
+          "id": "update_existing_task_success",
+          "implementation_id": "update_task_e254",
+          "name": "update_existing_task_success",
+          "test_setup": {
+            "given": {
+              "initial_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "Task A"
+                },
+                {
+                  "completed": false,
+                  "id": 2,
+                  "title": "Task B"
+                }
+              ],
+              "task_id": 1,
+              "task_update": {
+                "completed": true,
+                "title": "Task A"
+              }
+            },
+            "then": {
+              "expected_result": {
+                "completed": true,
+                "id": 1,
+                "title": "Task A"
+              },
+              "expected_saved_tasks": [
+                {
+                  "completed": true,
+                  "id": 1,
+                  "title": "Task A"
+                },
+                {
+                  "completed": false,
+                  "id": 2,
+                  "title": "Task B"
+                }
+              ]
+            },
+            "when": "update_task(1, task_update) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Returns None when the specified task ID does not exist",
+          "id": "update_task_not_found",
+          "implementation_id": "update_task_e254",
+          "name": "update_task_not_found",
+          "test_setup": {
+            "given": {
+              "initial_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "Task A"
+                }
+              ],
+              "task_id": 99,
+              "task_update": {
+                "completed": true,
+                "title": "Anything"
+              }
+            },
+            "then": {
+              "expected_result": null
+            },
+            "when": "update_task(99, task_update) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Handles case where tasks.json is empty and returns None",
+          "id": "update_task_empty_task_list",
+          "implementation_id": "update_task_e254",
+          "name": "update_task_empty_task_list",
+          "test_setup": {
+            "given": {
+              "initial_tasks": [],
+              "task_id": 1,
+              "task_update": {
+                "completed": true,
+                "title": "New Title"
+              }
+            },
+            "then": {
+              "expected_result": null
+            },
+            "when": "update_task(1, task_update) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Updates a task when optional fields other than completed are missing",
+          "id": "update_task_missing_title_field",
+          "implementation_id": "update_task_e254",
+          "name": "update_task_missing_title_field",
+          "test_setup": {
+            "given": {
+              "initial_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "Task A"
+                }
+              ],
+              "task_id": 1,
+              "task_update": {
+                "completed": true
+              }
+            },
+            "then": {
+              "expected_result": {
+                "completed": true,
+                "id": 1
+              },
+              "expected_saved_tasks": [
+                {
+                  "completed": true,
+                  "id": 1
+                }
+              ]
+            },
+            "when": "update_task(1, task_update) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Ensures incorrect update payload without completed field still updates other fields",
+          "id": "update_task_completed_field_missing",
+          "implementation_id": "update_task_e254",
+          "name": "update_task_completed_field_missing",
+          "test_setup": {
+            "given": {
+              "initial_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "Old"
+                }
+              ],
+              "task_id": 1,
+              "task_update": {
+                "title": "Updated Title"
+              }
+            },
+            "then": {
+              "expected_result": {
+                "id": 1,
+                "title": "Updated Title"
+              },
+              "expected_saved_tasks": [
+                {
+                  "id": 1,
+                  "title": "Updated Title"
+                }
+              ]
+            },
+            "when": "update_task(1, task_update) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verifies that only the matched task is updated and others remain unchanged",
+          "id": "update_task_multiple_tasks_only_target_modified",
+          "implementation_id": "update_task_e254",
+          "name": "update_task_multiple_tasks_only_target_modified",
+          "test_setup": {
+            "given": {
+              "initial_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "Task A"
+                },
+                {
+                  "completed": false,
+                  "id": 2,
+                  "title": "Task B"
+                },
+                {
+                  "completed": true,
+                  "id": 3,
+                  "title": "Task C"
+                }
+              ],
+              "task_id": 2,
+              "task_update": {
+                "completed": true,
+                "title": "Task B Updated"
+              }
+            },
+            "then": {
+              "expected_result": {
+                "completed": true,
+                "id": 2,
+                "title": "Task B Updated"
+              },
+              "expected_saved_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "Task A"
+                },
+                {
+                  "completed": true,
+                  "id": 2,
+                  "title": "Task B Updated"
+                },
+                {
+                  "completed": true,
+                  "id": 3,
+                  "title": "Task C"
+                }
+              ]
+            },
+            "when": "update_task(2, task_update) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Handles case where task_id is not an integer",
+          "id": "update_task_invalid_task_id_type",
+          "implementation_id": "update_task_e254",
+          "name": "update_task_invalid_task_id_type",
+          "test_setup": {
+            "given": {
+              "initial_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "Task A"
+                }
+              ],
+              "task_id": "abc",
+              "task_update": {
+                "completed": true
+              }
+            },
+            "then": {
+              "expected_result": null
+            },
+            "when": "update_task('abc', task_update) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Handles invalid task_update input (non-object)",
+          "id": "update_task_invalid_update_payload_type",
+          "implementation_id": "update_task_e254",
+          "name": "update_task_invalid_update_payload_type",
+          "test_setup": {
+            "given": {
+              "initial_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "Task A"
+                }
+              ],
+              "task_id": 1,
+              "task_update": "invalid_payload"
+            },
+            "then": {
+              "expected_result": "TypeError expected or graceful failure depending on implementation"
+            },
+            "when": "update_task(1, task_update) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensures completed field correctly handles boolean boundary values",
+          "id": "update_task_boolean_edge_values",
+          "implementation_id": "update_task_e254",
+          "name": "update_task_boolean_edge_values",
+          "test_setup": {
+            "given": {
+              "initial_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "Edge Task"
+                }
+              ],
+              "task_id": 1,
+              "task_update": {
+                "completed": false
+              }
+            },
+            "then": {
+              "expected_result": {
+                "completed": false,
+                "id": 1
+              },
+              "expected_saved_tasks": [
+                {
+                  "completed": false,
+                  "id": 1
+                }
+              ]
+            },
+            "when": "update_task(1, task_update) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Updates the first item in the tasks array",
+          "id": "update_task_first_item_in_list",
+          "implementation_id": "update_task_e254",
+          "name": "update_task_first_item_in_list",
+          "test_setup": {
+            "given": {
+              "initial_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "First"
+                },
+                {
+                  "completed": true,
+                  "id": 2,
+                  "title": "Second"
+                }
+              ],
+              "task_id": 1,
+              "task_update": {
+                "completed": true,
+                "title": "First Updated"
+              }
+            },
+            "then": {
+              "expected_result": {
+                "completed": true,
+                "id": 1,
+                "title": "First Updated"
+              },
+              "expected_saved_tasks": [
+                {
+                  "completed": true,
+                  "id": 1,
+                  "title": "First Updated"
+                },
+                {
+                  "completed": true,
+                  "id": 2,
+                  "title": "Second"
+                }
+              ]
+            },
+            "when": "update_task(1, task_update) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Updates the last item in the tasks array",
+          "id": "update_task_last_item_in_list",
+          "implementation_id": "update_task_e254",
+          "name": "update_task_last_item_in_list",
+          "test_setup": {
+            "given": {
+              "initial_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "A"
+                },
+                {
+                  "completed": true,
+                  "id": 2,
+                  "title": "B"
+                },
+                {
+                  "completed": false,
+                  "id": 3,
+                  "title": "C"
+                }
+              ],
+              "task_id": 3,
+              "task_update": {
+                "completed": true,
+                "title": "C Updated"
+              }
+            },
+            "then": {
+              "expected_result": {
+                "completed": true,
+                "id": 3,
+                "title": "C Updated"
+              },
+              "expected_saved_tasks": [
+                {
+                  "completed": false,
+                  "id": 1,
+                  "title": "A"
+                },
+                {
+                  "completed": true,
+                  "id": 2,
+                  "title": "B"
+                },
+                {
+                  "completed": true,
+                  "id": 3,
+                  "title": "C Updated"
+                }
+              ]
+            },
+            "when": "update_task(3, task_update) is called"
+          },
+          "type": "positive"
+        }
+      ]
+    },
+    {
+      "implementation_id": "save_tasks",
+      "test_cases": [
+        {
+          "description": "Ensure the function writes a list of valid Task objects to tasks.json successfully.",
+          "id": "save_tasks_successfully_writes_valid_tasks",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_successfully_writes_valid_tasks",
+          "test_setup": {
+            "given": "A list of valid Task objects with fields that can be serialized using model_dump.",
+            "then": "tasks.json is created or overwritten with a correctly formatted JSON array containing each task's dumped JSON representation.",
+            "when": "save_tasks(tasks) is called."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that saving an empty task list results in an empty JSON array.",
+          "id": "save_tasks_empty_list_writes_empty_array",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_empty_list_writes_empty_array",
+          "test_setup": {
+            "given": "An empty list [].",
+            "then": "tasks.json contains [].",
+            "when": "save_tasks([]) is called."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify correct handling when only one Task object is provided.",
+          "id": "save_tasks_with_single_task",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_with_single_task",
+          "test_setup": {
+            "given": "A single Task object in a list.",
+            "then": "tasks.json contains a JSON array with exactly one serialized task.",
+            "when": "save_tasks([task]) is called."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensure the function correctly writes a large list of tasks.",
+          "id": "save_tasks_handles_large_number_of_tasks",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_handles_large_number_of_tasks",
+          "test_setup": {
+            "given": "A list of many Task objects, e.g., 10,000 items.",
+            "then": "tasks.json contains all serialized tasks without performance issues or corruption.",
+            "when": "save_tasks(tasks) is called."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify behavior when a Task contains values that cannot be JSON serialized.",
+          "id": "save_tasks_fails_when_task_has_non_serializable_fields",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_fails_when_task_has_non_serializable_fields",
+          "test_setup": {
+            "given": "A list where one or more tasks contain unsupported field types (e.g., a function reference).",
+            "then": "An error is raised during JSON serialization, and tasks.json is not written or is left unchanged depending on implementation.",
+            "when": "save_tasks(tasks) is called."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensure function errors out when the tasks.json file cannot be written to due to permission issues.",
+          "id": "save_tasks_fails_when_file_write_permission_denied",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_fails_when_file_write_permission_denied",
+          "test_setup": {
+            "given": "tasks.json exists but is read-only or directory has no write permissions.",
+            "then": "An exception is thrown during file open/write and tasks are not saved.",
+            "when": "save_tasks(tasks) is called."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify the function handles missing directory paths properly.",
+          "id": "save_tasks_fails_when_directory_missing",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_fails_when_directory_missing",
+          "test_setup": {
+            "given": "The directory containing tasks.json does not exist.",
+            "then": "An error occurs when trying to open the file, and the operation fails.",
+            "when": "save_tasks(tasks) is called."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensure the function replaces previous file contents.",
+          "id": "save_tasks_overwrites_existing_file",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_overwrites_existing_file",
+          "test_setup": {
+            "given": "tasks.json already contains older task data.",
+            "then": "The file contents are overwritten with only the new serialized tasks.",
+            "when": "save_tasks(new_tasks) is called."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify JSON indentation is applied for readability.",
+          "id": "save_tasks_preserves_json_formatting_indentation",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_preserves_json_formatting_indentation",
+          "test_setup": {
+            "given": "A list of valid Task objects.",
+            "then": "tasks.json contains properly indented JSON output.",
+            "when": "save_tasks(tasks) is called."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Test tasks that have boundary values in fields (e.g., max string length).",
+          "id": "save_tasks_handles_tasks_with_boundary_field_values",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_handles_tasks_with_boundary_field_values",
+          "test_setup": {
+            "given": "A task object containing fields with boundary values such as empty strings, very long strings, or minimal/default numeric values.",
+            "then": "JSON is written successfully and matches the expected serialized output.",
+            "when": "save_tasks(tasks) is called."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify only JSON-compatible fields are persisted.",
+          "id": "save_tasks_ignores_internal_python_state_in_model_dump",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_ignores_internal_python_state_in_model_dump",
+          "test_setup": {
+            "given": "Tasks containing internal Python attributes not part of the model schema.",
+            "then": "Only fields provided by model_dump(mode='json') are saved.",
+            "when": "save_tasks(tasks) is called."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Check JSON handling when tasks contain allowable null fields.",
+          "id": "save_tasks_handles_task_list_with_null_or_none_fields",
+          "implementation_id": "save_tasks",
+          "name": "save_tasks_handles_task_list_with_null_or_none_fields",
+          "test_setup": {
+            "given": "Task objects with None values in optional fields.",
+            "then": "The JSON output contains null for corresponding fields.",
+            "when": "save_tasks(tasks) is called."
+          },
+          "type": "edge"
+        }
+      ]
+    },
+    {
+      "implementation_id": "taskcreate",
+      "test_cases": [
+        {
+          "description": "Verify a task is successfully created when only required fields are provided.",
+          "id": "create_task_success_minimal_fields",
+          "implementation_id": "taskcreate",
+          "name": "create_task_success_minimal_fields",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "priority": "Medium",
+                "title": "Buy groceries"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "status": "success"
+              }
+            },
+            "when": "TaskCreate is invoked with minimal valid fields"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify a task is created successfully when all fields are provided with valid values.",
+          "id": "create_task_success_all_fields",
+          "implementation_id": "taskcreate",
+          "name": "create_task_success_all_fields",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "Work",
+                "completed": false,
+                "description": "Slides for Monday's meeting",
+                "due_date": "2026-04-10T10:00:00Z",
+                "priority": "High",
+                "title": "Prepare presentation"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "status": "success"
+              }
+            },
+            "when": "TaskCreate is invoked with all valid fields"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify error occurs when required field 'title' is missing.",
+          "id": "create_task_missing_title",
+          "implementation_id": "taskcreate",
+          "name": "create_task_missing_title",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "priority": "Low"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "error": "title is required"
+              }
+            },
+            "when": "TaskCreate is invoked without 'title'"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify error occurs when 'title' is an empty string.",
+          "id": "create_task_empty_title",
+          "implementation_id": "taskcreate",
+          "name": "create_task_empty_title",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "priority": "Medium",
+                "title": ""
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "error": "title cannot be empty"
+              }
+            },
+            "when": "TaskCreate is invoked with empty title"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify error occurs when 'priority' contains a value outside the allowed enum.",
+          "id": "create_task_invalid_priority_value",
+          "implementation_id": "taskcreate",
+          "name": "create_task_invalid_priority_value",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "priority": "Urgent",
+                "title": "Task X"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "error": "priority must be one of 'Low', 'Medium', or 'High'"
+              }
+            },
+            "when": "TaskCreate is invoked with invalid priority"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify error occurs when required field 'priority' is missing.",
+          "id": "create_task_missing_priority",
+          "implementation_id": "taskcreate",
+          "name": "create_task_missing_priority",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "title": "Read book"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "error": "priority is required"
+              }
+            },
+            "when": "TaskCreate is invoked without 'priority'"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify error occurs when 'category' has a value outside allowed enum options.",
+          "id": "create_task_invalid_category_value",
+          "implementation_id": "taskcreate",
+          "name": "create_task_invalid_category_value",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "Fitness",
+                "completed": false,
+                "priority": "Low",
+                "title": "Task"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "error": "category must be 'Work', 'Personal', or 'Study'"
+              }
+            },
+            "when": "TaskCreate is invoked with invalid category value"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify error when 'due_date' is not in ISO format.",
+          "id": "create_task_invalid_due_date_format",
+          "implementation_id": "taskcreate",
+          "name": "create_task_invalid_due_date_format",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "due_date": "04-10-2026",
+                "priority": "Medium",
+                "title": "Task"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "error": "due_date must be in ISO format"
+              }
+            },
+            "when": "TaskCreate is invoked with malformed date"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify system accepts a valid future ISO date.",
+          "id": "create_task_future_due_date",
+          "implementation_id": "taskcreate",
+          "name": "create_task_future_due_date",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "description": "Organize schedule",
+                "due_date": "2030-01-01T00:00:00Z",
+                "priority": "High",
+                "title": "Plan event"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "status": "success"
+              }
+            },
+            "when": "TaskCreate is invoked with valid future date"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify system allows creation with a past due date (if allowed by business rules).",
+          "id": "create_task_past_due_date",
+          "implementation_id": "taskcreate",
+          "name": "create_task_past_due_date",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "due_date": "2020-01-01T00:00:00Z",
+                "priority": "Low",
+                "title": "Submit report"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "status": "success"
+              }
+            },
+            "when": "TaskCreate is invoked with a past date"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify error occurs when required 'completed' field is omitted.",
+          "id": "create_task_missing_completed_field",
+          "implementation_id": "taskcreate",
+          "name": "create_task_missing_completed_field",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "priority": "Medium",
+                "title": "Clean desk"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "error": "completed is required"
+              }
+            },
+            "when": "TaskCreate is invoked without required boolean 'completed'"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify error when 'completed' is not a boolean.",
+          "id": "create_task_invalid_completed_type",
+          "implementation_id": "taskcreate",
+          "name": "create_task_invalid_completed_type",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": "yes",
+                "priority": "Medium",
+                "title": "Task"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "error": "completed must be a boolean"
+              }
+            },
+            "when": "TaskCreate is invoked with invalid completed type"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify system accepts the maximum allowed title length (assuming 255 chars).",
+          "id": "create_task_long_title_boundary",
+          "implementation_id": "taskcreate",
+          "name": "create_task_long_title_boundary",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "priority": "High",
+                "title": "T.repeat(255)"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "status": "success"
+              }
+            },
+            "when": "TaskCreate is invoked with boundary-length title"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify system rejects title exceeding max length (assuming >255 chars).",
+          "id": "create_task_title_exceeds_max_length",
+          "implementation_id": "taskcreate",
+          "name": "create_task_title_exceeds_max_length",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "priority": "High",
+                "title": "T.repeat(256)"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "error": "title exceeds maximum length"
+              }
+            },
+            "when": "TaskCreate is invoked with overly long title"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify valid state transition when task is created already marked as completed.",
+          "id": "create_task_state_transition_completed_true",
+          "implementation_id": "taskcreate",
+          "name": "create_task_state_transition_completed_true",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": true,
+                "priority": "Medium",
+                "title": "Finalize contract"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "status": "success"
+              }
+            },
+            "when": "TaskCreate is invoked with completed true"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify valid state transition when task is created as incomplete.",
+          "id": "create_task_state_transition_completed_false",
+          "implementation_id": "taskcreate",
+          "name": "create_task_state_transition_completed_false",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "priority": "Low",
+                "title": "Organize files"
+              }
+            },
+            "then": {
+              "response_body_json": {
+                "status": "success"
+              }
+            },
+            "when": "TaskCreate is invoked with completed false"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify system rejects task creation when user lacks permissions.",
+          "id": "create_task_unauthorized_user",
+          "implementation_id": "taskcreate",
+          "name": "create_task_unauthorized_user",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "priority": "High",
+                "title": "Restricted task"
+              },
+              "role": "viewer"
+            },
+            "then": {
+              "response_body_json": {
+                "error": "User not authorized"
+              }
+            },
+            "when": "Viewer role attempts to call TaskCreate"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify system allows task creation when user has proper permissions.",
+          "id": "create_task_authorized_user",
+          "implementation_id": "taskcreate",
+          "name": "create_task_authorized_user",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "completed": false,
+                "priority": "Medium",
+                "title": "Authorized task"
+              },
+              "role": "editor"
+            },
+            "then": {
+              "response_body_json": {
+                "status": "success"
+              }
+            },
+            "when": "Editor role calls TaskCreate"
+          },
+          "type": "positive"
+        }
+      ]
+    },
+    {
+      "implementation_id": "taskcreate_65f6",
+      "test_cases": [
+        {
+          "description": "Verify that a task is created successfully when no completed field is provided and default=False applies.",
+          "id": "valid_task_creation_with_default_completed",
+          "implementation_id": "taskcreate_65f6",
+          "name": "valid_task_creation_with_default_completed",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "general",
+                "description": "A simple task",
+                "due_date": "2025-01-01",
+                "priority": 2,
+                "title": "Test Task"
+              }
+            },
+            "then": {
+              "expected_behavior": "Model validates successfully and sets completed=false"
+            },
+            "when": "TaskCreate model is instantiated"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that the task is created when completed=true is provided explicitly.",
+          "id": "valid_task_creation_with_completed_true",
+          "implementation_id": "taskcreate_65f6",
+          "name": "valid_task_creation_with_completed_true",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "work",
+                "completed": true,
+                "description": "This task is already done",
+                "due_date": "2025-02-02",
+                "priority": 1,
+                "title": "Finished Task"
+              }
+            },
+            "then": {
+              "expected_behavior": "Model validates and returns completed=true"
+            },
+            "when": "TaskCreate model is instantiated"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that validation fails when completed is provided as a non-boolean string.",
+          "id": "invalid_completed_non_boolean_string",
+          "implementation_id": "taskcreate_65f6",
+          "name": "invalid_completed_non_boolean_string",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "misc",
+                "completed": "yes",
+                "description": "Invalid completed type",
+                "due_date": "2025-03-05",
+                "priority": 3,
+                "title": "Bad Task"
+              }
+            },
+            "then": {
+              "expected_behavior": "Validation error indicating completed must be a boolean"
+            },
+            "when": "TaskCreate model is instantiated"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify that validation fails when completed is provided as a number.",
+          "id": "invalid_completed_number",
+          "implementation_id": "taskcreate_65f6",
+          "name": "invalid_completed_number",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "home",
+                "completed": 1,
+                "description": "Completed is numeric",
+                "due_date": "2025-04-01",
+                "priority": 1,
+                "title": "Bad Task 2"
+              }
+            },
+            "then": {
+              "expected_behavior": "Validation error for non-boolean completed field"
+            },
+            "when": "TaskCreate model is instantiated"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify the model rejects missing required title inherited from TaskBase.",
+          "id": "missing_required_title",
+          "implementation_id": "taskcreate_65f6",
+          "name": "missing_required_title",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "general",
+                "completed": false,
+                "description": "Missing title field",
+                "due_date": "2025-05-05",
+                "priority": 2
+              }
+            },
+            "then": {
+              "expected_behavior": "Validation error for missing required title"
+            },
+            "when": "TaskCreate model is instantiated"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify behavior when title is an empty string.",
+          "id": "boundary_test_empty_title",
+          "implementation_id": "taskcreate_65f6",
+          "name": "boundary_test_empty_title",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "general",
+                "completed": false,
+                "description": "Empty title edge case",
+                "due_date": "2025-06-06",
+                "priority": 2,
+                "title": ""
+              }
+            },
+            "then": {
+              "expected_behavior": "Model should validate or reject based on TaskBase constraints; if it requires non-empty, a validation error occurs"
+            },
+            "when": "TaskCreate model is instantiated"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify handling of title at maximum allowed length if applicable.",
+          "id": "boundary_test_long_title",
+          "implementation_id": "taskcreate_65f6",
+          "name": "boundary_test_long_title",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "long",
+                "completed": false,
+                "description": "Max length title",
+                "due_date": "2025-07-07",
+                "priority": 3,
+                "title": "T.repeat(255)"
+              }
+            },
+            "then": {
+              "expected_behavior": "Model validates title length or raises error if exceeding configured limits"
+            },
+            "when": "TaskCreate model is instantiated"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify that the model rejects an invalid date format.",
+          "id": "invalid_due_date_format",
+          "implementation_id": "taskcreate_65f6",
+          "name": "invalid_due_date_format",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "work",
+                "completed": false,
+                "description": "Due date has invalid format",
+                "due_date": "07-07-2025",
+                "priority": 1,
+                "title": "Bad Date"
+              }
+            },
+            "then": {
+              "expected_behavior": "Validation error for due_date formatting"
+            },
+            "when": "TaskCreate model is instantiated"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify default value assignment when completed field is completely omitted.",
+          "id": "completed_field_missing",
+          "implementation_id": "taskcreate_65f6",
+          "name": "completed_field_missing",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "general",
+                "description": "Testing default value",
+                "due_date": "2025-08-08",
+                "priority": 3,
+                "title": "Omitted Completed"
+              }
+            },
+            "then": {
+              "expected_behavior": "Completed is automatically set to false"
+            },
+            "when": "TaskCreate model is instantiated"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that null value for completed is rejected since it must be boolean.",
+          "id": "completed_field_null",
+          "implementation_id": "taskcreate_65f6",
+          "name": "completed_field_null",
+          "test_setup": {
+            "given": {
+              "request_body_json": {
+                "category": "misc",
+                "completed": null,
+                "description": "Completed is null",
+                "due_date": "2025-09-09",
+                "priority": 1,
+                "title": "Null Completed"
+              }
+            },
+            "then": {
+              "expected_behavior": "Validation error because completed must be boolean"
+            },
+            "when": "TaskCreate model is instantiated"
+          },
+          "type": "negative"
+        }
+      ]
+    },
+    {
+      "implementation_id": "openedit",
+      "test_cases": [
+        {
+          "description": "Verify that calling openEdit with a valid task sets editingTask and opens the form.",
+          "id": "open_edit_sets_editing_task_and_opens_form",
+          "implementation_id": "openedit",
+          "name": "open_edit_sets_editing_task_and_opens_form",
+          "test_setup": {
+            "given": "A valid task object { id: 1, title: 'Test Task' } and initial state editingTask=null, isFormOpen=false",
+            "then": "editingTask should equal the provided task and isFormOpen should be true",
+            "when": "openEdit(task) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that calling openEdit replaces a previously set editingTask.",
+          "id": "open_edit_overwrites_existing_editing_task",
+          "implementation_id": "openedit",
+          "name": "open_edit_overwrites_existing_editing_task",
+          "test_setup": {
+            "given": "Initial state editingTask={ id: 1 }, isFormOpen=false and new task { id: 2 }",
+            "then": "editingTask should be updated to the new task and isFormOpen should be true",
+            "when": "openEdit(newTask) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that calling openEdit while form is already open still updates editingTask.",
+          "id": "open_edit_when_form_already_open",
+          "implementation_id": "openedit",
+          "name": "open_edit_when_form_already_open",
+          "test_setup": {
+            "given": "Initial state editingTask={ id: 1 }, isFormOpen=true and new task { id: 2 }",
+            "then": "editingTask should update to the new task and isFormOpen remains true",
+            "when": "openEdit(newTask) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify behavior when task contains minimum required fields.",
+          "id": "open_edit_with_minimal_task_object",
+          "implementation_id": "openedit",
+          "name": "open_edit_with_minimal_task_object",
+          "test_setup": {
+            "given": "A minimal task object { id: 1 }",
+            "then": "editingTask should be set to the minimal task and isFormOpen should be true",
+            "when": "openEdit(task) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify behavior with a task object containing many fields.",
+          "id": "open_edit_with_large_task_object",
+          "implementation_id": "openedit",
+          "name": "open_edit_with_large_task_object",
+          "test_setup": {
+            "given": "A task object with many properties (e.g., 50 fields)",
+            "then": "editingTask should store the entire provided object and isFormOpen should be true",
+            "when": "openEdit(task) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify handling when null is passed as the task.",
+          "id": "open_edit_with_null_input",
+          "implementation_id": "openedit",
+          "name": "open_edit_with_null_input",
+          "test_setup": {
+            "given": "Task parameter is null",
+            "then": "System should throw a TypeError or safely handle null based on implementation rules",
+            "when": "openEdit(null) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify handling when undefined is passed.",
+          "id": "open_edit_with_undefined_input",
+          "implementation_id": "openedit",
+          "name": "open_edit_with_undefined_input",
+          "test_setup": {
+            "given": "Task parameter is undefined",
+            "then": "System should throw a TypeError or safely handle undefined based on implementation rules",
+            "when": "openEdit(undefined) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify function behavior when a primitive type is passed.",
+          "id": "open_edit_with_non_object_input",
+          "implementation_id": "openedit",
+          "name": "open_edit_with_non_object_input",
+          "test_setup": {
+            "given": "Task parameter is a primitive (e.g., string or number)",
+            "then": "System should reject the input or throw an error based on validation rules",
+            "when": "openEdit('invalid') is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify behavior when task is missing expected fields.",
+          "id": "open_edit_with_task_missing_id_field",
+          "implementation_id": "openedit",
+          "name": "open_edit_with_task_missing_id_field",
+          "test_setup": {
+            "given": "Task object missing an id field",
+            "then": "editingTask should store the object as-is unless validation is enforced, isFormOpen should be true",
+            "when": "openEdit(taskWithoutId) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify that users without edit permissions cannot trigger editing.",
+          "id": "open_edit_role_without_edit_permission",
+          "implementation_id": "openedit",
+          "name": "open_edit_role_without_edit_permission",
+          "test_setup": {
+            "given": "Current user role lacks edit permission",
+            "then": "Function should not update editingTask or open form; system should return an authorization error",
+            "when": "openEdit(task) is invoked"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify that authorized users can open edit mode.",
+          "id": "open_edit_role_with_edit_permission",
+          "implementation_id": "openedit",
+          "name": "open_edit_role_with_edit_permission",
+          "test_setup": {
+            "given": "User has edit permissions and a valid task is provided",
+            "then": "editingTask should be set and isFormOpen should be true",
+            "when": "openEdit(task) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that only editingTask and isFormOpen are modified.",
+          "id": "open_edit_preserves_other_state_properties",
+          "implementation_id": "openedit",
+          "name": "open_edit_preserves_other_state_properties",
+          "test_setup": {
+            "given": "Application state with multiple properties unrelated to editing",
+            "then": "All other state values should remain unchanged",
+            "when": "openEdit(task) is called"
+          },
+          "type": "edge"
+        }
+      ]
+    },
+    {
+      "implementation_id": "handleupdatetask",
+      "test_cases": [
+        {
+          "description": "Successfully updates an existing task when editingTask is set and API call succeeds",
+          "id": "update_existing_task_success",
+          "implementation_id": "handleupdatetask",
+          "name": "update_existing_task_success",
+          "test_setup": {
+            "given": "editingTask contains a valid task object with id=123, taskData contains valid updated fields, api.updateTask succeeds",
+            "then": "api.updateTask is called with id=123, loadTasks is called, editingTask is set to null, isFormOpen is set to false",
+            "when": "handleUpdateTask(taskData) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Function returns early when editingTask is null",
+          "id": "no_editing_task_abort_update",
+          "implementation_id": "handleupdatetask",
+          "name": "no_editing_task_abort_update",
+          "test_setup": {
+            "given": "editingTask is null, taskData contains valid update fields",
+            "then": "api.updateTask is not called, loadTasks is not called, state remains unchanged",
+            "when": "handleUpdateTask(taskData) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Error is handled when api.updateTask fails",
+          "id": "update_task_api_failure",
+          "implementation_id": "handleupdatetask",
+          "name": "update_task_api_failure",
+          "test_setup": {
+            "given": "editingTask contains a valid task with id=45, taskData is valid, api.updateTask throws an error",
+            "then": "alert is displayed with message 'Failed to update task', editingTask is not cleared, isFormOpen remains unchanged",
+            "when": "handleUpdateTask(taskData) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Update with minimal valid task data structure",
+          "id": "boundary_minimal_task_data_update",
+          "implementation_id": "handleupdatetask",
+          "name": "boundary_minimal_task_data_update",
+          "test_setup": {
+            "given": "editingTask exists, taskData contains minimal required fields such as title='a'",
+            "then": "Task is updated successfully and UI state is reset",
+            "when": "handleUpdateTask(taskData) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Update with maximum allowed field lengths",
+          "id": "boundary_max_length_task_data_update",
+          "implementation_id": "handleupdatetask",
+          "name": "boundary_max_length_task_data_update",
+          "test_setup": {
+            "given": "editingTask exists, taskData fields are at upper length limits such as title=string length 255",
+            "then": "Task is updated successfully and UI state is reset",
+            "when": "handleUpdateTask(taskData) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Invalid data types in taskData should trigger backend API validation failure",
+          "id": "update_task_with_invalid_field_types",
+          "implementation_id": "handleupdatetask",
+          "name": "update_task_with_invalid_field_types",
+          "test_setup": {
+            "given": "editingTask exists, taskData contains invalid field types such as title=123 instead of string, api.updateTask returns an error",
+            "then": "alert appears with 'Failed to update task', editingTask and isFormOpen are unchanged",
+            "when": "handleUpdateTask(taskData) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensure both editingTask and isFormOpen are reset after successful update",
+          "id": "state_reset_after_successful_update",
+          "implementation_id": "handleupdatetask",
+          "name": "state_reset_after_successful_update",
+          "test_setup": {
+            "given": "editingTask exists and api.updateTask succeeds",
+            "then": "editingTask becomes null and isFormOpen becomes false",
+            "when": "handleUpdateTask(taskData) is invoked"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify loadTasks is always called after successful update",
+          "id": "load_tasks_called_after_successful_update",
+          "implementation_id": "handleupdatetask",
+          "name": "load_tasks_called_after_successful_update",
+          "test_setup": {
+            "given": "editingTask exists, api.updateTask succeeds",
+            "then": "loadTasks is triggered exactly once",
+            "when": "handleUpdateTask(taskData) executes"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Form should remain open when updateTask fails",
+          "id": "do_not_close_form_on_failure",
+          "implementation_id": "handleupdatetask",
+          "name": "do_not_close_form_on_failure",
+          "test_setup": {
+            "given": "editingTask exists, isFormOpen=true, api.updateTask fails",
+            "then": "isFormOpen remains true, editingTask remains unchanged",
+            "when": "handleUpdateTask(taskData) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Missing required task fields should cause API to reject the update",
+          "id": "prevent_update_with_missing_required_fields",
+          "implementation_id": "handleupdatetask",
+          "name": "prevent_update_with_missing_required_fields",
+          "test_setup": {
+            "given": "editingTask exists, taskData missing required fields such as title=''",
+            "then": "api.updateTask fails, an alert is displayed, form state unchanged",
+            "when": "handleUpdateTask(taskData) is executed"
+          },
+          "type": "negative"
+        }
+      ]
+    },
+    {
+      "implementation_id": "update_task_5bde",
+      "test_cases": [
+        {
+          "description": "Successfully updates an existing task with valid fields",
+          "id": "update_existing_task_success",
+          "implementation_id": "update_task_5bde",
+          "name": "update_existing_task_success",
+          "test_setup": {
+            "given": "A tasks.json file containing a task with id 'task123' and valid update payload",
+            "then": "The function returns the updated task object and tasks.json is overwritten with the updated task",
+            "when": "update_task('task123', {title: 'Updated Title', description: 'Updated Desc', status: 'in_progress'}) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Returns null when the task ID does not exist",
+          "id": "update_task_not_found",
+          "implementation_id": "update_task_5bde",
+          "name": "update_task_not_found",
+          "test_setup": {
+            "given": "tasks.json contains tasks but none with id 'missing123'",
+            "then": "The function returns null and no changes are made to tasks.json",
+            "when": "update_task('missing123', {title: 'New Title'}) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Handles case where tasks.json contains an empty array",
+          "id": "update_task_empty_task_list",
+          "implementation_id": "update_task_5bde",
+          "name": "update_task_empty_task_list",
+          "test_setup": {
+            "given": "An empty tasks.json file with []",
+            "then": "The function returns null because no tasks exist",
+            "when": "update_task('task123', {title: 'Updated'}) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Updates the first task in the list",
+          "id": "update_task_first_item",
+          "implementation_id": "update_task_5bde",
+          "name": "update_task_first_item",
+          "test_setup": {
+            "given": "tasks.json contains multiple tasks and the first one has id 'task001'",
+            "then": "The first element in the JSON array is replaced and returned",
+            "when": "update_task('task001', {title: 'First Updated'}) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Updates the last task in the list",
+          "id": "update_task_last_item",
+          "implementation_id": "update_task_5bde",
+          "name": "update_task_last_item",
+          "test_setup": {
+            "given": "tasks.json contains multiple tasks and the last one has id 'task999'",
+            "then": "The last element in the list is replaced and returned",
+            "when": "update_task('task999', {title: 'Last Updated'}) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Handles invalid update payload fields",
+          "id": "update_task_invalid_fields",
+          "implementation_id": "update_task_5bde",
+          "name": "update_task_invalid_fields",
+          "test_setup": {
+            "given": "A valid task exists with id 'task123' but the update payload contains invalid types such as title: 123",
+            "then": "The function may throw a validation error upstream or reject the update depending on schema validation",
+            "when": "update_task('task123', {title: 123}) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Updates task fields when some optional fields are omitted",
+          "id": "update_task_partial_update",
+          "implementation_id": "update_task_5bde",
+          "name": "update_task_partial_update",
+          "test_setup": {
+            "given": "Task exists with id 'task123'. TaskCreate allows optional fields such as description",
+            "then": "Updated task contains new title and retains or resets unspecified fields per TaskCreate behavior",
+            "when": "update_task('task123', {title: 'Only Title Updated'}) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Attempt to update fields with null values where disallowed",
+          "id": "update_task_null_values",
+          "implementation_id": "update_task_5bde",
+          "name": "update_task_null_values",
+          "test_setup": {
+            "given": "Task exists with id 'task123'",
+            "then": "Function fails due to TaskCreate schema validation and tasks.json remains unchanged",
+            "when": "update_task('task123', {title: null}) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensures the task ID is not changed even if provided in update payload",
+          "id": "update_task_id_collision",
+          "implementation_id": "update_task_5bde",
+          "name": "update_task_id_collision",
+          "test_setup": {
+            "given": "Task exists with id 'task123', update payload attempts to change id to 'newid123'",
+            "then": "Updated task keeps id 'task123' because function explicitly sets id=task_id",
+            "when": "update_task('task123', {id: 'newid123', title: 'Updated'}) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Simulates failure when saving tasks to disk",
+          "id": "update_task_file_write_failure",
+          "implementation_id": "update_task_5bde",
+          "name": "update_task_file_write_failure",
+          "test_setup": {
+            "given": "Task exists with id 'task123' but save_tasks() throws an error (e.g., file lock, permission issue)",
+            "then": "Function raises an exception and tasks.json may remain unchanged",
+            "when": "update_task('task123', {title: 'Updated'}) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Update fields with whitespace-only values",
+          "id": "update_task_whitespace_strings",
+          "implementation_id": "update_task_5bde",
+          "name": "update_task_whitespace_strings",
+          "test_setup": {
+            "given": "Task exists with id 'task123'",
+            "then": "Behavior depends on validation rules; may reject or accept trimmed values",
+            "when": "update_task('task123', {title: '   '}) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Handles update payload with very large text fields",
+          "id": "update_task_large_payload",
+          "implementation_id": "update_task_5bde",
+          "name": "update_task_large_payload",
+          "test_setup": {
+            "given": "Task exists with id 'task123', title supports long strings",
+            "then": "Function updates task successfully if within allowed limits",
+            "when": "update_task('task123', {title: 'A.repeat(5000)'}) is called"
+          },
+          "type": "edge"
+        }
+      ]
+    },
+    {
+      "implementation_id": "createtask_api_method",
+      "test_cases": [
+        {
+          "description": "Verify that createTask successfully creates a task when valid task data is provided.",
+          "id": "create_task_success_valid_input",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_success_valid_input",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Test task creation",
+                "dueDate": "2025-01-01",
+                "title": "New Task"
+              }
+            },
+            "then": {
+              "expected_response": {
+                "description": "Test task creation",
+                "dueDate": "2025-01-01",
+                "id": 1,
+                "title": "New Task"
+              }
+            },
+            "when": "createTask is called with a valid task object"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that an error is thrown when the required field 'title' is missing.",
+          "id": "create_task_missing_title",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_missing_title",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Task without title",
+                "dueDate": "2025-01-01"
+              }
+            },
+            "then": {
+              "expected_error": "Failed to create task"
+            },
+            "when": "createTask is called with missing title"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify that backend validation fails when title is an empty string.",
+          "id": "create_task_empty_title",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_empty_title",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Empty title",
+                "dueDate": "2025-01-01",
+                "title": ""
+              }
+            },
+            "then": {
+              "expected_error": "Failed to create task"
+            },
+            "when": "createTask is called with an empty title"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify that the system handles a title at boundary length (255 characters).",
+          "id": "create_task_long_title_boundary",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_long_title_boundary",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Long title",
+                "dueDate": "2025-01-01",
+                "title": "T.repeat(255)"
+              }
+            },
+            "then": {
+              "expected_response": {
+                "description": "Long title",
+                "dueDate": "2025-01-01",
+                "id": 2,
+                "title": "T.repeat(255)"
+              }
+            },
+            "when": "createTask is called with a max-length title"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify that the server rejects a title exceeding the maximum allowed length.",
+          "id": "create_task_overly_long_title",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_overly_long_title",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Too long title",
+                "dueDate": "2025-01-01",
+                "title": "T.repeat(256)"
+              }
+            },
+            "then": {
+              "expected_error": "Failed to create task"
+            },
+            "when": "createTask is called with an overly long title"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify that the backend rejects an improperly formatted due date.",
+          "id": "create_task_invalid_due_date_format",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_invalid_due_date_format",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Invalid due date",
+                "dueDate": "01-01-2025",
+                "title": "Bad Date"
+              }
+            },
+            "then": {
+              "expected_error": "Failed to create task"
+            },
+            "when": "createTask is called with an invalid date format"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify creating a task where due date is explicitly null.",
+          "id": "create_task_null_due_date",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_null_due_date",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Testing null due date",
+                "dueDate": null,
+                "title": "Task with null due date"
+              }
+            },
+            "then": {
+              "expected_response": {
+                "description": "Testing null due date",
+                "dueDate": null,
+                "id": 3,
+                "title": "Task with null due date"
+              }
+            },
+            "when": "createTask is called with a null dueDate"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify that the function throws an error when the server returns 500.",
+          "id": "create_task_server_error_500",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_server_error_500",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Testing 500",
+                "dueDate": "2025-01-01",
+                "title": "Server error test"
+              }
+            },
+            "then": {
+              "expected_error": "Failed to create task"
+            },
+            "when": "The backend returns response.ok = false with status 500"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify error handling when fetch fails due to network issues.",
+          "id": "create_task_network_failure",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_network_failure",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Testing network error",
+                "dueDate": "2025-01-01",
+                "title": "Network issue"
+              }
+            },
+            "then": {
+              "expected_error": "Failed to create task"
+            },
+            "when": "fetch throws a network-level exception"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify behavior when the server returns a malformed JSON response.",
+          "id": "create_task_invalid_json_response",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_invalid_json_response",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Test invalid JSON",
+                "dueDate": "2025-01-01",
+                "title": "Invalid JSON response"
+              }
+            },
+            "then": {
+              "expected_error": "Failed to create task"
+            },
+            "when": "Server returns invalid JSON causing response.json() to throw"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify that the function throws an error when user lacks permission (403).",
+          "id": "create_task_permission_denied",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_permission_denied",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Testing 403",
+                "dueDate": "2025-01-01",
+                "title": "Forbidden"
+              }
+            },
+            "then": {
+              "expected_error": "Failed to create task"
+            },
+            "when": "Backend responds with 403 Forbidden"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify backend behavior when extra undefined fields are included.",
+          "id": "create_task_payload_with_extra_fields",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_payload_with_extra_fields",
+          "test_setup": {
+            "given": {
+              "task": {
+                "description": "Task contains extra data",
+                "dueDate": "2025-01-01",
+                "title": "Extra fields",
+                "unexpectedField": "unexpected"
+              }
+            },
+            "then": {
+              "expected_response": {
+                "description": "Task contains extra data",
+                "dueDate": "2025-01-01",
+                "id": 4,
+                "title": "Extra fields"
+              }
+            },
+            "when": "createTask is called with extra fields"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify creation using only the minimally required fields.",
+          "id": "create_task_minimal_required_fields",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_minimal_required_fields",
+          "test_setup": {
+            "given": {
+              "task": {
+                "title": "Minimal Task"
+              }
+            },
+            "then": {
+              "expected_response": {
+                "id": 5,
+                "title": "Minimal Task"
+              }
+            },
+            "when": "createTask is called with only required fields"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify failure when null is passed into createTask.",
+          "id": "create_task_null_body",
+          "implementation_id": "createtask_api_method",
+          "name": "create_task_null_body",
+          "test_setup": {
+            "given": {
+              "task": null
+            },
+            "then": {
+              "expected_error": "Failed to create task"
+            },
+            "when": "createTask is called with null"
+          },
+          "type": "negative"
+        }
+      ]
+    },
+    {
+      "implementation_id": "add_task_function",
+      "test_cases": [
+        {
+          "description": "Verify that a task is successfully created with only required fields.",
+          "id": "create_task_success_minimal_fields",
+          "implementation_id": "add_task_function",
+          "name": "create_task_success_minimal_fields",
+          "test_setup": {
+            "given": "A valid TaskCreate object with minimal required fields {title: 'Test Task', description: 'Test Description'} and an existing task list loaded from file.",
+            "then": "A new Task with a generated UUID is returned and appended to the tasks list, and saved to the JSON file.",
+            "when": "The add_task function is called with the TaskCreate object."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that a task is created successfully when all optional and required fields are provided.",
+          "id": "create_task_success_all_fields",
+          "implementation_id": "add_task_function",
+          "name": "create_task_success_all_fields",
+          "test_setup": {
+            "given": "A valid TaskCreate object with fields {title: 'Full Task', description: 'Full Description', due_date: '2025-01-01', priority: 'high'}.",
+            "then": "Task is created with a unique UUID, added to list, saved to file, and returned.",
+            "when": "add_task is invoked."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensure that every created task receives a unique UUID.",
+          "id": "task_id_is_unique_each_call",
+          "implementation_id": "add_task_function",
+          "name": "task_id_is_unique_each_call",
+          "test_setup": {
+            "given": "Two valid TaskCreate objects.",
+            "then": "Each returned Task object contains a different UUID.",
+            "when": "add_task is called twice."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Validate behavior when get_tasks fails due to unreadable or corrupt JSON file.",
+          "id": "file_load_failure_returns_error",
+          "implementation_id": "add_task_function",
+          "name": "file_load_failure_returns_error",
+          "test_setup": {
+            "given": "get_tasks raises an exception due to corrupt file.",
+            "then": "The function propagates or logs the error according to implementation (exception expected).",
+            "when": "add_task is called."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Check behavior when save_tasks fails after tasks.append succeeds.",
+          "id": "save_tasks_failure_rollback_not_performed",
+          "implementation_id": "add_task_function",
+          "name": "save_tasks_failure_rollback_not_performed",
+          "test_setup": {
+            "given": "get_tasks returns list successfully, but save_tasks throws an exception.",
+            "then": "Exception is raised; new task is not persisted to file, but remains appended to in-memory list (based on current design).",
+            "when": "add_task is called."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Validate behavior when required field title is empty.",
+          "id": "task_creation_with_empty_title",
+          "implementation_id": "add_task_function",
+          "name": "task_creation_with_empty_title",
+          "test_setup": {
+            "given": "TaskCreate object with title: '' and valid description.",
+            "then": "Validation in upper layers should prevent this; if passed to database layer, task is created with empty title. Behavior validated depending on business rules.",
+            "when": "add_task is called."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Boundary test for maximum allowed title length.",
+          "id": "task_creation_with_long_title",
+          "implementation_id": "add_task_function",
+          "name": "task_creation_with_long_title",
+          "test_setup": {
+            "given": "TaskCreate object with title: T.repeat(255).",
+            "then": "Task is created successfully and saved to file.",
+            "when": "add_task is called."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Validate behavior when title exceeds maximum allowed length.",
+          "id": "task_creation_with_overlong_title",
+          "implementation_id": "add_task_function",
+          "name": "task_creation_with_overlong_title",
+          "test_setup": {
+            "given": "TaskCreate object with title: T.repeat(256).",
+            "then": "Upper-layer validation should block this; if not, task is created. Behavior validated per business rules.",
+            "when": "add_task is called."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify handling of special characters in text fields.",
+          "id": "task_creation_with_special_characters",
+          "implementation_id": "add_task_function",
+          "name": "task_creation_with_special_characters",
+          "test_setup": {
+            "given": "TaskCreate object with title: '!@#$%^&*()_+' and description containing unicode characters.",
+            "then": "Task is created successfully and saved.",
+            "when": "add_task is called."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify that creating the first task works when no tasks exist.",
+          "id": "task_list_initially_empty",
+          "implementation_id": "add_task_function",
+          "name": "task_list_initially_empty",
+          "test_setup": {
+            "given": "get_tasks returns an empty list.",
+            "then": "New task is created, appended, and saved as the first entry.",
+            "when": "add_task is invoked."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Confirm new task is appended correctly when tasks.json already contains items.",
+          "id": "task_list_contains_existing_tasks",
+          "implementation_id": "add_task_function",
+          "name": "task_list_contains_existing_tasks",
+          "test_setup": {
+            "given": "get_tasks returns a list with existing tasks.",
+            "then": "New task is appended as the last element and saved.",
+            "when": "add_task is called."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensure missing required fields causes upper-layer validation to fail.",
+          "id": "task_creation_with_missing_required_fields",
+          "implementation_id": "add_task_function",
+          "name": "task_creation_with_missing_required_fields",
+          "test_setup": {
+            "given": "TaskCreate object missing required field title.",
+            "then": "Validation error expected before reaching add_task.",
+            "when": "add_task is invoked."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Validate behavior when uuid.uuid4 fails.",
+          "id": "uuid_generation_failure",
+          "implementation_id": "add_task_function",
+          "name": "uuid_generation_failure",
+          "test_setup": {
+            "given": "uuid.uuid4 throws an exception.",
+            "then": "Function raises exception; task is not added or saved.",
+            "when": "add_task is invoked."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify behavior when optional fields are null.",
+          "id": "task_creation_with_null_fields",
+          "implementation_id": "add_task_function",
+          "name": "task_creation_with_null_fields",
+          "test_setup": {
+            "given": "TaskCreate object {title: 'Task', description: null}.",
+            "then": "Task is created with null values unless higher layers disallow it.",
+            "when": "add_task is invoked."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Check that save_tasks writes valid JSON after new task creation.",
+          "id": "task_persistence_writes_valid_json",
+          "implementation_id": "add_task_function",
+          "name": "task_persistence_writes_valid_json",
+          "test_setup": {
+            "given": "A valid TaskCreate input.",
+            "then": "tasks.json contains valid JSON including new task.",
+            "when": "add_task is executed."
+          },
+          "type": "positive"
+        }
+      ]
+    },
+    {
+      "implementation_id": "save_tasks_function",
+      "test_cases": [
+        {
+          "description": "Verify that the function correctly saves a single valid task to tasks.json",
+          "id": "save_tasks_with_valid_single_task",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_with_valid_single_task",
+          "test_setup": {
+            "given": "A list containing one valid Task object with properly formatted fields",
+            "then": "tasks.json is created or overwritten with a JSON array containing the serialized task",
+            "when": "save_tasks(tasks) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that the function correctly saves multiple valid tasks to tasks.json",
+          "id": "save_tasks_with_multiple_valid_tasks",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_with_multiple_valid_tasks",
+          "test_setup": {
+            "given": "A list of multiple valid Task objects",
+            "then": "tasks.json contains a JSON array with all tasks serialized via model_dump(mode='json')",
+            "when": "save_tasks(tasks) is invoked"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that the function handles an empty task list",
+          "id": "save_tasks_with_empty_list",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_with_empty_list",
+          "test_setup": {
+            "given": "An empty list of tasks",
+            "then": "tasks.json is written as an empty JSON array []",
+            "when": "save_tasks(tasks) is executed"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify that Pydantic date serialization occurs correctly",
+          "id": "save_tasks_with_task_containing_date_field",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_with_task_containing_date_field",
+          "test_setup": {
+            "given": "A Task object containing a date field requiring JSON serialization",
+            "then": "tasks.json contains the date serialized as a string in JSON format",
+            "when": "save_tasks(tasks) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Simulate OS-level write permission error",
+          "id": "save_tasks_file_write_failure_permission_denied",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_file_write_failure_permission_denied",
+          "test_setup": {
+            "given": "tasks.json file path exists but lacks write permissions",
+            "then": "An exception is raised indicating permission denied and no file is written",
+            "when": "save_tasks(tasks) attempts to open the file in write mode"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Simulate missing directory in file path",
+          "id": "save_tasks_file_write_failure_missing_directory",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_file_write_failure_missing_directory",
+          "test_setup": {
+            "given": "The directory for tasks.json does not exist",
+            "then": "An exception is raised due to invalid file path",
+            "when": "save_tasks(tasks) attempts to open the file"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify handling of incorrectly structured task data",
+          "id": "save_tasks_with_invalid_task_object",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_with_invalid_task_object",
+          "test_setup": {
+            "given": "A list containing an object that is not a valid Task instance or missing required fields",
+            "then": "An exception is raised because model_dump is unavailable or fails",
+            "when": "save_tasks(tasks) attempts to serialize using model_dump(mode='json')"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify handling of large dataset boundaries",
+          "id": "save_tasks_with_large_number_of_tasks",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_with_large_number_of_tasks",
+          "test_setup": {
+            "given": "A list containing a very large number of Task objects (e.g., 10,000+)",
+            "then": "tasks.json is written successfully without performance issues or memory errors",
+            "when": "save_tasks(tasks) executes"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify overwrite behavior",
+          "id": "save_tasks_overwrites_existing_file",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_overwrites_existing_file",
+          "test_setup": {
+            "given": "tasks.json already exists with unrelated content",
+            "then": "The file content is replaced entirely with the new JSON array",
+            "when": "save_tasks(tasks) writes to the file"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that all fields defined in Task schema are serialized",
+          "id": "save_tasks_serialization_includes_all_fields",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_serialization_includes_all_fields",
+          "test_setup": {
+            "given": "A Task object with all fields populated including optional fields",
+            "then": "tasks.json contains all fields from the Task model as produced by model_dump(mode='json')",
+            "when": "save_tasks(tasks) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Test failure when an unsupported data type appears",
+          "id": "save_tasks_handling_of_non_json_serializable_field",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_handling_of_non_json_serializable_field",
+          "test_setup": {
+            "given": "A Task object contains a field with unsupported JSON data type (e.g., Python object)",
+            "then": "json.dump raises a TypeError and file write is aborted",
+            "when": "save_tasks(tasks) calls json.dump"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify indentation is properly applied",
+          "id": "save_tasks_validates_indentation_formatting",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_validates_indentation_formatting",
+          "test_setup": {
+            "given": "A list of valid tasks",
+            "then": "The file contains human-readable JSON with 4-space indentation",
+            "when": "save_tasks(tasks) writes the JSON output"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Validate state transition where persistence occurs after add_task",
+          "id": "save_tasks_state_transition_after_add_task",
+          "implementation_id": "save_tasks_function",
+          "name": "save_tasks_state_transition_after_add_task",
+          "test_setup": {
+            "given": "A new task is added and included in the task list",
+            "then": "The newly added task appears in tasks.json ensuring state persistence",
+            "when": "save_tasks(tasks) is called after add_task"
+          },
+          "type": "positive"
+        }
+      ]
     }
   ],
   "component": [
@@ -5719,6 +8429,806 @@
         }
       ],
       "test_path": ".codevalid/tests/task_8794632014_20240610183000/ui_task_form_add_new_task.ts"
+    },
+    {
+      "implementation_id": "taskitem",
+      "test_cases": [
+        {
+          "description": "Ensures all task fields are displayed properly when the component renders.",
+          "id": "renders_task_details_correctly",
+          "implementation_id": "taskitem",
+          "name": "renders_task_details_correctly",
+          "test_setup": {
+            "given": "A valid task object with title, priority, category, due_date, and description passed as props.",
+            "then": "All task fields should be visible in the UI.",
+            "when": "The TaskItem component renders."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verifies that clicking the Edit button triggers the onEdit callback with the correct task object.",
+          "id": "edit_button_triggers_onEdit_callback",
+          "implementation_id": "taskitem",
+          "name": "edit_button_triggers_onEdit_callback",
+          "test_setup": {
+            "given": "A valid task object and a mock onEdit function.",
+            "then": "The onEdit function is called once with the exact task object.",
+            "when": "The Edit button is clicked."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensures that onEdit is never called unless the Edit button is clicked.",
+          "id": "does_not_trigger_onEdit_without_click",
+          "implementation_id": "taskitem",
+          "name": "does_not_trigger_onEdit_without_click",
+          "test_setup": {
+            "given": "A valid task object and a mock onEdit function.",
+            "then": "The onEdit callback is not called.",
+            "when": "The TaskItem component renders and no user interaction occurs."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensures UI does not break when optional task fields are empty or null.",
+          "id": "renders_empty_fields_gracefully",
+          "implementation_id": "taskitem",
+          "name": "renders_empty_fields_gracefully",
+          "test_setup": {
+            "given": "A task object with empty strings or null values for optional fields such as description or category.",
+            "then": "The component should render without errors and display empty fields gracefully.",
+            "when": "The TaskItem component renders."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Ensures the component behaves safely if the task prop is missing optional fields.",
+          "id": "handles_missing_task_properties",
+          "implementation_id": "taskitem",
+          "name": "handles_missing_task_properties",
+          "test_setup": {
+            "given": "A task object missing one or more optional properties (e.g., no description).",
+            "then": "The component should not crash and should display placeholders or blank values accordingly.",
+            "when": "The TaskItem component renders."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Checks accessibility behavior ensuring the Edit button can receive focus.",
+          "id": "edit_button_accessible_and_focusable",
+          "implementation_id": "taskitem",
+          "name": "edit_button_accessible_and_focusable",
+          "test_setup": {
+            "given": "TaskItem rendered normally.",
+            "then": "The Edit button becomes focused and is actionable.",
+            "when": "User navigates using keyboard tab key."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensures UI does not attempt to call undefined function when onEdit is not provided.",
+          "id": "edit_button_disabled_when_no_onEdit_callback",
+          "implementation_id": "taskitem",
+          "name": "edit_button_disabled_when_no_onEdit_callback",
+          "test_setup": {
+            "given": "A task object without providing the onEdit prop.",
+            "then": "The component should not crash and should ignore the click or show console warning (implementation dependent).",
+            "when": "The Edit button is clicked."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensures onEdit is triggered correctly even when user rapidly clicks the button multiple times.",
+          "id": "handles_rapid_multiple_clicks_on_edit",
+          "implementation_id": "taskitem",
+          "name": "handles_rapid_multiple_clicks_on_edit",
+          "test_setup": {
+            "given": "A valid task object and a mock onEdit callback.",
+            "then": "The onEdit function is called the same number of times with the correct task object each time.",
+            "when": "User rapidly clicks the Edit button multiple times in succession."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verifies component stability with extremely long title or description values.",
+          "id": "renders_with_long_text_fields",
+          "implementation_id": "taskitem",
+          "name": "renders_with_long_text_fields",
+          "test_setup": {
+            "given": "A task object with very long title and description strings such as strings of length 255 or more.",
+            "then": "The component should not break layout and should still display text (possibly truncated depending on styling).",
+            "when": "The TaskItem component renders."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Validates that TaskItem does not internally modify task object or other props.",
+          "id": "ensures_no_unintended_state_changes",
+          "implementation_id": "taskitem",
+          "name": "ensures_no_unintended_state_changes",
+          "test_setup": {
+            "given": "A frozen or deep-cloned task object passed into the component.",
+            "then": "The task object remains unchanged and only onEdit receives the original object.",
+            "when": "User interacts (e.g., clicking Edit)."
+          },
+          "type": "negative"
+        }
+      ]
+    },
+    {
+      "implementation_id": "taskform",
+      "test_cases": [
+        {
+          "description": "Ensures that when initialTask is provided, the form pre-populates with existing task values and displays 'Edit Task' heading.",
+          "id": "renders_edit_mode_with_initialTask",
+          "implementation_id": "taskform",
+          "name": "renders_edit_mode_with_initialTask",
+          "test_setup": {
+            "given": "initialTask contains title, description, priority, category, due_date, completed",
+            "then": "All fields show initialTask values and heading displays 'Edit Task'",
+            "when": "Component is rendered"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensures that when no initialTask is provided, the form loads empty and displays 'Add New Task' heading.",
+          "id": "renders_add_mode_without_initialTask",
+          "implementation_id": "taskform",
+          "name": "renders_add_mode_without_initialTask",
+          "test_setup": {
+            "given": "initialTask is null",
+            "then": "Form fields are empty and 'Add New Task' heading is shown",
+            "when": "Component is rendered"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Submitting with valid input should call onSubmit with updated data.",
+          "id": "submit_form_with_valid_data_in_edit_mode",
+          "implementation_id": "taskform",
+          "name": "submit_form_with_valid_data_in_edit_mode",
+          "test_setup": {
+            "given": "initialTask is provided and user updates title and description",
+            "then": "onSubmit is called once with the new field values",
+            "when": "User submits the form"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Submitting with fresh values in add mode should call onSubmit with new task data.",
+          "id": "submit_form_with_valid_data_in_add_mode",
+          "implementation_id": "taskform",
+          "name": "submit_form_with_valid_data_in_add_mode",
+          "test_setup": {
+            "given": "initialTask is null and user fills all fields",
+            "then": "onSubmit is called with entered field values",
+            "when": "User submits the form"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Title is required. If blank, form should not submit and show error message.",
+          "id": "form_rejects_empty_title_on_submit",
+          "implementation_id": "taskform",
+          "name": "form_rejects_empty_title_on_submit",
+          "test_setup": {
+            "given": "User clears title field",
+            "then": "onSubmit not called and error displayed for missing title",
+            "when": "User clicks submit"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Invalid date input should prevent submission.",
+          "id": "form_rejects_invalid_due_date_format",
+          "implementation_id": "taskform",
+          "name": "form_rejects_invalid_due_date_format",
+          "test_setup": {
+            "given": "User enters invalid date string like 'invalid-date'",
+            "then": "onSubmit not called and date validation error shown",
+            "when": "User submits the form"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Tests boundary: lowest allowed priority value is accepted.",
+          "id": "priority_field_boundary_low",
+          "implementation_id": "taskform",
+          "name": "priority_field_boundary_low",
+          "test_setup": {
+            "given": "User enters minimum allowed priority, for example 1",
+            "then": "onSubmit called with priority:1",
+            "when": "User submits the form"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Tests boundary: highest allowed priority value is accepted.",
+          "id": "priority_field_boundary_high",
+          "implementation_id": "taskform",
+          "name": "priority_field_boundary_high",
+          "test_setup": {
+            "given": "User enters maximum allowed priority, for example 5",
+            "then": "onSubmit called with priority:5",
+            "when": "User submits the form"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Category may be optional; empty value should not block submission.",
+          "id": "category_field_allows_empty_string",
+          "implementation_id": "taskform",
+          "name": "category_field_allows_empty_string",
+          "test_setup": {
+            "given": "User clears category field",
+            "then": "onSubmit called with category as empty string",
+            "when": "User submits the form"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "When editing, completed field reflects the existing task's completed state.",
+          "id": "completed_checkbox_initial_value_edit_mode",
+          "implementation_id": "taskform",
+          "name": "completed_checkbox_initial_value_edit_mode",
+          "test_setup": {
+            "given": "initialTask.completed is true",
+            "then": "Completed checkbox is pre-checked",
+            "when": "Component loads"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Checkbox toggle should update completed status before submission.",
+          "id": "completed_checkbox_toggle_updates_value",
+          "implementation_id": "taskform",
+          "name": "completed_checkbox_toggle_updates_value",
+          "test_setup": {
+            "given": "initialTask.completed is false",
+            "then": "onSubmit called with completed:true",
+            "when": "User checks completed checkbox and submits"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "User submits without modifying fields; should return original values.",
+          "id": "submit_without_changes_in_edit_mode",
+          "implementation_id": "taskform",
+          "name": "submit_without_changes_in_edit_mode",
+          "test_setup": {
+            "given": "initialTask loaded; user does not edit any field",
+            "then": "onSubmit returns same values as initialTask",
+            "when": "User submits form"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Tests form handling of extremely long but valid title.",
+          "id": "handles_long_title_with_max_length",
+          "implementation_id": "taskform",
+          "name": "handles_long_title_with_max_length",
+          "test_setup": {
+            "given": "User enters title with 255 characters",
+            "then": "onSubmit called with full long title string",
+            "when": "User submits"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Form should reject titles beyond max length.",
+          "id": "rejects_excessively_long_title",
+          "implementation_id": "taskform",
+          "name": "rejects_excessively_long_title",
+          "test_setup": {
+            "given": "User enters title longer than allowed max length (e.g., 256 chars)",
+            "then": "onSubmit not called and validation error displayed",
+            "when": "User submits"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "If user does not have edit permission, form should not allow editing.",
+          "id": "role_based_restriction_prevent_edit",
+          "implementation_id": "taskform",
+          "name": "role_based_restriction_prevent_edit",
+          "test_setup": {
+            "given": "initialTask provided but user role lacks edit permission",
+            "then": "Fields disabled and form submit blocked",
+            "when": "Component is rendered"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "User without edit permission may still create tasks if add permission enabled.",
+          "id": "role_based_allow_add",
+          "implementation_id": "taskform",
+          "name": "role_based_allow_add",
+          "test_setup": {
+            "given": "initialTask is null and user has add permission",
+            "then": "onSubmit called with new task data",
+            "when": "User completes form and submits"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Simulates prop change to remove initialTask and ensure form resets values.",
+          "id": "switching_from_edit_to_add_mode_reinitializes_fields",
+          "implementation_id": "taskform",
+          "name": "switching_from_edit_to_add_mode_reinitializes_fields",
+          "test_setup": {
+            "given": "initialTask provided initially then removed",
+            "then": "Fields clear and heading changes to 'Add New Task'",
+            "when": "Component re-renders"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Simulates prop change to add initialTask and ensure form populates values.",
+          "id": "switching_from_add_to_edit_mode_populates_fields",
+          "implementation_id": "taskform",
+          "name": "switching_from_add_to_edit_mode_populates_fields",
+          "test_setup": {
+            "given": "initialTask null initially then replaced with a task object",
+            "then": "Fields populate and heading switches to 'Edit Task'",
+            "when": "Component re-renders"
+          },
+          "type": "edge"
+        }
+      ]
+    },
+    {
+      "implementation_id": "taskform_component",
+      "test_cases": [
+        {
+          "description": "Form renders with default empty values when no initialTask prop is provided",
+          "id": "render_form_initial_state_without_initialTask",
+          "implementation_id": "taskform_component",
+          "name": "render_form_initial_state_without_initialTask",
+          "test_setup": {
+            "given": "TaskForm rendered with no initialTask prop",
+            "then": "Title='', Description='', Priority='Medium', Category='', DueDate=''",
+            "when": "Component loads"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Form initializes with values from initialTask when provided",
+          "id": "render_form_with_initialTask_values",
+          "implementation_id": "taskform_component",
+          "name": "render_form_with_initialTask_values",
+          "test_setup": {
+            "given": "TaskForm rendered with initialTask containing all fields",
+            "then": "Form fields display initialTask.title, initialTask.description, initialTask.priority, initialTask.category, initialTask.due_date",
+            "when": "Component loads"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Form submits successfully when only title is provided",
+          "id": "submit_success_with_required_fields_only",
+          "implementation_id": "taskform_component",
+          "name": "submit_success_with_required_fields_only",
+          "test_setup": {
+            "given": "Title is filled, other fields left empty",
+            "then": "onSubmit called with title, priority='Medium', completed=false, and undefined optional fields",
+            "when": "User clicks Save Task"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Form submits successfully with all values provided",
+          "id": "submit_success_with_all_fields_filled",
+          "implementation_id": "taskform_component",
+          "name": "submit_success_with_all_fields_filled",
+          "test_setup": {
+            "given": "All form fields are filled with valid values",
+            "then": "onSubmit receives full taskData object including description, category, and due_date",
+            "when": "User clicks Save Task"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Form should not submit when title is empty because it is required",
+          "id": "fail_submit_when_title_missing",
+          "implementation_id": "taskform_component",
+          "name": "fail_submit_when_title_missing",
+          "test_setup": {
+            "given": "Title field is empty",
+            "then": "onSubmit is NOT called; UI should show required validation behavior (e.g., HTML5 required)",
+            "when": "User clicks Save Task"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Description should be undefined in submitted data when left empty",
+          "id": "description_omitted_when_empty",
+          "implementation_id": "taskform_component",
+          "name": "description_omitted_when_empty",
+          "test_setup": {
+            "given": "Description field left blank",
+            "then": "taskData.description === undefined",
+            "when": "User submits form"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Category becomes undefined in submission when user selects 'None' or empties selection",
+          "id": "category_omitted_when_empty",
+          "implementation_id": "taskform_component",
+          "name": "category_omitted_when_empty",
+          "test_setup": {
+            "given": "User selects empty value or 'None'",
+            "then": "taskData.category === undefined",
+            "when": "User submits form"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Due date should be undefined if not set",
+          "id": "due_date_omitted_when_empty",
+          "implementation_id": "taskform_component",
+          "name": "due_date_omitted_when_empty",
+          "test_setup": {
+            "given": "Due date left blank",
+            "then": "taskData.due_date === undefined",
+            "when": "Form submitted"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Priority defaults to 'Medium' when user does not change it",
+          "id": "priority_default_value",
+          "implementation_id": "taskform_component",
+          "name": "priority_default_value",
+          "test_setup": {
+            "given": "Priority dropdown untouched",
+            "then": "taskData.priority === 'Medium'",
+            "when": "Form submitted"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Changing priority updates internal state",
+          "id": "priority_change_updates_state",
+          "implementation_id": "taskform_component",
+          "name": "priority_change_updates_state",
+          "test_setup": {
+            "given": "User changes priority to High",
+            "then": "Priority state becomes High and submission includes High",
+            "when": "User selects High from dropdown"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Cancel button triggers parent onCancel callback",
+          "id": "cancel_button_triggers_onCancel",
+          "implementation_id": "taskform_component",
+          "name": "cancel_button_triggers_onCancel",
+          "test_setup": {
+            "given": "TaskForm rendered with onCancel prop",
+            "then": "onCancel callback is executed",
+            "when": "User clicks Cancel"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "When editing an existing task, completed value is passed through unchanged",
+          "id": "initial_completed_value_preserved",
+          "implementation_id": "taskform_component",
+          "name": "initial_completed_value_preserved",
+          "test_setup": {
+            "given": "initialTask.completed = true",
+            "then": "taskData.completed === true",
+            "when": "User submits form"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "When creating new task without initialTask, completed defaults to false",
+          "id": "new_task_completed_defaults_false",
+          "implementation_id": "taskform_component",
+          "name": "new_task_completed_defaults_false",
+          "test_setup": {
+            "given": "No initialTask provided",
+            "then": "taskData.completed === false",
+            "when": "User submits form"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Whitespace-only title should be treated as missing required input",
+          "id": "title_whitespace_only_invalid",
+          "implementation_id": "taskform_component",
+          "name": "title_whitespace_only_invalid",
+          "test_setup": {
+            "given": "Title contains only spaces",
+            "then": "Native HTML required validation prevents form submission",
+            "when": "User clicks Save Task"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Component handles a very long title string",
+          "id": "long_title_boundary_case",
+          "implementation_id": "taskform_component",
+          "name": "long_title_boundary_case",
+          "test_setup": {
+            "given": "Title field set to extremely long string",
+            "then": "Form submits successfully if browser allows input length",
+            "when": "User submits form"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Due date input should only allow valid date formats via browser validation",
+          "id": "invalid_date_format_rejected",
+          "implementation_id": "taskform_component",
+          "name": "invalid_date_format_rejected",
+          "test_setup": {
+            "given": "User types an invalid date string",
+            "then": "Native date input blocks submission",
+            "when": "User submits form"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Category dropdown should only allow permitted values",
+          "id": "dropdown_category_valid_options",
+          "implementation_id": "taskform_component",
+          "name": "dropdown_category_valid_options",
+          "test_setup": {
+            "given": "User interacts with category dropdown",
+            "then": "List includes '', Work, Personal, Study only",
+            "when": "Options displayed"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Submit button must not trigger double submission",
+          "id": "onSubmit_called_once_per_click",
+          "implementation_id": "taskform_component",
+          "name": "onSubmit_called_once_per_click",
+          "test_setup": {
+            "given": "User clicks Save Task once",
+            "then": "onSubmit is called exactly once",
+            "when": "Form submission fires"
+          },
+          "type": "edge"
+        }
+      ]
+    },
+    {
+      "implementation_id": "app_container_component",
+      "test_cases": [
+        {
+          "description": "Loads tasks successfully when the component mounts",
+          "id": "load_tasks_on_mount_success",
+          "implementation_id": "app_container_component",
+          "name": "load_tasks_on_mount_success",
+          "test_setup": {
+            "given": "Component is mounted and api.getTasks resolves with an array of tasks",
+            "then": "tasks state should be populated and isLoading should be false",
+            "when": "loadTasks() is triggered automatically on mount"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Handles API failure when loading tasks during mount",
+          "id": "load_tasks_on_mount_failure",
+          "implementation_id": "app_container_component",
+          "name": "load_tasks_on_mount_failure",
+          "test_setup": {
+            "given": "Component is mounted and api.getTasks rejects with an error",
+            "then": "tasks remains empty, error is logged, and isLoading is set to false",
+            "when": "loadTasks() is triggered automatically on mount"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Opens the form in create mode",
+          "id": "open_form_for_create",
+          "implementation_id": "app_container_component",
+          "name": "open_form_for_create",
+          "test_setup": {
+            "given": "Form is initially closed",
+            "then": "isFormOpen becomes true and editingTask becomes null",
+            "when": "User clicks '+ Add Task' button"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Opens the form populated with an existing task for editing",
+          "id": "open_form_for_edit",
+          "implementation_id": "app_container_component",
+          "name": "open_form_for_edit",
+          "test_setup": {
+            "given": "A specific task is selected for editing",
+            "then": "isFormOpen becomes true and editingTask is set to the selected task",
+            "when": "openFormForEdit(task) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Closing the form resets form related state",
+          "id": "close_form_resets_state",
+          "implementation_id": "app_container_component",
+          "name": "close_form_resets_state",
+          "test_setup": {
+            "given": "Form is open with editingTask set",
+            "then": "isFormOpen becomes false and editingTask becomes null",
+            "when": "closeForm() is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Creates a new task successfully",
+          "id": "create_task_success",
+          "implementation_id": "app_container_component",
+          "name": "create_task_success",
+          "test_setup": {
+            "given": "Form is open with valid taskData and api.createTask resolves",
+            "then": "createTask is called, loadTasks is triggered, form closes, tasks refresh",
+            "when": "handleCreateTask(taskData) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Handles API failure during task creation",
+          "id": "create_task_failure",
+          "implementation_id": "app_container_component",
+          "name": "create_task_failure",
+          "test_setup": {
+            "given": "Form is open with valid taskData and api.createTask rejects",
+            "then": "An alert displays 'Failed to create task' and form remains open",
+            "when": "handleCreateTask(taskData) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Modal renders only when isFormOpen is true",
+          "id": "render_modal_when_form_open",
+          "implementation_id": "app_container_component",
+          "name": "render_modal_when_form_open",
+          "test_setup": {
+            "given": "isFormOpen is true",
+            "then": "Modal overlay and TaskForm component are visible",
+            "when": "Component renders"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Modal is hidden when isFormOpen is false",
+          "id": "no_modal_when_form_closed",
+          "implementation_id": "app_container_component",
+          "name": "no_modal_when_form_closed",
+          "test_setup": {
+            "given": "isFormOpen is false",
+            "then": "No modal or TaskForm components appear",
+            "when": "Component renders"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Tasks are filtered based on filterStatus selection",
+          "id": "task_list_filters_correctly",
+          "implementation_id": "app_container_component",
+          "name": "task_list_filters_correctly",
+          "test_setup": {
+            "given": "tasks array with statuses and filterStatus set to a valid value",
+            "then": "Only tasks matching filterStatus are displayed",
+            "when": "Component renders"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Tasks are sorted based on sortOption",
+          "id": "task_list_sorting_applied",
+          "implementation_id": "app_container_component",
+          "name": "task_list_sorting_applied",
+          "test_setup": {
+            "given": "tasks array with various due dates and sortOption set to 'dueDate'",
+            "then": "Tasks appear ordered by due date",
+            "when": "Component renders"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Renders correctly with no tasks loaded",
+          "id": "empty_task_list_rendering",
+          "implementation_id": "app_container_component",
+          "name": "empty_task_list_rendering",
+          "test_setup": {
+            "given": "tasks is an empty array",
+            "then": "No TaskItem components are displayed",
+            "when": "Component renders"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Handles invalid filter status gracefully",
+          "id": "filter_invalid_status",
+          "implementation_id": "app_container_component",
+          "name": "filter_invalid_status",
+          "test_setup": {
+            "given": "filterStatus is set to an invalid string",
+            "then": "Fallback behavior shows all tasks or handles gracefully without crashing",
+            "when": "Component renders"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Handles invalid sort option gracefully",
+          "id": "sort_invalid_option",
+          "implementation_id": "app_container_component",
+          "name": "sort_invalid_option",
+          "test_setup": {
+            "given": "sortOption is set to an invalid string",
+            "then": "Tasks render in default or unchanged order without errors",
+            "when": "Component renders"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Opening form multiple times does not break state",
+          "id": "open_form_twice",
+          "implementation_id": "app_container_component",
+          "name": "open_form_twice",
+          "test_setup": {
+            "given": "Form is closed",
+            "then": "Form stays open and state remains consistent",
+            "when": "User clicks '+ Add Task' twice quickly"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Component correctly handles slow API responses",
+          "id": "handle_api_delay",
+          "implementation_id": "app_container_component",
+          "name": "handle_api_delay",
+          "test_setup": {
+            "given": "api.getTasks resolves slowly",
+            "then": "isLoading remains true until the response completes",
+            "when": "loadTasks() is called on mount"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Shows loading state correctly while tasks load",
+          "id": "component_renders_while_loading",
+          "implementation_id": "app_container_component",
+          "name": "component_renders_while_loading",
+          "test_setup": {
+            "given": "isLoading is true and tasks not yet populated",
+            "then": "Loading indicator appears and task list does not",
+            "when": "Component renders"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "TaskForm's cancel event closes modal",
+          "id": "task_form_on_cancel",
+          "implementation_id": "app_container_component",
+          "name": "task_form_on_cancel",
+          "test_setup": {
+            "given": "Form is open",
+            "then": "closeForm() runs and form closes",
+            "when": "TaskForm triggers onCancel"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Newly created task appears after successful create",
+          "id": "task_render_after_create",
+          "implementation_id": "app_container_component",
+          "name": "task_render_after_create",
+          "test_setup": {
+            "given": "Valid new taskData submitted and api.createTask resolves",
+            "then": "New task appears in rendered task list",
+            "when": "Component refreshes via loadTasks()"
+          },
+          "type": "positive"
+        }
+      ]
     }
   ],
   "endpoint": [
@@ -9585,6 +13095,554 @@
             "then": "A 404 error is returned indicating the task was not found."
           },
           "implementation_id": "backend-delete_task-endpoint"
+        }
+      ]
+    },
+    {
+      "implementation_id": "update_task",
+      "test_cases": [
+        {
+          "description": "Successfully update an existing task with valid data",
+          "id": "update_existing_task_success",
+          "implementation_id": "update_task",
+          "name": "update_existing_task_success",
+          "request_body_json": {
+            "completed": false,
+            "description": "Updated Description",
+            "title": "Updated Task Title"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/123",
+          "response_body_json": {
+            "completed": false,
+            "description": "Updated Description",
+            "id": "123",
+            "title": "Updated Task Title"
+          },
+          "response_status_code": 200,
+          "test_setup": {
+            "given": "Task with ID 123 exists in the database",
+            "then": "The task is updated and returned in the response",
+            "when": "Client sends a valid PUT request with updated task fields"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Attempt updating a task that does not exist",
+          "id": "task_not_found",
+          "implementation_id": "update_task",
+          "name": "task_not_found",
+          "request_body_json": {
+            "completed": true,
+            "description": "New Description",
+            "title": "New Title"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/999",
+          "response_body_json": {
+            "detail": "Task not found"
+          },
+          "response_status_code": 404,
+          "test_setup": {
+            "given": "Task with ID 999 does not exist",
+            "then": "Endpoint returns 404 not found error",
+            "when": "PUT request is sent with valid payload"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Send update request with missing required fields",
+          "id": "missing_required_fields",
+          "implementation_id": "update_task",
+          "name": "missing_required_fields",
+          "request_body_json": {},
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/123",
+          "response_body_json": {
+            "detail": "Validation error"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "Task with ID 123 exists",
+            "then": "Validation fails with 422 response",
+            "when": "PUT request body is empty"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Task ID path parameter is invalid format",
+          "id": "invalid_task_id_format",
+          "implementation_id": "update_task",
+          "name": "invalid_task_id_format",
+          "request_body_json": {
+            "completed": false,
+            "description": "Valid Description",
+            "title": "Valid Title"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/!@#",
+          "response_body_json": {
+            "detail": "Validation error"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "No valid task ID is provided",
+            "then": "Framework raises 422 validation error",
+            "when": "PUT request is sent with special characters in task_id"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Update task using maximum allowed title length",
+          "id": "boundary_title_length_max",
+          "implementation_id": "update_task",
+          "name": "boundary_title_length_max",
+          "request_body_json": {
+            "completed": false,
+            "description": "Valid description",
+            "title": "T.repeat(255)"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/123",
+          "response_body_json": {
+            "completed": false,
+            "description": "Valid description",
+            "id": "123",
+            "title": "T.repeat(255)"
+          },
+          "response_status_code": 200,
+          "test_setup": {
+            "given": "Task with ID 123 exists",
+            "then": "Task updates successfully without errors",
+            "when": "PUT request uses title at max allowed length"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Attempt update with title length exceeding allowed limit",
+          "id": "boundary_title_length_exceeds_max",
+          "implementation_id": "update_task",
+          "name": "boundary_title_length_exceeds_max",
+          "request_body_json": {
+            "completed": false,
+            "description": "Valid description",
+            "title": "T.repeat(256)"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/123",
+          "response_body_json": {
+            "detail": "Validation error"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "Task ID 123 exists",
+            "then": "Validation should fail with 422",
+            "when": "PUT request contains title exceeding maximum length"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify completed state transition from false to true",
+          "id": "update_task_toggle_completed_state",
+          "implementation_id": "update_task",
+          "name": "update_task_toggle_completed_state",
+          "request_body_json": {
+            "completed": true,
+            "description": "State change test",
+            "title": "Task Updated"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/321",
+          "response_body_json": {
+            "completed": true,
+            "description": "State change test",
+            "id": "321",
+            "title": "Task Updated"
+          },
+          "response_status_code": 200,
+          "test_setup": {
+            "given": "Task ID 321 exists with completed = false",
+            "then": "Task updated and completion state changes.",
+            "when": "PUT request sets completed to true"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Send invalid type for completed field",
+          "id": "update_task_invalid_boolean_value",
+          "implementation_id": "update_task",
+          "name": "update_task_invalid_boolean_value",
+          "request_body_json": {
+            "completed": "yes",
+            "description": "Invalid completed field",
+            "title": "Task Updated"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/321",
+          "response_body_json": {
+            "detail": "Validation error"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "Task with ID 321 exists",
+            "then": "Validation fails with 422",
+            "when": "PUT request contains invalid boolean field type"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Update task with empty title and description",
+          "id": "update_task_empty_strings",
+          "implementation_id": "update_task",
+          "name": "update_task_empty_strings",
+          "request_body_json": {
+            "completed": false,
+            "description": "",
+            "title": ""
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/555",
+          "response_body_json": {
+            "completed": false,
+            "description": "",
+            "id": "555",
+            "title": ""
+          },
+          "response_status_code": 200,
+          "test_setup": {
+            "given": "Task ID 555 exists",
+            "then": "Task updates successfully unless business rules forbid it",
+            "when": "PUT request uses empty strings for fields"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "User without permission attempts to update a task",
+          "id": "update_task_no_permission",
+          "implementation_id": "update_task",
+          "name": "update_task_no_permission",
+          "request_body_json": {
+            "completed": false,
+            "description": "Attempting update without permission",
+            "title": "Unauthorized Update"
+          },
+          "request_headers": {
+            "Authorization": "Bearer invalid-role-token",
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/123",
+          "response_body_json": {
+            "detail": "Forbidden"
+          },
+          "response_status_code": 403,
+          "test_setup": {
+            "given": "User does not have edit permission",
+            "then": "403 Forbidden returned",
+            "when": "PUT request is sent with insufficient authorization"
+          },
+          "type": "negative"
+        }
+      ]
+    },
+    {
+      "implementation_id": "create_task_endpoint",
+      "test_cases": [
+        {
+          "description": "Verify that a task is successfully created with minimal valid fields.",
+          "id": "create_task_success_minimal_fields",
+          "implementation_id": "create_task_endpoint",
+          "name": "create_task_success_minimal_fields",
+          "request_body_json": {
+            "title": "Test Task"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "response_body_json": {
+            "id": 1,
+            "title": "Test Task"
+          },
+          "response_status_code": 200,
+          "test_setup": {
+            "given": "A valid minimal TaskCreate payload",
+            "then": "Task is created and returned with generated ID",
+            "when": "POST /tasks is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that a task is created successfully when all optional and required fields are provided.",
+          "id": "create_task_success_all_fields",
+          "implementation_id": "create_task_endpoint",
+          "name": "create_task_success_all_fields",
+          "request_body_json": {
+            "description": "A fully detailed task",
+            "priority": 5,
+            "title": "Full Task"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "response_body_json": {
+            "description": "A fully detailed task",
+            "id": 2,
+            "priority": 5,
+            "title": "Full Task"
+          },
+          "response_status_code": 200,
+          "test_setup": {
+            "given": "A fully populated TaskCreate payload",
+            "then": "Task is created with all provided fields",
+            "when": "POST /tasks is executed"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify the API returns a validation error when a required field is missing.",
+          "id": "create_task_missing_required_field",
+          "implementation_id": "create_task_endpoint",
+          "name": "create_task_missing_required_field",
+          "request_body_json": {},
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "response_body_json": {
+            "detail": "Validation error for missing required field 'title'"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "A payload missing required fields",
+            "then": "Validation error is returned",
+            "when": "POST /tasks is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify the API rejects invalid data types in payload.",
+          "id": "create_task_invalid_field_type",
+          "implementation_id": "create_task_endpoint",
+          "name": "create_task_invalid_field_type",
+          "request_body_json": {
+            "title": 12345
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "response_body_json": {
+            "detail": "Validation error: title must be a string"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "A payload with an invalid field data type",
+            "then": "Validation error is returned",
+            "when": "POST /tasks is executed"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify task creation succeeds at maximum allowed title length.",
+          "id": "create_task_title_max_length_boundary",
+          "implementation_id": "create_task_endpoint",
+          "name": "create_task_title_max_length_boundary",
+          "request_body_json": {
+            "title": "T.repeat(255)"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "response_body_json": {
+            "id": 3,
+            "title": "T.repeat(255)"
+          },
+          "response_status_code": 200,
+          "test_setup": {
+            "given": "A title at maximum boundary length",
+            "then": "Task is created successfully",
+            "when": "POST /tasks is executed"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify validation fails if title exceeds maximum allowed length.",
+          "id": "create_task_title_exceeds_max_length",
+          "implementation_id": "create_task_endpoint",
+          "name": "create_task_title_exceeds_max_length",
+          "request_body_json": {
+            "title": "T.repeat(256)"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "response_body_json": {
+            "detail": "Validation error: title exceeds maximum length"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "A title exceeding the allowed length",
+            "then": "Validation error occurs",
+            "when": "POST /tasks is executed"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify validation fails if priority is outside allowed range.",
+          "id": "create_task_invalid_priority_value",
+          "implementation_id": "create_task_endpoint",
+          "name": "create_task_invalid_priority_value",
+          "request_body_json": {
+            "priority": -1,
+            "title": "Task"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "response_body_json": {
+            "detail": "Validation error: priority must be >= 0"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "A task payload with invalid priority",
+            "then": "Validation error is returned",
+            "when": "POST /tasks is executed"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify API rejects payload containing unexpected fields.",
+          "id": "create_task_unexpected_field",
+          "implementation_id": "create_task_endpoint",
+          "name": "create_task_unexpected_field",
+          "request_body_json": {
+            "extraField": "Not allowed",
+            "title": "Test"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "response_body_json": {
+            "detail": "Validation error: unexpected field extraField"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "A payload with an unsupported field",
+            "then": "Validation error is raised",
+            "when": "POST /tasks is executed"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify API rejects empty string for required title field.",
+          "id": "create_task_empty_string_title",
+          "implementation_id": "create_task_endpoint",
+          "name": "create_task_empty_string_title",
+          "request_body_json": {
+            "title": ""
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "response_body_json": {
+            "detail": "Validation error: title cannot be empty"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "A payload with an empty title",
+            "then": "Validation error is raised",
+            "when": "POST /tasks is executed"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify API rejects whitespace-only title.",
+          "id": "create_task_whitespace_title",
+          "implementation_id": "create_task_endpoint",
+          "name": "create_task_whitespace_title",
+          "request_body_json": {
+            "title": "     "
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "response_body_json": {
+            "detail": "Validation error: title must contain non-whitespace characters"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "A payload where title contains only whitespace",
+            "then": "Validation error is returned",
+            "when": "POST /tasks is executed"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify API handles malformed JSON in request.",
+          "id": "create_task_invalid_json_format",
+          "implementation_id": "create_task_endpoint",
+          "name": "create_task_invalid_json_format",
+          "request_body_json": "{ invalid json }",
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "POST",
+          "request_url": "/tasks",
+          "response_body_json": {
+            "detail": "Malformed JSON"
+          },
+          "response_status_code": 400,
+          "test_setup": {
+            "given": "An invalid JSON payload",
+            "then": "API returns a malformed JSON error",
+            "when": "POST /tasks is executed"
+          },
+          "type": "negative"
         }
       ]
     }

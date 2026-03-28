@@ -315,5 +315,196 @@
       "Validation for data integrity (e.g., checking for valid title, due date, priority) is not explicitly implemented in frontend or backend.",
       "Instant reflection of edits in UI is dependent on parent component logic, which is not shown here (e.g., App.tsx)."
     ]
+  },
+  "task_5103506907_20260328173022": {
+    "implementation": [
+      {
+        "How_is_it_connected_to_implementation": "Renders the UI for toggling task completion status. Displays a 'Done' button for pending tasks and 'Undo' button for completed tasks. When clicked, calls the onToggleComplete callback handler. Visually indicates task completion state through strikethrough text decoration and reduced opacity.",
+        "file_path": "frontend/src/components/TaskItem.tsx",
+        "id": "taskitem",
+        "name": "TaskItem",
+        "pseudo_code": "COMPONENT TaskItem:\n  INPUT: task object with completed boolean property\n  RENDER:\n    IF task.completed == true:\n      SET text-decoration to line-through\n      SET opacity to 0.7\n      SET button text to 'Undo'\n      SET button class to 'btn-ghost'\n    ELSE:\n      SET button text to 'Done'\n      SET button class to 'btn-primary'\n    BUTTON onClick:\n      CALL onToggleComplete(task)\n  END_COMPONENT",
+        "type": "component"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Core handler function that manages task status updates on the frontend. Receives the task object, toggles its completed boolean value (from true to false or vice versa), and sends an API request to update the task. After successful update, reloads all tasks to reflect the change in the UI.",
+        "file_path": "frontend/src/App.tsx",
+        "id": "handletogglecomplete",
+        "name": "handleToggleComplete",
+        "pseudo_code": "FUNCTION handleToggleComplete(task):\n  TRY:\n    new_completed_status = NOT task.completed\n    CALL api.updateTask(task.id, {...task, completed: new_completed_status})\n    CALL loadTasks() # Reload all tasks from backend\n  CATCH error:\n    ALERT 'Failed to update task status'\n  END_TRY\nEND_FUNCTION",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "API client function that sends a PUT request to the backend with the updated task data including the new completed status. Handles the HTTP request/response cycle and throws an error if the request fails.",
+        "file_path": "frontend/src/api.ts",
+        "id": "updatetask",
+        "name": "updateTask",
+        "pseudo_code": "FUNCTION updateTask(id, task_data):\n  HTTP_REQUEST:\n    METHOD: PUT\n    URL: http://localhost:8000/tasks/{id}\n    HEADERS: {'Content-Type': 'application/json'}\n    BODY: JSON.stringify(task_data) # Includes completed: boolean\n  IF response.ok:\n    RETURN response.json() # Returns updated Task object\n  ELSE:\n    THROW Error('Failed to update task')\n  END_IF\nEND_FUNCTION",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "FastAPI endpoint that receives PUT requests to /tasks/{task_id}. Accepts TaskCreate object with the updated completed status, delegates to database.update_task for persistence, and returns the updated Task object or 404 if task not found.",
+        "file_path": "backend/main.py",
+        "id": "update_task",
+        "name": "update_task",
+        "pseudo_code": "ENDPOINT PUT /tasks/{task_id}:\n  INPUT: task_id (string), task (TaskCreate object with completed field)\n  CALL updated_task = database.update_task(task_id, task)\n  IF updated_task is None:\n    RAISE HTTPException(status_code=404, detail='Task not found')\n  ELSE:\n    RETURN updated_task # Response model: Task\n  END_IF\nEND_ENDPOINT",
+        "type": "endpoint"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Business logic function that handles the task status update. Loads all tasks from JSON storage, finds the task by ID, creates a new Task object with updated properties (including the new completed status), replaces the old task in the list, and persists the changes to the database file.",
+        "file_path": "backend/database.py",
+        "id": "update_task_e254",
+        "name": "update_task",
+        "pseudo_code": "FUNCTION update_task(task_id, task_update):\n  tasks = get_tasks() # Load all tasks from tasks.json\n  FOR each task in tasks:\n    IF task.id == task_id:\n      new_task = Task(id=task_id, **task_update fields)\n      # new_task.completed is set from task_update\n      tasks[current_index] = new_task\n      save_tasks(tasks) # Persist to tasks.json\n      RETURN new_task\n    END_IF\n  END_FOR\n  RETURN None # Task not found\nEND_FUNCTION",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Persists the updated task list to the tasks.json database file. Converts Task objects to JSON format using Pydantic's model_dump method and writes to disk, ensuring the completed status is properly serialized.",
+        "file_path": "backend/database.py",
+        "id": "save_tasks",
+        "name": "save_tasks",
+        "pseudo_code": "FUNCTION save_tasks(tasks):\n  OPEN file tasks.json in write mode:\n    json_data = []\n    FOR each task in tasks:\n      # Convert Task object to JSON-compatible dictionary\n      json_dict = task.model_dump(mode='json')\n      # json_dict includes completed: boolean\n      APPEND json_dict to json_data\n    END_FOR\n    WRITE json_data to file with indent=4\n  CLOSE file\nEND_FUNCTION",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Data model interface that defines the structure of the task update payload. Includes the completed boolean field that gets transmitted in the API request to update task status.",
+        "file_path": "frontend/src/api.ts",
+        "id": "taskcreate",
+        "name": "TaskCreate",
+        "pseudo_code": "INTERFACE TaskCreate:\n  title: string (required)\n  description: string (optional)\n  priority: 'Low' | 'Medium' | 'High' (required)\n  category: 'Work' | 'Personal' | 'Study' (optional)\n  due_date: string (optional, ISO date format)\n  completed: boolean (required, used for status updates)\nEND_INTERFACE",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Pydantic data model that validates the task update request payload received from the API. Ensures the completed field is a boolean and provides type validation for all task properties.",
+        "file_path": "backend/models.py",
+        "id": "taskcreate_65f6",
+        "name": "TaskCreate",
+        "pseudo_code": "MODEL TaskCreate:\n  INHERITS FROM TaskBase\n  # TaskBase contains: title, description, priority, category, due_date, completed\n  completed: boolean (inherits from TaskBase with default=False)\n  \n  # When instantiated, validates that completed is a boolean\n  # Used for parsing PUT request body\nEND_MODEL",
+        "type": "function"
+      }
+    ],
+    "missing_implementations": []
+  },
+  "task_9119176089_20260328173022": {
+    "implementation": [
+      {
+        "How_is_it_connected_to_implementation": "This function is triggered when user clicks the Edit button on a task item. It sets the editingTask state to the selected task and opens the form modal, enabling edit mode.",
+        "file_path": "frontend/src/App.tsx",
+        "id": "openedit",
+        "name": "openEdit",
+        "pseudo_code": "FUNCTION openEdit(task: Task) {\n  SET editingTask = task\n  SET isFormOpen = true\n}",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Renders individual task items with an Edit button. When Edit button is clicked, it calls onEdit callback with the task object, triggering the openEdit function in App component.",
+        "file_path": "frontend/src/components/TaskItem.tsx",
+        "id": "taskitem",
+        "name": "TaskItem",
+        "pseudo_code": "COMPONENT TaskItem(task, onEdit) {\n  RENDER task details (title, priority, category, due_date, description)\n  RENDER Edit button\n  ON Edit button click:\n    CALL onEdit(task)\n}",
+        "type": "component"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Displays form for editing task. When initialTask prop is provided (set by App component), it pre-populates all form fields with existing task data. On form submission, calls onSubmit callback with updated task data.",
+        "file_path": "frontend/src/components/TaskForm.tsx",
+        "id": "taskform",
+        "name": "TaskForm",
+        "pseudo_code": "COMPONENT TaskForm(initialTask, onSubmit) {\n  IF initialTask exists THEN\n    SET title = initialTask.title\n    SET description = initialTask.description\n    SET priority = initialTask.priority\n    SET category = initialTask.category\n    SET dueDate = initialTask.due_date\n    DISPLAY 'Edit Task' heading\n  ELSE\n    DISPLAY 'Add New Task' heading\n  END IF\n  \n  ON form submit:\n    CALL onSubmit with form data {\n      title, description, priority, category, due_date, completed\n    }\n}",
+        "type": "component"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Receives form submission from TaskForm component. Validates that editingTask exists, then calls the updateTask API endpoint with the task ID and updated data. Upon success, reloads tasks, closes form, and clears editingTask state.",
+        "file_path": "frontend/src/App.tsx",
+        "id": "handleupdatetask",
+        "name": "handleUpdateTask",
+        "pseudo_code": "ASYNC FUNCTION handleUpdateTask(taskData: TaskCreate) {\n  IF editingTask is null THEN\n    RETURN\n  END IF\n  \n  TRY\n    CALL api.updateTask(editingTask.id, taskData)\n    CALL loadTasks()  // Refresh task list from server\n    SET editingTask = null\n    SET isFormOpen = false\n  CATCH error\n    DISPLAY alert: 'Failed to update task'\n  END TRY\n}",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Makes HTTP PUT request to backend endpoint with task ID and updated task data. Sends request to localhost:8000/tasks/{id} with updated fields in request body.",
+        "file_path": "frontend/src/api.ts",
+        "id": "updatetask",
+        "name": "updateTask",
+        "pseudo_code": "ASYNC FUNCTION updateTask(id: string, task: TaskCreate): Promise<Task> {\n  SET response = FETCH to 'http://localhost:8000/tasks/{id}' {\n    method: 'PUT',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify(task)\n  }\n  \n  IF response is NOT ok THEN\n    THROW Error('Failed to update task')\n  END IF\n  \n  RETURN response as JSON\n}",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "FastAPI endpoint that receives PUT requests at /tasks/{task_id}. Extracts task_id from URL path and task update data from request body, then calls database.update_task function to persist changes.",
+        "file_path": "backend/main.py",
+        "id": "update_task",
+        "name": "update_task",
+        "pseudo_code": "ASYNC ENDPOINT PUT /tasks/{task_id} {\n  RECEIVE task_id: string from URL\n  RECEIVE task: TaskCreate from request body\n  \n  CALL updated_task = database.update_task(task_id, task)\n  \n  IF updated_task is null THEN\n    RAISE HTTPException(404, 'Task not found')\n  END IF\n  \n  RETURN updated_task as JSON\n}",
+        "type": "endpoint"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Core business logic for updating a task. Retrieves all tasks from database, finds task by ID, replaces it with updated data, saves to JSON file, and returns the updated task.",
+        "file_path": "backend/database.py",
+        "id": "update_task_5bde",
+        "name": "update_task",
+        "pseudo_code": "FUNCTION update_task(task_id: string, task_update: TaskCreate) -> Optional[Task] {\n  CALL tasks = get_tasks()  // Load all tasks from JSON file\n  \n  FOR EACH task in tasks {\n    IF task.id == task_id THEN\n      CREATE updated_task = Task(id=task_id, ...task_update fields)\n      SET tasks[current_index] = updated_task\n      CALL save_tasks(tasks)  // Write updated tasks to JSON file\n      RETURN updated_task\n    END IF\n  }\n  \n  RETURN null  // Task not found\n}",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Persists updated task data to JSON file. Converts Task objects to JSON-compatible format and writes to tasks.json file for persistent storage.",
+        "file_path": "backend/database.py",
+        "id": "save_tasks",
+        "name": "save_tasks",
+        "pseudo_code": "FUNCTION save_tasks(tasks: List[Task]) {\n  OPEN tasks.json file in write mode\n  \n  CONVERT tasks to JSON format:\n    FOR EACH task in tasks:\n      json_data.append(task.model_dump(mode='json'))\n  \n  WRITE json_data to file with indentation\n  CLOSE file\n}",
+        "type": "function"
+      }
+    ],
+    "missing_implementations": []
+  },
+  "task_7704976452_20260328173022": {
+    "implementation": [
+      {
+        "How_is_it_connected_to_implementation": "React component that renders the form UI for creating a new task. It collects input from the user for title, description, priority, category, and due_date fields. The component accepts an onSubmit callback that is triggered when the user clicks the Save Task button. On form submission, it validates required fields (title is required) and passes the form data to the parent component.",
+        "file_path": "frontend/src/components/TaskForm.tsx",
+        "id": "taskform_component",
+        "name": "TaskForm Component",
+        "pseudo_code": "COMPONENT TaskForm(props)\n  INITIALIZE state variables:\n    title = initialTask?.title OR empty string\n    description = initialTask?.description OR empty string\n    priority = initialTask?.priority OR 'Medium'\n    category = initialTask?.category OR empty string\n    dueDate = initialTask?.due_date OR empty string\n  \n  FUNCTION handleSubmit(event):\n    PREVENT default form submission\n    CREATE taskData object:\n      taskData.title = title\n      taskData.description = description IF description is not empty ELSE undefined\n      taskData.priority = priority\n      taskData.category = category IF category is not empty string ELSE undefined\n      taskData.due_date = dueDate IF dueDate is not empty ELSE undefined\n      taskData.completed = initialTask?.completed OR false\n    \n    AWAIT onSubmit(taskData)\n  \n  RENDER form with:\n    - Title label and required text input field\n    - Description label and textarea field\n    - Priority dropdown (Low, Medium, High)\n    - Category dropdown (None, Work, Personal, Study)\n    - Due Date input field (type: date)\n    - Cancel button (onClick: onCancel)\n    - Save Task button (type: submit, triggers handleSubmit)\n  \n  RETURN form JSX",
+        "type": "component"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Main React component that manages the application state and orchestrates the task creation flow. It handles the opening/closing of the form modal, calls the API to create tasks, and refreshes the task list after creation. It also manages other states like filtering and sorting of tasks.",
+        "file_path": "frontend/src/App.tsx",
+        "id": "app_container_component",
+        "name": "App Container Component",
+        "pseudo_code": "COMPONENT App\n  INITIALIZE state:\n    tasks = empty array\n    isFormOpen = false\n    editingTask = null\n    isLoading = true\n    filterStatus = 'all'\n    sortOption = 'dueDate'\n  \n  ON component mount:\n    CALL loadTasks()\n  \n  FUNCTION loadTasks():\n    TRY:\n      data = AWAIT api.getTasks()\n      SET tasks = data\n    CATCH error:\n      LOG error to console\n    FINALLY:\n      SET isLoading = false\n  \n  FUNCTION handleCreateTask(taskData):\n    TRY:\n      AWAIT api.createTask(taskData)\n      AWAIT loadTasks()  // Refresh task list\n      SET isFormOpen = false\n    CATCH error:\n      SHOW alert 'Failed to create task'\n  \n  FUNCTION openFormForCreate():\n    SET editingTask = null\n    SET isFormOpen = true\n  \n  FUNCTION openFormForEdit(task):\n    SET editingTask = task\n    SET isFormOpen = true\n  \n  FUNCTION closeForm():\n    SET isFormOpen = false\n    SET editingTask = null\n  \n  RENDER:\n    - Header with 'My Tasks' title and '+ Add Task' button\n      - ONCLICK '+ Add Task': openFormForCreate()\n    - IF isFormOpen:\n      - RENDER modal overlay\n      - RENDER TaskForm component:\n        - initialTask = editingTask\n        - onSubmit = IF editingTask EXISTS THEN handleUpdateTask ELSE handleCreateTask\n        - onCancel = closeForm()\n    - RENDER filter and sort controls\n    - APPLY filters and sorting to tasks array\n    - RENDER TaskItem components for each filtered task",
+        "type": "component"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Frontend API client function that makes an HTTP POST request to the backend endpoint. It sends the task data as JSON in the request body. It validates that the response is successful and returns the created task object with the generated ID from the server.",
+        "file_path": "frontend/src/api.ts",
+        "id": "createtask_api_method",
+        "name": "createTask API Method",
+        "pseudo_code": "ASYNC FUNCTION createTask(task: TaskCreate) -> Task:\n  CONST API_URL = 'http://localhost:8000'\n  \n  CONST response = AWAIT fetch(API_URL + '/tasks', {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify(task)\n  })\n  \n  IF NOT response.ok:\n    THROW Error('Failed to create task')\n  \n  RETURN response.json()  // Returns Task object with generated ID",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "FastAPI HTTP endpoint that receives POST requests at /tasks. It accepts a TaskCreate model from the request body, passes it to the database layer's add_task function, and returns the created Task object with the generated ID. The endpoint enforces Pydantic model validation on the incoming request.",
+        "file_path": "backend/main.py",
+        "id": "create_task_endpoint",
+        "name": "create_task Endpoint",
+        "pseudo_code": "ENDPOINT POST /tasks\n  INPUT: task (TaskCreate model)\n  \n  CALL database.add_task(task)\n  \n  RESPONSE:\n    - Status: 200 OK\n    - Body: Task model (includes generated ID)\n    - Content-Type: application/json",
+        "type": "endpoint"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Database layer function that implements the core business logic for creating a new task. It generates a unique UUID for the task ID, creates a Task object, appends it to the in-memory task list, persists all tasks to the JSON file, and returns the newly created task with its ID.",
+        "file_path": "backend/database.py",
+        "id": "add_task_function",
+        "name": "add_task Function",
+        "pseudo_code": "FUNCTION add_task(task_create: TaskCreate) -> Task:\n  // Load existing tasks from file\n  tasks = get_tasks()\n  \n  // Generate unique ID for new task\n  new_id = str(uuid.uuid4())\n  \n  // Create Task object with generated ID and task_create data\n  new_task = Task(\n    id: new_id,\n    **task_create.model_dump()  // Unpack all fields from TaskCreate\n  )\n  \n  // Add to tasks list\n  tasks.append(new_task)\n  \n  // Persist to JSON file\n  save_tasks(tasks)\n  \n  // Return created task with ID\n  RETURN new_task",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Persistence layer function that serializes the task list to JSON format and writes it to the tasks.json file. It is called after add_task to ensure the newly created task is persisted. Uses Pydantic's model_dump with mode='json' to handle date serialization.",
+        "file_path": "backend/database.py",
+        "id": "save_tasks_function",
+        "name": "save_tasks Function",
+        "pseudo_code": "FUNCTION save_tasks(tasks: List[Task]) -> void:\n  OPEN file 'tasks.json' in write mode:\n    // Convert each Task object to JSON-serializable dictionary\n    json_data = []\n    FOR EACH task IN tasks:\n      json_dict = task.model_dump(mode='json')\n      json_data.append(json_dict)\n    \n    // Write JSON array to file with indentation\n    json.dump(json_data, file, indent=4)\n    \n    CLOSE file",
+        "type": "function"
+      }
+    ],
+    "missing_implementations": []
   }
 }
