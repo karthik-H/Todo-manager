@@ -8,6 +8,6 @@ Personal Todo manager
   - due date
  - status
 - Edit existing tasks
-- Edit should not allow change of title
+- Edit should not allow change of title and due date
 - Mark status as completed, inprogress.
 - During edit make sure title is not empty.
