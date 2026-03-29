@@ -6932,6 +6932,364 @@
             "when": "validate_title([]) is called"
           },
           "type": "negative"
+        },
+        {
+          "description": "Title starting with newline but containing valid text should pass",
+          "id": "validate_title_success_newline_then_text",
+          "implementation_id": "validate_title",
+          "name": "validate_title_success_newline_then_text",
+          "test_setup": {
+            "given": "A title of '\\nTask'",
+            "then": "Function completes without raising ValidationError",
+            "when": "validate_title('\\nTask') is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Title starting with tabs but containing valid text should pass",
+          "id": "validate_title_success_tab_then_text",
+          "implementation_id": "validate_title",
+          "name": "validate_title_success_tab_then_text",
+          "test_setup": {
+            "given": "A title of '\\t\\tTask'",
+            "then": "Function completes without raising ValidationError",
+            "when": "validate_title('\\t\\tTask') is called"
+          },
+          "type": "positive"
+        }
+      ]
+    },
+    {
+      "implementation_id": "api_updatetask",
+      "test_cases": [
+        {
+          "description": "Successful update of an existing task with valid fields",
+          "id": "update_task_successful",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_successful",
+          "test_setup": {
+            "given": "A valid task ID '123' and a complete TaskCreate object with title, description, and due_date",
+            "then": "The function returns the updated task JSON from the backend",
+            "when": "api.updateTask('123', task) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Update succeeds with only required fields in TaskCreate",
+          "id": "update_task_minimal_valid_payload",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_minimal_valid_payload",
+          "test_setup": {
+            "given": "A valid task ID and a minimal TaskCreate object with only required fields, such as title",
+            "then": "The task is updated successfully and response.json() is returned",
+            "when": "api.updateTask is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Attempting to update a task that does not exist",
+          "id": "update_task_nonexistent_id",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_nonexistent_id",
+          "test_setup": {
+            "given": "A nonexistent task ID '999' with valid task payload",
+            "then": "The function throws Error('Failed to update task')",
+            "when": "api.updateTask('999', task) is called and backend returns 404"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Invalid task ID format causes update failure",
+          "id": "update_task_invalid_id_format",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_invalid_id_format",
+          "test_setup": {
+            "given": "An invalid ID such as an empty string or special characters",
+            "then": "Backend responds with an error and the function throws Error('Failed to update task')",
+            "when": "The function attempts to send PUT request to /tasks/"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Backend returns 500 Internal Server Error",
+          "id": "update_task_server_error",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_server_error",
+          "test_setup": {
+            "given": "A valid task ID and valid payload",
+            "then": "The function throws Error('Failed to update task')",
+            "when": "Backend responds with status 500"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Network failure occurs during fetch call",
+          "id": "update_task_network_failure",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_network_failure",
+          "test_setup": {
+            "given": "A valid task ID and payload",
+            "then": "The function throws the fetch exception",
+            "when": "The fetch call rejects due to network outage"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Payload missing required fields such as title",
+          "id": "update_task_missing_required_field",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_missing_required_field",
+          "test_setup": {
+            "given": "Valid task ID but task object missing title",
+            "then": "Backend validation fails and returns non-ok response, causing function to throw Error('Failed to update task')",
+            "when": "api.updateTask is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Payload contains fields that should not be changeable but the function sends them anyway",
+          "id": "update_task_extra_restricted_fields",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_extra_restricted_fields",
+          "test_setup": {
+            "given": "Payload includes restricted fields like id, created_at, updated_at",
+            "then": "Behavior depends on backend; if backend rejects, Error('Failed to update task') is thrown",
+            "when": "Function sends full payload unchanged to backend"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Testing upper bounds, such as very long title or description",
+          "id": "update_task_large_payload",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_large_payload",
+          "test_setup": {
+            "given": "A title or description approaching system limits",
+            "then": "Backend either accepts and returns updated task or returns an error causing function to throw Error('Failed to update task')",
+            "when": "api.updateTask is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Payload contains null fields where strings are expected",
+          "id": "update_task_null_body_fields",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_null_body_fields",
+          "test_setup": {
+            "given": "Valid task ID but payload has title: null",
+            "then": "Backend responds with validation error and function throws Error('Failed to update task')",
+            "when": "api.updateTask is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "User lacks permission to update task",
+          "id": "update_task_unauthorized",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_unauthorized",
+          "test_setup": {
+            "given": "Valid task ID but request authorization fails",
+            "then": "Function throws Error('Failed to update task')",
+            "when": "Backend returns 401 or 403"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Backend returns non\u2011JSON but with ok=true",
+          "id": "update_task_invalid_json_response",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_invalid_json_response",
+          "test_setup": {
+            "given": "Backend responds with ok:true but invalid JSON body",
+            "then": "Function throws a JSON parse error",
+            "when": "response.json() is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Empty payload object sent",
+          "id": "update_task_empty_payload",
+          "implementation_id": "api_updatetask",
+          "name": "update_task_empty_payload",
+          "test_setup": {
+            "given": "Valid task ID but {} as payload",
+            "then": "Backend likely rejects and function throws Error('Failed to update task')",
+            "when": "api.updateTask is executed"
+          },
+          "type": "edge"
+        }
+      ]
+    },
+    {
+      "implementation_id": "update_task_aa51",
+      "test_cases": [
+        {
+          "description": "Successfully updates an existing task when the task ID matches.",
+          "id": "update_existing_task_success",
+          "implementation_id": "update_task_aa51",
+          "name": "update_existing_task_success",
+          "test_setup": {
+            "given": "A task list containing a task with id '123'. task_update contains a new title and due_date.",
+            "then": "The function returns the updated task object and save_tasks is called with the updated list.",
+            "when": "update_task('123', task_update) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Function should return None when the provided task ID does not exist.",
+          "id": "task_not_found_returns_none",
+          "implementation_id": "update_task_aa51",
+          "name": "task_not_found_returns_none",
+          "test_setup": {
+            "given": "A task list containing tasks but none with id '999'.",
+            "then": "None is returned and no save operation occurs.",
+            "when": "update_task('999', task_update) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "When no tasks exist, updating any task should return None.",
+          "id": "empty_task_list_returns_none",
+          "implementation_id": "update_task_aa51",
+          "name": "empty_task_list_returns_none",
+          "test_setup": {
+            "given": "An empty tasks list.",
+            "then": "None is returned because no matching task is found.",
+            "when": "update_task('123', task_update) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify that update replaces all task fields except id and does not preserve old values.",
+          "id": "update_task_overwrites_all_fields",
+          "implementation_id": "update_task_aa51",
+          "name": "update_task_overwrites_all_fields",
+          "test_setup": {
+            "given": "Task with id '321' has title 'Old' and due_date '2025-01-01'. task_update has title 'New' and due_date '2026-01-01'.",
+            "then": "Returned task contains only the new title and due_date, with id preserved as '321'.",
+            "when": "update_task('321', task_update) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Tests boundary case where title is at minimum allowed length (if validation exists externally).",
+          "id": "update_task_with_min_length_title",
+          "implementation_id": "update_task_aa51",
+          "name": "update_task_with_min_length_title",
+          "test_setup": {
+            "given": "A valid existing task and task_update with title ''.",
+            "then": "The update is applied if upstream validation permits; function itself does not validate.",
+            "when": "update_task('123', task_update) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Tests boundary case where title is extremely long.",
+          "id": "update_task_with_max_length_title",
+          "implementation_id": "update_task_aa51",
+          "name": "update_task_with_max_length_title",
+          "test_setup": {
+            "given": "A valid existing task and task_update with title 'T.repeat(255)'.",
+            "then": "The long title is stored because update_task does not impose length limits.",
+            "when": "update_task('123', task_update) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Check behavior when update includes empty strings or null-like data.",
+          "id": "update_task_with_null_like_values",
+          "implementation_id": "update_task_aa51",
+          "name": "update_task_with_null_like_values",
+          "test_setup": {
+            "given": "A task exists and task_update includes title '' and due_date ''.",
+            "then": "Task is updated with these values since no validation is performed.",
+            "when": "update_task('123', task_update) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensures only the task matching the ID is replaced.",
+          "id": "multiple_tasks_only_correct_task_updated",
+          "implementation_id": "update_task_aa51",
+          "name": "multiple_tasks_only_correct_task_updated",
+          "test_setup": {
+            "given": "Task list has three tasks: ids 1,2,3. task_update modifies only id '2'.",
+            "then": "Only task at index of id '2' is replaced, others remain unchanged.",
+            "when": "update_task('2', task_update) is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensures update applies to the first task with matching ID (since enumerate loop stops after match).",
+          "id": "tasks_with_duplicate_ids_updates_first_match",
+          "implementation_id": "update_task_aa51",
+          "name": "tasks_with_duplicate_ids_updates_first_match",
+          "test_setup": {
+            "given": "Task list contains two tasks with id '123'.",
+            "then": "Only the first duplicate is updated, second remains unchanged.",
+            "when": "update_task('123', task_update) is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Test behavior when task_id contains invalid or unexpected format.",
+          "id": "update_task_with_invalid_id_format",
+          "implementation_id": "update_task_aa51",
+          "name": "update_task_with_invalid_id_format",
+          "test_setup": {
+            "given": "Task list contains a valid task with id '123'. Provided id is '$$%%'.",
+            "then": "No match is found and None is returned.",
+            "when": "update_task('$$%%', task_update) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Tests that save_tasks is called correctly after update.",
+          "id": "update_task_state_persistence",
+          "implementation_id": "update_task_aa51",
+          "name": "update_task_state_persistence",
+          "test_setup": {
+            "given": "A valid existing task and mocked save_tasks.",
+            "then": "save_tasks is called exactly once with the updated task list.",
+            "when": "update_task('123', task_update) is executed"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensures save_tasks is not called if no task is updated.",
+          "id": "update_task_does_not_call_save_when_no_match",
+          "implementation_id": "update_task_aa51",
+          "name": "update_task_does_not_call_save_when_no_match",
+          "test_setup": {
+            "given": "Task list without matching id.",
+            "then": "save_tasks is never called.",
+            "when": "update_task('123', task_update) is executed"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensures user with edit permissions can update tasks (if permissions enforced externally).",
+          "id": "role_permission_update_allowed",
+          "implementation_id": "update_task_aa51",
+          "name": "role_permission_update_allowed",
+          "test_setup": {
+            "given": "User role 'editor' and a valid task update request.",
+            "then": "Task is updated successfully.",
+            "when": "update_task('123', task_update) is invoked through authorized flow"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensures user without edit permission cannot update tasks (if external layer blocks call).",
+          "id": "role_permission_update_denied",
+          "implementation_id": "update_task_aa51",
+          "name": "role_permission_update_denied",
+          "test_setup": {
+            "given": "User role 'viewer' with no edit permissions.",
+            "then": "Function should not be reachable; external permission layer blocks call.",
+            "when": "update_task('123', task_update) is called"
+          },
+          "type": "negative"
         }
       ]
     }
@@ -9400,6 +9758,549 @@
             "when": "Component refreshes via loadTasks()"
           },
           "type": "positive"
+        }
+      ]
+    },
+    {
+      "implementation_id": "app",
+      "test_cases": [
+        {
+          "description": "Clicking a task triggers openEdit, sets editingTask, and opens the form.",
+          "id": "open_edit_populates_form_and_opens_modal",
+          "implementation_id": "app",
+          "name": "open_edit_populates_form_and_opens_modal",
+          "test_setup": {
+            "given": "A task list is rendered and isFormOpen is false with editingTask=null",
+            "then": "editingTask is set to the clicked task and isFormOpen becomes true; TaskForm is rendered with initialTask populated",
+            "when": "User clicks on an existing task"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "TaskForm should receive the existing task's details.",
+          "id": "form_renders_with_correct_initial_task_data",
+          "implementation_id": "app",
+          "name": "form_renders_with_correct_initial_task_data",
+          "test_setup": {
+            "given": "openEdit has been triggered with a specific task object",
+            "then": "initialTask contains the same properties as the selected task and fields are prefilled",
+            "when": "TaskForm renders"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Submitting the form calls handleUpdateTask instead of handleCreateTask.",
+          "id": "submit_edit_triggers_handleUpdateTask",
+          "implementation_id": "app",
+          "name": "submit_edit_triggers_handleUpdateTask",
+          "test_setup": {
+            "given": "editingTask is populated and isFormOpen=true",
+            "then": "onSubmit resolves to handleUpdateTask and the API updateTask call is invoked with the correct ID and payload",
+            "when": "User submits the TaskForm"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Successful edit should close the form and reset editingTask.",
+          "id": "update_success_closes_form_and_resets_state",
+          "implementation_id": "app",
+          "name": "update_success_closes_form_and_resets_state",
+          "test_setup": {
+            "given": "API responds successfully to updateTask",
+            "then": "editingTask=null, isFormOpen=false, and loadTasks() is called",
+            "when": "handleUpdateTask executes without errors"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "If the API update call fails, the component should alert the user.",
+          "id": "update_failure_shows_error_alert",
+          "implementation_id": "app",
+          "name": "update_failure_shows_error_alert",
+          "test_setup": {
+            "given": "API updateTask rejects with an error",
+            "then": "An alert is shown with the message 'Failed to update task' and editingTask and isFormOpen remain unchanged",
+            "when": "handleUpdateTask is triggered"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Update task should not proceed if editingTask is unexpectedly null.",
+          "id": "submit_ignored_if_editingTask_is_null",
+          "implementation_id": "app",
+          "name": "submit_ignored_if_editingTask_is_null",
+          "test_setup": {
+            "given": "editingTask=null due to state corruption or unexpected condition",
+            "then": "Function returns early and no API calls occur",
+            "when": "handleUpdateTask is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Canceling edit should close the form and not modify the task.",
+          "id": "cancel_edit_closes_form_and_preserves_task",
+          "implementation_id": "app",
+          "name": "cancel_edit_closes_form_and_preserves_task",
+          "test_setup": {
+            "given": "A user is editing a task with isFormOpen=true",
+            "then": "closeForm is called, isFormOpen=false, and editingTask=null",
+            "when": "User clicks cancel"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "TaskForm should not appear unless isFormOpen is true.",
+          "id": "form_not_rendered_when_isFormOpen_false",
+          "implementation_id": "app",
+          "name": "form_not_rendered_when_isFormOpen_false",
+          "test_setup": {
+            "given": "isFormOpen=false",
+            "then": "No TaskForm component is rendered",
+            "when": "Component renders"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "If user quickly switches between tasks, editingTask should always match last clicked one.",
+          "id": "rapid_open_edit_switches_tasks_correctly",
+          "implementation_id": "app",
+          "name": "rapid_open_edit_switches_tasks_correctly",
+          "test_setup": {
+            "given": "User rapidly clicks task A then task B",
+            "then": "editingTask should equal task B and TaskForm shows task B's data",
+            "when": "openEdit is triggered multiple times in quick succession"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Ensures form validation or API behavior when required fields are empty.",
+          "id": "update_with_empty_or_missing_fields",
+          "implementation_id": "app",
+          "name": "update_with_empty_or_missing_fields",
+          "test_setup": {
+            "given": "User clears required fields in TaskForm (e.g., title='')",
+            "then": "Validation prevents submit OR system attempts update and receives error; alert is shown",
+            "when": "Form is submitted"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Inputs at boundary length limits should still update properly.",
+          "id": "update_boundary_string_lengths",
+          "implementation_id": "app",
+          "name": "update_boundary_string_lengths",
+          "test_setup": {
+            "given": "Task fields contain max-length strings allowed by system",
+            "then": "API updateTask is called successfully and edit closes normally",
+            "when": "Form is submitted"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Submitting multiple times should not cause duplicate updates.",
+          "id": "update_while_api_in_flight_prevents_double_submit",
+          "implementation_id": "app",
+          "name": "update_while_api_in_flight_prevents_double_submit",
+          "test_setup": {
+            "given": "User clicks submit multiple times rapidly",
+            "then": "Only one API call should be sent; UI prevents additional submissions",
+            "when": "handleUpdateTask is executing"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "If user lacks permission, openEdit should not allow editing.",
+          "id": "permissions_no_edit_access_block_action",
+          "implementation_id": "app",
+          "name": "permissions_no_edit_access_block_action",
+          "test_setup": {
+            "given": "User role doesn't permit editing tasks",
+            "then": "openEdit is ignored or blocked; editingTask and isFormOpen remain unchanged",
+            "when": "User clicks a task"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Submitting an edit without proper permissions must fail.",
+          "id": "permissions_no_update_access_blocks_submission",
+          "implementation_id": "app",
+          "name": "permissions_no_update_access_blocks_submission",
+          "test_setup": {
+            "given": "editingTask is set but current user lacks update permission",
+            "then": "API call is prevented or API returns forbidden; alert is shown",
+            "when": "User submits form"
+          },
+          "type": "negative"
+        }
+      ]
+    },
+    {
+      "implementation_id": "prevent_title_edit",
+      "test_cases": [
+        {
+          "description": "Verify that the title field is disabled when initialTask is provided.",
+          "id": "title_disabled_in_edit_mode",
+          "implementation_id": "prevent_title_edit",
+          "name": "title_disabled_in_edit_mode",
+          "test_setup": {
+            "given": "initialTask exists with title 'Existing Task'",
+            "then": "The title input appears with value 'Existing Task' and has disabled or readonly set to true",
+            "when": "The component is rendered"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify that the title field is editable when no initialTask is provided.",
+          "id": "title_editable_in_create_mode",
+          "implementation_id": "prevent_title_edit",
+          "name": "title_editable_in_create_mode",
+          "test_setup": {
+            "given": "initialTask is null or undefined",
+            "then": "The title input is editable and empty",
+            "when": "The component is rendered"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensure user cannot modify the title when in edit mode.",
+          "id": "prevent_user_typing_on_disabled_field",
+          "implementation_id": "prevent_title_edit",
+          "name": "prevent_user_typing_on_disabled_field",
+          "test_setup": {
+            "given": "initialTask exists with title 'Existing Task'",
+            "then": "No changes appear in the input value; the value remains 'Existing Task'",
+            "when": "User attempts to type into the disabled title field"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify form submission works even with title locked.",
+          "id": "submit_form_in_edit_mode",
+          "implementation_id": "prevent_title_edit",
+          "name": "submit_form_in_edit_mode",
+          "test_setup": {
+            "given": "initialTask exists and title field is disabled",
+            "then": "onSubmit is called with initialTask.title preserved",
+            "when": "User modifies other editable fields and submits the form"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify form submission using a new title in create mode.",
+          "id": "submit_form_in_create_mode",
+          "implementation_id": "prevent_title_edit",
+          "name": "submit_form_in_create_mode",
+          "test_setup": {
+            "given": "initialTask is null",
+            "then": "onSubmit receives the new title",
+            "when": "User enters a new title and submits the form"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensure component handles initialTask with empty string title.",
+          "id": "edge_case_empty_initial_title",
+          "implementation_id": "prevent_title_edit",
+          "name": "edge_case_empty_initial_title",
+          "test_setup": {
+            "given": "initialTask exists with title ''",
+            "then": "The title field is disabled and shows empty string",
+            "when": "The component is rendered"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Ensure long titles are displayed properly but not editable.",
+          "id": "edge_case_long_title_in_edit_mode",
+          "implementation_id": "prevent_title_edit",
+          "name": "edge_case_long_title_in_edit_mode",
+          "test_setup": {
+            "given": "initialTask exists with title of length 255",
+            "then": "Full title is displayed but cannot be modified",
+            "when": "The component renders"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Verify title cannot be changed through programmatic user events.",
+          "id": "attempt_programmatic_title_change",
+          "implementation_id": "prevent_title_edit",
+          "name": "attempt_programmatic_title_change",
+          "test_setup": {
+            "given": "initialTask exists with title 'Existing Task'",
+            "then": "The displayed value remains unchanged",
+            "when": "A script attempts to setInputValue on the disabled title field"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Component re-renders from create mode to edit mode.",
+          "id": "state_transition_create_to_edit",
+          "implementation_id": "prevent_title_edit",
+          "name": "state_transition_create_to_edit",
+          "test_setup": {
+            "given": "initialTask is null and user typed a title",
+            "then": "Title field becomes disabled and is updated to initialTask.title",
+            "when": "Component receives new props with an initialTask"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Component re-renders from edit mode to create mode.",
+          "id": "state_transition_edit_to_create",
+          "implementation_id": "prevent_title_edit",
+          "name": "state_transition_edit_to_create",
+          "test_setup": {
+            "given": "initialTask exists initially",
+            "then": "Title field becomes editable and clears or resets based on default state",
+            "when": "Component receives new props with initialTask set to null"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Simulate a user role that does not allow title editing even in create mode.",
+          "id": "no_permission_to_edit_title",
+          "implementation_id": "prevent_title_edit",
+          "name": "no_permission_to_edit_title",
+          "test_setup": {
+            "given": "User role has no permission to edit title; initialTask is null",
+            "then": "Title field is disabled despite create mode",
+            "when": "Component renders"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Verify role with proper permission can edit title in create mode.",
+          "id": "permission_allows_edit_in_create_mode",
+          "implementation_id": "prevent_title_edit",
+          "name": "permission_allows_edit_in_create_mode",
+          "test_setup": {
+            "given": "User role allows editing title and no initialTask exists",
+            "then": "Title input is editable",
+            "when": "Component renders"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Handle case where initialTask is provided but not an object.",
+          "id": "invalid_props_initialtask_type",
+          "implementation_id": "prevent_title_edit",
+          "name": "invalid_props_initialtask_type",
+          "test_setup": {
+            "given": "initialTask is provided as a non-object value like a string",
+            "then": "Component either shows fallback state or throws predictable error",
+            "when": "Component attempts to render"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensure title input always renders regardless of mode.",
+          "id": "title_input_render_consistency",
+          "implementation_id": "prevent_title_edit",
+          "name": "title_input_render_consistency",
+          "test_setup": {
+            "given": "initialTask present or absent",
+            "then": "Title input appears exactly once",
+            "when": "Component renders"
+          },
+          "type": "positive"
+        }
+      ]
+    },
+    {
+      "implementation_id": "prevent_due_date_edit",
+      "test_cases": [
+        {
+          "description": "Ensures due date field is disabled when editing an existing task.",
+          "id": "prevent_due_date_edit_in_edit_mode",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "prevent_due_date_edit_in_edit_mode",
+          "test_setup": {
+            "given": "TaskForm is rendered with initialTask containing a due_date.",
+            "then": "Due date input is displayed as disabled or readonly and cannot be modified.",
+            "when": "User views the form."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Ensures due date field is editable when creating a new task.",
+          "id": "allow_due_date_edit_in_create_mode",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "allow_due_date_edit_in_create_mode",
+          "test_setup": {
+            "given": "TaskForm is rendered without initialTask.",
+            "then": "Due date input is editable and allows user input.",
+            "when": "User views the form."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "User attempts to type into disabled due date field during edit mode.",
+          "id": "prevent_typing_into_disabled_due_date_field",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "prevent_typing_into_disabled_due_date_field",
+          "test_setup": {
+            "given": "TaskForm is rendered with initialTask including due_date, making due date field disabled.",
+            "then": "No input change occurs and due date remains the same as initialTask.due_date.",
+            "when": "User attempts to type a new date manually."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "User attempts to open date picker on disabled due date field.",
+          "id": "prevent_date_picker_interaction_in_edit_mode",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "prevent_date_picker_interaction_in_edit_mode",
+          "test_setup": {
+            "given": "TaskForm is rendered with initialTask so due date field is disabled.",
+            "then": "Date picker does not open and no value changes.",
+            "when": "User tries to open built\u2011in date picker."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Due date should always display the initial task's due date while editing.",
+          "id": "ensure_due_date_value_is_prepopulated_in_edit_mode",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "ensure_due_date_value_is_prepopulated_in_edit_mode",
+          "test_setup": {
+            "given": "TaskForm receives initialTask with due_date field.",
+            "then": "Due date input shows initialTask.due_date and is non-editable.",
+            "when": "Component mounts."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Attempts to change due date through any method should not overwrite stored value.",
+          "id": "verify_due_date_not_overwritten_by_user_in_edit_mode",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "verify_due_date_not_overwritten_by_user_in_edit_mode",
+          "test_setup": {
+            "given": "TaskForm initialized with initialTask and due date set.",
+            "then": "Submitted payload contains the original due date unchanged.",
+            "when": "User triggers form submission after attempting to change due date."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensure component behaves correctly when initialTask is explicitly null.",
+          "id": "boundary_case_null_initialTask",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "boundary_case_null_initialTask",
+          "test_setup": {
+            "given": "TaskForm is rendered with initialTask set to null.",
+            "then": "Due date field behaves as create mode: editable and empty.",
+            "when": "User views the form."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Ensure component handles initialTask without a due_date property.",
+          "id": "boundary_case_missing_due_date_in_initialTask",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "boundary_case_missing_due_date_in_initialTask",
+          "test_setup": {
+            "given": "TaskForm is rendered with initialTask but missing due_date.",
+            "then": "Due date field should remain disabled but empty or null, based on implementation defaults.",
+            "when": "Component renders."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Validate form submission works normally even when due date is locked.",
+          "id": "form_submission_with_edit_mode_due_date_locked",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "form_submission_with_edit_mode_due_date_locked",
+          "test_setup": {
+            "given": "TaskForm is rendered with initialTask and due_date disabled.",
+            "then": "Form submits successfully with original due date preserved.",
+            "when": "User fills other fields and submits."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Validate due date field participates in new task creation.",
+          "id": "form_submission_in_create_mode_with_new_due_date",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "form_submission_in_create_mode_with_new_due_date",
+          "test_setup": {
+            "given": "TaskForm rendered without initialTask.",
+            "then": "Form submits with provided due date value.",
+            "when": "User enters a new due date and submits."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Verify component uses the correct attribute (readonly or disabled) consistently in edit mode.",
+          "id": "readonly_vs_disabled_attribute_behavior",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "readonly_vs_disabled_attribute_behavior",
+          "test_setup": {
+            "given": "TaskForm rendered with initialTask.",
+            "then": "Due date input contains either readonly=true or disabled=true as per implementation.",
+            "when": "Developer inspects DOM."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Ensure due date cannot be changed via JS-based input value injection.",
+          "id": "attempt_programmatic_update_to_due_date_in_edit_mode",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "attempt_programmatic_update_to_due_date_in_edit_mode",
+          "test_setup": {
+            "given": "TaskForm rendered with initialTask and due date locked.",
+            "then": "Component rejects or overwrites attempt, keeping original due date.",
+            "when": "Script attempts to set input.value to a new date."
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Ensure due date field switches from editable to locked when component switches into edit mode.",
+          "id": "state_transition_from_create_mode_to_edit_mode",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "state_transition_from_create_mode_to_edit_mode",
+          "test_setup": {
+            "given": "TaskForm first rendered without initialTask, then re-rendered with initialTask.",
+            "then": "Due date becomes disabled and changes back to initialTask.due_date if needed.",
+            "when": "Component refreshes props."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Ensure due date field becomes editable if initialTask becomes undefined.",
+          "id": "state_transition_from_edit_mode_to_create_mode",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "state_transition_from_edit_mode_to_create_mode",
+          "test_setup": {
+            "given": "TaskForm initially rendered with initialTask, then updated with initialTask set to undefined.",
+            "then": "Due date becomes editable and cleared or kept by implementation rules.",
+            "when": "Component re-renders."
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Ensure standard user cannot edit due date regardless of permissions.",
+          "id": "role_check_standard_user_edit_mode",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "role_check_standard_user_edit_mode",
+          "test_setup": {
+            "given": "A standard user opens TaskForm with initialTask.",
+            "then": "Due date remains locked because rule is unconditional.",
+            "when": "User attempts to modify due date."
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Even admin users should not be allowed to modify due date in edit mode.",
+          "id": "admin_user_edit_mode_cannot_edit_due_date",
+          "implementation_id": "prevent_due_date_edit",
+          "name": "admin_user_edit_mode_cannot_edit_due_date",
+          "test_setup": {
+            "given": "Admin user loads TaskForm with initialTask.",
+            "then": "Due date remains unmodifiable, matching business rule that due date cannot be changed once set.",
+            "when": "Admin tries to edit the due date."
+          },
+          "type": "negative"
         }
       ]
     }
@@ -13542,6 +14443,112 @@
             "when": "PUT request is sent with insufficient authorization"
           },
           "type": "negative"
+        },
+        {
+          "description": "Send an update containing fields not defined in TaskCreate",
+          "id": "update_task_with_unexpected_extra_fields",
+          "implementation_id": "update_task",
+          "name": "update_task_with_unexpected_extra_fields",
+          "request_body_json": {
+            "completed": false,
+            "description": "Extra field test",
+            "title": "Valid Title",
+            "unexpectedField": "should be rejected"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/123",
+          "response_body_json": {
+            "detail": "Validation error"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "Task with ID 123 exists",
+            "then": "Validation error is returned",
+            "when": "Client sends extra non-schema fields"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Send null values for fields that require non-null types",
+          "id": "update_task_null_values",
+          "implementation_id": "update_task",
+          "name": "update_task_null_values",
+          "request_body_json": {
+            "completed": null,
+            "description": null,
+            "title": null
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/444",
+          "response_body_json": {
+            "detail": "Validation error"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "Task with ID 444 exists",
+            "then": "422 validation error is returned",
+            "when": "Client sends null instead of proper field values"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Send an update containing only one field when all fields are required",
+          "id": "update_task_only_one_field",
+          "implementation_id": "update_task",
+          "name": "update_task_only_one_field",
+          "request_body_json": {
+            "completed": true
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/777",
+          "response_body_json": {
+            "detail": "Validation error"
+          },
+          "response_status_code": 422,
+          "test_setup": {
+            "given": "Task with ID 777 exists",
+            "then": "Framework returns 422 before reaching endpoint logic",
+            "when": "Client sends a partial update missing required fields"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Update a task with a very large but allowed description field",
+          "id": "update_task_large_description",
+          "implementation_id": "update_task",
+          "name": "update_task_large_description",
+          "request_body_json": {
+            "completed": false,
+            "description": "D.repeat(5000)",
+            "title": "Large description test"
+          },
+          "request_headers": {
+            "Content-Type": "application/json"
+          },
+          "request_method": "PUT",
+          "request_url": "/tasks/222",
+          "response_body_json": {
+            "completed": false,
+            "description": "D.repeat(5000)",
+            "id": "222",
+            "title": "Large description test"
+          },
+          "response_status_code": 200,
+          "test_setup": {
+            "given": "Task with ID 222 exists",
+            "then": "Task updates successfully",
+            "when": "Client sends a very large but valid description"
+          },
+          "type": "edge"
         }
       ]
     },

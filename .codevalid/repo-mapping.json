@@ -367,7 +367,9 @@
         "type": "function"
       }
     ],
-    "missing_implementations": []
+    "missing_implementations": [
+      "The system shall ensure that only the statuses explicitly defined in the requirements ('completed' and 'in progress') are accepted during status update. Currently the system uses a boolean completed field which only supports two states (true/false) corresponding to 'completed' and 'pending' (not 'in progress'). The status field should be updated to support explicit 'completed' and 'in progress' string values."
+    ]
   },
   "task_9119176089_20260328173022": {
     "implementation": [
@@ -388,7 +390,7 @@
         "type": "component"
       },
       {
-        "How_is_it_connected_to_implementation": "Displays form for editing task. When initialTask prop is provided (set by App component), it pre-populates all form fields with existing task data. The title input has HTML5 required attribute to prevent empty submissions. On form submission, calls onSubmit callback with updated task data.",
+        "How_is_it_connected_to_implementation": "Displays form for editing task. When initialTask prop is provided (set by App component), it pre-populates all form fields with existing task data. The title input has HTML5 required attribute to prevent empty submissions. However, all fields including title and due_date are currently editable during edit mode, which does not comply with the requirement to prevent modification of title and due_date during editing.",
         "file_path": "frontend/src/components/TaskForm.tsx",
         "id": "taskform",
         "name": "TaskForm",
@@ -442,10 +444,28 @@
         "name": "validate_title",
         "pseudo_code": "FIELD VALIDATOR validate_title on TaskBase.title {\n  IF title is empty OR title.strip() is empty THEN\n    RAISE ValidationError('Title cannot be empty')\n  END IF\n  RETURN title\n}",
         "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Prevents modification of task title during edit mode by disabling the title input field when in edit mode. The title field is set to readonly or disabled when initialTask is provided, ensuring users cannot change the title during edit operations.",
+        "file_path": "frontend/src/components/TaskForm.tsx",
+        "id": "prevent_title_edit",
+        "name": "prevent_title_edit",
+        "pseudo_code": "COMPONENT TaskForm(initialTask, onSubmit) {\n  IF initialTask exists THEN\n    DISPLAY title input field with disabled or readonly attribute\n    SET title = initialTask.title (read-only)\n  ELSE\n    DISPLAY editable title input field\n  END IF\n}",
+        "type": "component"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Prevents modification of task due_date during edit mode by disabling the due date input field when in edit mode. The due date field is set to readonly or disabled when initialTask is provided, ensuring users cannot change the due date during edit operations.",
+        "file_path": "frontend/src/components/TaskForm.tsx",
+        "id": "prevent_due_date_edit",
+        "name": "prevent_due_date_edit",
+        "pseudo_code": "COMPONENT TaskForm(initialTask, onSubmit) {\n  IF initialTask exists THEN\n    DISPLAY dueDate input field with disabled or readonly attribute\n    SET dueDate = initialTask.due_date (read-only)\n  ELSE\n    DISPLAY editable dueDate input field\n  END IF\n}",
+        "type": "component"
       }
     ],
     "missing_implementations": [
-      "Backend validation to prevent saving an edited task with an empty or whitespace-only title. The TaskBase model requires a Pydantic field validator to ensure the title is not empty before the updated task is persisted to the database."
+      "Backend validation to prevent saving an edited task with an empty or whitespace-only title. The TaskBase model requires a Pydantic field validator to ensure the title is not empty before the updated task is persisted to the database.",
+      "Frontend restriction to prevent modification of task title during editing. The title input field must be disabled or set to readonly when editing an existing task (when initialTask is provided).",
+      "Frontend restriction to prevent modification of task due date during editing. The due date input field must be disabled or set to readonly when editing an existing task (when initialTask is provided)."
     ]
   },
   "task_7704976452_20260328173022": {
@@ -499,6 +519,59 @@
         "type": "function"
       }
     ],
-    "missing_implementations": []
+    "missing_implementations": [
+      "System shall prevent creation of a new task when the title is empty, as required by the documented task creation validation. - Only frontend validation exists; backend TaskCreate model lacks validation to enforce non-empty title requirement.",
+      "System shall prevent creation of a new task when the description is empty, as required by the documented task creation validation. - No validation exists to prevent empty description during task creation; backend TaskCreate treats description as optional without any constraints.",
+      "System shall set the due date to the current date when the user does not provide a due date, as specified in the task creation validation. - Neither frontend nor backend implements logic to set due_date to current date when not provided; currently omitted fields result in None values."
+    ]
+  },
+  "task_2507198734_20260329195356": {
+    "implementation": [
+      {
+        "How_is_it_connected_to_implementation": "This component renders the form for editing tasks. It initializes form fields including title and due_date from the initialTask prop (line 11, 15), making both fields editable. The form submission triggers the onSubmit callback with the updated task data. HTML required attribute on title input (line 40) provides basic validation that title is not empty, but this only prevents client-side submission if title is empty.",
+        "file_path": "frontend/src/components/TaskForm.tsx",
+        "id": "taskform",
+        "name": "TaskForm",
+        "pseudo_code": "COMPONENT TaskForm(initialTask, onSubmit, onCancel):\n  STATE title = initialTask?.title || ''\n  STATE description = initialTask?.description || ''\n  STATE priority = initialTask?.priority || 'Medium'\n  STATE category = initialTask?.category || ''\n  STATE dueDate = initialTask?.due_date || ''\n  \n  FUNCTION handleSubmit(e):\n    e.preventDefault()\n    await onSubmit({\n      title: title,\n      description: description,\n      priority: priority,\n      category: category,\n      due_date: dueDate,\n      completed: initialTask?.completed\n    })\n  \n  RENDER:\n    FORM with onSubmit=handleSubmit:\n      INPUT type='text' value=title onChange=setTitle required\n      TEXTAREA value=description onChange=setDescription\n      SELECT value=priority onChange=setPriority\n      SELECT value=category onChange=setCategory\n      INPUT type='date' value=dueDate onChange=setDueDate\n      BUTTON type='submit' 'Save Task'\n      BUTTON type='button' onClick=onCancel 'Cancel'",
+        "type": "component"
+      },
+      {
+        "How_is_it_connected_to_implementation": "This component manages the edit workflow. When a task is clicked for editing (line 74-77), it sets editingTask state and opens the form. The handleUpdateTask function (lines 44-54) is called when editing a task, which calls the API updateTask endpoint with the modified taskData. The form receives initialTask prop containing all editable fields without restrictions.",
+        "file_path": "frontend/src/App.tsx",
+        "id": "app",
+        "name": "App",
+        "pseudo_code": "FUNCTION openEdit(task: Task):\n  SET editingTask = task\n  SET isFormOpen = true\n\nFUNCTION handleUpdateTask(taskData: TaskCreate):\n  IF editingTask is null:\n    RETURN\n  TRY:\n    await api.updateTask(editingTask.id, taskData)\n    await loadTasks()\n    SET editingTask = null\n    SET isFormOpen = false\n  CATCH error:\n    alert('Failed to update task')\n\nRENDER:\n  IF isFormOpen:\n    RENDER TaskForm(\n      initialTask=editingTask,\n      onSubmit=editingTask ? handleUpdateTask : handleCreateTask,\n      onCancel=closeForm\n    )",
+        "type": "component"
+      },
+      {
+        "How_is_it_connected_to_implementation": "This function sends a PUT request to the backend API endpoint /tasks/{id} with the updated task data (lines 39-47). It accepts the task ID and the full TaskCreate object containing all fields including title and due_date without any validation or filtering of restricted fields.",
+        "file_path": "frontend/src/api.ts",
+        "id": "api_updatetask",
+        "name": "api.updateTask",
+        "pseudo_code": "FUNCTION updateTask(id: string, task: TaskCreate): Promise<Task>\n  CONST response = FETCH to 'http://localhost:8000/tasks/{id}'\n    method='PUT'\n    headers={'Content-Type': 'application/json'}\n    body=JSON.stringify(task)\n  \n  IF response not ok:\n    THROW Error('Failed to update task')\n  \n  RETURN response.json()",
+        "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "This endpoint (lines 30-35) receives the PUT request with task_id and TaskCreate payload. It directly calls database.update_task without any validation to prevent modification of title or due_date fields. The endpoint accepts any TaskCreate object and passes it directly to the database layer.",
+        "file_path": "backend/main.py",
+        "id": "update_task",
+        "name": "update_task",
+        "pseudo_code": "ENDPOINT PUT /tasks/{task_id}:\n  INPUT task_id: str, task: TaskCreate\n  \n  CALL updated_task = database.update_task(task_id, task)\n  \n  IF updated_task is None:\n    RAISE HTTPException(status_code=404, detail='Task not found')\n  \n  RETURN updated_task",
+        "type": "endpoint"
+      },
+      {
+        "How_is_it_connected_to_implementation": "This function (lines 35-43) handles the database update operation. It retrieves all tasks, finds the task matching the given task_id, replaces the entire task object with the new data from task_update (which includes title and due_date), saves all tasks, and returns the updated task. There is no logic to preserve the original title or due_date values.",
+        "file_path": "backend/database.py",
+        "id": "update_task_aa51",
+        "name": "update_task",
+        "pseudo_code": "FUNCTION update_task(task_id: str, task_update: TaskCreate) -> Optional[Task]:\n  tasks = get_tasks()\n  \n  FOR i, task IN enumerate(tasks):\n    IF task.id == task_id:\n      updated_task = Task(\n        id=task_id,\n        **task_update.model_dump()\n      )\n      tasks[i] = updated_task\n      save_tasks(tasks)\n      RETURN updated_task\n  \n  RETURN None",
+        "type": "function"
+      }
+    ],
+    "missing_implementations": [
+      "When editing an existing task, the system shall prevent modification of the task title.",
+      "When editing an existing task, the system shall prevent modification of the task due date.",
+      "If the task title is empty during edit, the system shall not allow the edit to be saved."
+    ]
   }
 }
