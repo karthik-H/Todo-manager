@@ -365,22 +365,6 @@
         "name": "save_tasks",
         "pseudo_code": "FUNCTION save_tasks(tasks):\n  OPEN file tasks.json in write mode:\n    json_data = []\n    FOR each task in tasks:\n      # Convert Task object to JSON-compatible dictionary\n      json_dict = task.model_dump(mode='json')\n      # json_dict includes completed: boolean\n      APPEND json_dict to json_data\n    END_FOR\n    WRITE json_data to file with indent=4\n  CLOSE file\nEND_FUNCTION",
         "type": "function"
-      },
-      {
-        "How_is_it_connected_to_implementation": "Data model interface that defines the structure of the task update payload. Includes the completed boolean field that gets transmitted in the API request to update task status.",
-        "file_path": "frontend/src/api.ts",
-        "id": "taskcreate",
-        "name": "TaskCreate",
-        "pseudo_code": "INTERFACE TaskCreate:\n  title: string (required)\n  description: string (optional)\n  priority: 'Low' | 'Medium' | 'High' (required)\n  category: 'Work' | 'Personal' | 'Study' (optional)\n  due_date: string (optional, ISO date format)\n  completed: boolean (required, used for status updates)\nEND_INTERFACE",
-        "type": "function"
-      },
-      {
-        "How_is_it_connected_to_implementation": "Pydantic data model that validates the task update request payload received from the API. Ensures the completed field is a boolean and provides type validation for all task properties.",
-        "file_path": "backend/models.py",
-        "id": "taskcreate_65f6",
-        "name": "TaskCreate",
-        "pseudo_code": "MODEL TaskCreate:\n  INHERITS FROM TaskBase\n  # TaskBase contains: title, description, priority, category, due_date, completed\n  completed: boolean (inherits from TaskBase with default=False)\n  \n  # When instantiated, validates that completed is a boolean\n  # Used for parsing PUT request body\nEND_MODEL",
-        "type": "function"
       }
     ],
     "missing_implementations": []
