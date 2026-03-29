@@ -436,16 +436,16 @@
         "type": "function"
       },
       {
-        "How_is_it_connected_to_implementation": "Validates that edited task title is not empty before persisting changes. Validates the TaskCreate model containing the edited task data to ensure title field is non-empty before the task is saved to database. This is implemented as a Pydantic field validator on the title field in the TaskBase model.",
+        "How_is_it_connected_to_implementation": "Validates that edited task title is not empty before persisting changes. Implements a Pydantic field validator on the title field in the TaskBase model to ensure title field is non-empty and not just whitespace before the task is saved to database.",
         "file_path": "backend/models.py",
         "id": "validate_title",
         "name": "validate_title",
-        "pseudo_code": "FUNCTION validate_title(title: str) {\n  IF title is empty OR title.strip() is empty THEN\n    RAISE ValidationError('Title cannot be empty')\n  END IF\n}",
+        "pseudo_code": "FIELD VALIDATOR validate_title on TaskBase.title {\n  IF title is empty OR title.strip() is empty THEN\n    RAISE ValidationError('Title cannot be empty')\n  END IF\n  RETURN title\n}",
         "type": "function"
       }
     ],
     "missing_implementations": [
-      "Backend validation to prevent saving an edited task with an empty or whitespace-only title. The TaskCreate model needs a field validator to ensure the title is not empty before the updated task is persisted."
+      "Backend validation to prevent saving an edited task with an empty or whitespace-only title. The TaskBase model requires a Pydantic field validator to ensure the title is not empty before the updated task is persisted to the database."
     ]
   },
   "task_7704976452_20260328173022": {

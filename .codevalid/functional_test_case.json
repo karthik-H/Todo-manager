@@ -6908,6 +6908,30 @@
             "when": "validate_title('\\u2003\\u2003') is called"
           },
           "type": "negative"
+        },
+        {
+          "description": "Tab-only string should fail validation",
+          "id": "validate_title_error_tab_only",
+          "implementation_id": "validate_title",
+          "name": "validate_title_error_tab_only",
+          "test_setup": {
+            "given": "A title of '\\t\\t'",
+            "then": "ValidationError('Title cannot be empty') is raised",
+            "when": "validate_title('\\t\\t') is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Non-string list input should fail",
+          "id": "validate_title_error_non_string_list",
+          "implementation_id": "validate_title",
+          "name": "validate_title_error_non_string_list",
+          "test_setup": {
+            "given": "A title of []",
+            "then": "TypeError is raised because .strip() cannot be applied",
+            "when": "validate_title([]) is called"
+          },
+          "type": "negative"
         }
       ]
     }
