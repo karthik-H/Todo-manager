@@ -6761,6 +6761,131 @@
           "type": "positive"
         }
       ]
+    },
+    {
+      "implementation_id": "validate_title",
+      "test_cases": [
+        {
+          "description": "Valid title should pass validation",
+          "id": "validate_title_success_normal_string",
+          "implementation_id": "validate_title",
+          "name": "validate_title_success_normal_string",
+          "test_setup": {
+            "given": "A non\u2011empty title such as 'Buy groceries'",
+            "then": "Function completes without raising ValidationError",
+            "when": "validate_title('Buy groceries') is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Title with surrounding spaces but containing valid characters should pass",
+          "id": "validate_title_success_trimmed_string",
+          "implementation_id": "validate_title",
+          "name": "validate_title_success_trimmed_string",
+          "test_setup": {
+            "given": "A title like '   Update report  '",
+            "then": "Function completes without raising ValidationError",
+            "when": "validate_title('   Update report  ') is called"
+          },
+          "type": "positive"
+        },
+        {
+          "description": "Empty string should fail validation",
+          "id": "validate_title_error_empty_string",
+          "implementation_id": "validate_title",
+          "name": "validate_title_error_empty_string",
+          "test_setup": {
+            "given": "A title of ''",
+            "then": "ValidationError('Title cannot be empty') is raised",
+            "when": "validate_title('') is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Whitespace\u2011only string should fail validation",
+          "id": "validate_title_error_spaces_only",
+          "implementation_id": "validate_title",
+          "name": "validate_title_error_spaces_only",
+          "test_setup": {
+            "given": "A title of '     '",
+            "then": "ValidationError('Title cannot be empty') is raised",
+            "when": "validate_title('     ') is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Single non\u2011space character is allowed",
+          "id": "validate_title_edge_single_character",
+          "implementation_id": "validate_title",
+          "name": "validate_title_edge_single_character",
+          "test_setup": {
+            "given": "A title of 'A'",
+            "then": "Function completes without raising ValidationError",
+            "when": "validate_title('A') is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Title with many spaces but at least one valid character after trimming should pass",
+          "id": "validate_title_edge_minimum_non_space_after_trim",
+          "implementation_id": "validate_title",
+          "name": "validate_title_edge_minimum_non_space_after_trim",
+          "test_setup": {
+            "given": "A title of '     B'",
+            "then": "Function completes without raising ValidationError",
+            "when": "validate_title('     B') is called"
+          },
+          "type": "edge"
+        },
+        {
+          "description": "Null/None input should fail validation",
+          "id": "validate_title_error_null_value",
+          "implementation_id": "validate_title",
+          "name": "validate_title_error_null_value",
+          "test_setup": {
+            "given": "A title of null",
+            "then": "TypeError or ValidationError is raised depending on implementation",
+            "when": "validate_title(null) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Non\u2011string input such as integer should fail",
+          "id": "validate_title_error_non_string_number",
+          "implementation_id": "validate_title",
+          "name": "validate_title_error_non_string_number",
+          "test_setup": {
+            "given": "A title of 12345",
+            "then": "TypeError is raised because .strip() cannot be applied",
+            "when": "validate_title(12345) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Non\u2011string object should fail",
+          "id": "validate_title_error_non_string_object",
+          "implementation_id": "validate_title",
+          "name": "validate_title_error_non_string_object",
+          "test_setup": {
+            "given": "A title of {}",
+            "then": "TypeError is raised because .strip() cannot be applied",
+            "when": "validate_title({}) is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Extremely long but valid title should pass if system has no length limitation",
+          "id": "validate_title_edge_long_string",
+          "implementation_id": "validate_title",
+          "name": "validate_title_edge_long_string",
+          "test_setup": {
+            "given": "A title of 'A.repeat(10000)'",
+            "then": "Function completes without raising ValidationError",
+            "when": "validate_title('A.repeat(10000)') is called"
+          },
+          "type": "edge"
+        }
+      ]
     }
   ],
   "component": [

@@ -388,11 +388,11 @@
         "type": "component"
       },
       {
-        "How_is_it_connected_to_implementation": "Displays form for editing task. When initialTask prop is provided (set by App component), it pre-populates all form fields with existing task data. On form submission, calls onSubmit callback with updated task data.",
+        "How_is_it_connected_to_implementation": "Displays form for editing task. When initialTask prop is provided (set by App component), it pre-populates all form fields with existing task data. The title input has HTML5 required attribute to prevent empty submissions. On form submission, calls onSubmit callback with updated task data.",
         "file_path": "frontend/src/components/TaskForm.tsx",
         "id": "taskform",
         "name": "TaskForm",
-        "pseudo_code": "COMPONENT TaskForm(initialTask, onSubmit) {\n  IF initialTask exists THEN\n    SET title = initialTask.title\n    SET description = initialTask.description\n    SET priority = initialTask.priority\n    SET category = initialTask.category\n    SET dueDate = initialTask.due_date\n    DISPLAY 'Edit Task' heading\n  ELSE\n    DISPLAY 'Add New Task' heading\n  END IF\n  \n  ON form submit:\n    CALL onSubmit with form data {\n      title, description, priority, category, due_date, completed\n    }\n}",
+        "pseudo_code": "COMPONENT TaskForm(initialTask, onSubmit) {\n  IF initialTask exists THEN\n    SET title = initialTask.title\n    SET description = initialTask.description\n    SET priority = initialTask.priority\n    SET category = initialTask.category\n    SET dueDate = initialTask.due_date\n    DISPLAY 'Edit Task' heading\n  ELSE\n    DISPLAY 'Add New Task' heading\n  END IF\n  \n  ADD REQUIRED attribute to title input field\n  \n  ON form submit:\n    CALL onSubmit with form data {\n      title, description, priority, category, due_date, completed\n    }\n}",
         "type": "component"
       },
       {
@@ -434,9 +434,19 @@
         "name": "save_tasks",
         "pseudo_code": "FUNCTION save_tasks(tasks: List[Task]) {\n  OPEN tasks.json file in write mode\n  \n  CONVERT tasks to JSON format:\n    FOR EACH task in tasks:\n      json_data.append(task.model_dump(mode='json'))\n  \n  WRITE json_data to file with indentation\n  CLOSE file\n}",
         "type": "function"
+      },
+      {
+        "How_is_it_connected_to_implementation": "Validates that edited task title is not empty before persisting changes. Validates the TaskCreate model containing the edited task data to ensure title field is non-empty before the task is saved to database.",
+        "file_path": "backend/models.py",
+        "id": "validate_title",
+        "name": "validate_title",
+        "pseudo_code": "FUNCTION validate_title(title: str) {\n  IF title is empty OR title.strip() is empty THEN\n    RAISE ValidationError('Title cannot be empty')\n  END IF\n}",
+        "type": "function"
       }
     ],
-    "missing_implementations": []
+    "missing_implementations": [
+      "Backend validation to prevent saving an edited task with an empty or whitespace-only title. The TaskCreate model needs a field validator to ensure the title is not empty before the updated task is persisted."
+    ]
   },
   "task_7704976452_20260328173022": {
     "implementation": [
