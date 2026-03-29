@@ -436,7 +436,7 @@
         "type": "function"
       },
       {
-        "How_is_it_connected_to_implementation": "Validates that edited task title is not empty before persisting changes. Validates the TaskCreate model containing the edited task data to ensure title field is non-empty before the task is saved to database.",
+        "How_is_it_connected_to_implementation": "Validates that edited task title is not empty before persisting changes. Validates the TaskCreate model containing the edited task data to ensure title field is non-empty before the task is saved to database. This is implemented as a Pydantic field validator on the title field in the TaskBase model.",
         "file_path": "backend/models.py",
         "id": "validate_title",
         "name": "validate_title",

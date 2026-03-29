@@ -6884,6 +6884,30 @@
             "when": "validate_title('A.repeat(10000)') is called"
           },
           "type": "edge"
+        },
+        {
+          "description": "String containing only newline characters should fail validation",
+          "id": "validate_title_error_newline_only",
+          "implementation_id": "validate_title",
+          "name": "validate_title_error_newline_only",
+          "test_setup": {
+            "given": "A title of '\\n\\n'",
+            "then": "ValidationError('Title cannot be empty') is raised",
+            "when": "validate_title('\\n\\n') is called"
+          },
+          "type": "negative"
+        },
+        {
+          "description": "Unicode whitespace-only string should fail validation",
+          "id": "validate_title_error_unicode_whitespace_only",
+          "implementation_id": "validate_title",
+          "name": "validate_title_error_unicode_whitespace_only",
+          "test_setup": {
+            "given": "A title of '\\u2003\\u2003'",
+            "then": "ValidationError('Title cannot be empty') is raised",
+            "when": "validate_title('\\u2003\\u2003') is called"
+          },
+          "type": "negative"
         }
       ]
     }
